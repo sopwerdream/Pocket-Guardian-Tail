@@ -1,162 +1,500 @@
-<!doctype html>
-<html lang="th">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pocket Guardian Tail – Auto Slides</title>
-  <style>
-    body { margin:0; font-family: system-ui, sans-serif; background:#0b1020; color:#fff; }
-    header { padding:16px 20px; border-bottom:1px solid rgba(255,255,255,.1); }
-    .wrap { max-width:1100px; margin:0 auto; padding:16px; }
-    .viewer { position:relative; background:#111a33; border-radius:16px; overflow:hidden; aspect-ratio: 16/9; display:flex; align-items:center; justify-content:center; }
-    .viewer img { width:100%; height:100%; object-fit:contain; display:block; }
-    .caption { margin-top:10px; opacity:.9; font-size:14px; word-break:break-all; }
-    .controls { display:flex; gap:10px; margin-top:12px; flex-wrap:wrap; }
-    button {
-      background:rgba(255,255,255,.12); color:#fff; border:1px solid rgba(255,255,255,.18);
-      padding:10px 14px; border-radius:12px; cursor:pointer;
-    }
-    button:hover { background:rgba(255,255,255,.18); }
-    .status { margin-top:12px; opacity:.8; font-size:13px; }
-    .pill { display:inline-block; padding:6px 10px; border-radius:999px; background:rgba(255,255,255,.12); margin-right:8px; }
-  </style>
+<!DOCTYPE html>
+<!-- saved from url=(0073)https://8080-iedj2qf84g67ynlkjrnf9-d147d00b.sg1.manus.computer/index.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Guardian Tail - Game Pitch</title>
+    <link href="./Pocket Guardian Tail - Game Pitch_files/css2" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+        }
+
+        /* Background slideshow container */
+        .bg-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .bg-slide.active {
+            opacity: 1;
+        }
+
+        /* Dark gradient overlay for text readability */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.6) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Content container */
+        .content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 80px 100px;
+            z-index: 3;
+        }
+
+        /* Text content */
+        .text-container {
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+            opacity: 0;
+            animation: slideUpFadeIn 0.8s ease-out forwards;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .tagline {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 300;
+            color: #e8d5c4;
+            line-height: 1.4;
+            opacity: 0;
+            animation: slideUpFadeIn 0.8s ease-out 1s forwards;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #999;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1.6s forwards;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Language toggle */
+        .language-toggle {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .lang-btn.active {
+            background: rgba(230, 126, 34, 0.8);
+            border-color: rgba(230, 126, 34, 1);
+            color: #fff;
+        }
+
+        /* Slide indicator dots */
+        .slide-indicators {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: rgba(230, 126, 34, 0.9);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Navigation buttons */
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(230, 126, 34, 0.2);
+            border: 2px solid rgba(230, 126, 34, 0.5);
+            color: #fff;
+            padding: 12px 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(230, 126, 34, 0.4);
+            border-color: rgba(230, 126, 34, 1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn.next::after {
+            content: "→";
+            font-size: 16px;
+        }
+
+        /* Animations */
+        @keyframes slideUpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .content {
+                padding: 60px 60px;
+            }
+
+            .title {
+                font-size: 56px;
+            }
+
+            .tagline {
+                font-size: 22px;
+            }
+
+            .text-container {
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 30px;
+                justify-content: flex-end;
+                padding-bottom: 120px;
+            }
+
+            .title {
+                font-size: 42px;
+            }
+
+            .tagline {
+                font-size: 18px;
+            }
+
+            .text-container {
+                max-width: 100%;
+                gap: 20px;
+            }
+
+            .language-toggle {
+                top: 20px;
+                right: 20px;
+                gap: 8px;
+            }
+
+            .lang-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .slide-indicators {
+                bottom: 30px;
+                gap: 8px;
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .dot.active {
+                width: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <div class="wrap">
-      <div class="pill">Pocket Guardian Tail</div>
-      <div class="pill">Auto-load from GitHub folders</div>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <div class="viewer">
-      <img id="slideImg" alt="slide" />
-    </div>
-    <div class="caption" id="caption"></div>
-
-    <div class="controls">
-      <button id="prevBtn">⬅️ ก่อนหน้า</button>
-      <button id="nextBtn">ถัดไป ➡️</button>
-      <button id="toggleAutoBtn">▶️ เล่นอัตโนมัติ</button>
-      <button id="reloadBtn">🔄 โหลดใหม่</button>
+    <!-- Background slideshow -->
+    <div class="bg-slideshow">
+        <!-- Slides injected by JS -->
     </div>
 
-    <div class="status" id="status">กำลังเตรียมโหลดรูป…</div>
-  </main>
+    </div>
 
-<script>
-(async function () {
-  // === ตั้งค่าตรงนี้ ===
-  const owner = "sopwerdream";
-  const repo  = "Pocket-Guardian-Tail";
-  const branch = "main";
+    <!-- Dark overlay -->
+    <div class="overlay"></div>
 
-  // ใส่ชื่อโฟลเดอร์ “ตามที่อยู่ใน repo จริง” (อยู่ใต้ assets/)
-  const folders = [
-    "cover 01_First page cover image",
-    "cover 02_Concept Visual for the Menu",
-  ];
+    <!-- Main content -->
+    <div class="content">
+        <div class="text-container">
+            <h1 class="title" data-en="Pocket Guardian Tail" data-th="Pocket Guardian Tail">Pocket Guardian Tail</h1>
+            <p class="tagline" data-en="Where cute heroes fight real battles." data-th="ที่ที่วีรชนน้อยน่ารักต่อสู้กับการต่อสู้ที่แท้จริง">Where cute heroes fight real battles.</p>
+            <p class="footer" data-en="PC • Tactical RPG • SkyKick Studio" data-th="PC • Tactical RPG • SkyKick Studio">PC • Tactical RPG • SkyKick Studio</p>
+        </div>
+    </div>
 
-  const statusEl  = document.getElementById("status");
-  const imgEl     = document.getElementById("slideImg");
-  const capEl     = document.getElementById("caption");
-  const prevBtn   = document.getElementById("prevBtn");
-  const nextBtn   = document.getElementById("nextBtn");
-  const reloadBtn = document.getElementById("reloadBtn");
-  const toggleAutoBtn = document.getElementById("toggleAutoBtn");
+    <!-- Language toggle -->
+    <div class="language-toggle">
+        <button class="lang-btn active" data-lang="en">English</button>
+        <button class="lang-btn" data-lang="th">ไทย</button>
+    </div>
 
-  let slides = [];
-  let idx = 0;
-  let autoTimer = null;
+    <!-- Slide indicators -->
+    <div class="slide-indicators">
+        <!-- Dots injected by JS -->
+    </div>
+        <div class="dot active" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+        <div class="dot" data-index="3"></div>
+    </div>
 
-  function setStatus(msg){ statusEl.textContent = msg; }
+    <!-- Navigation buttons -->
+    <div class="navigation">
+        <button class="nav-btn next" data-en="Next" data-th="ถัดไป" onclick="goToNext()">Next</button>
+    </div>
 
-  function isImage(name){
-    return /\.(png|jpg|jpeg|webp|gif)$/i.test(name);
-  }
+    <script>
+        // Auto-load background images from GitHub folders (assets/)
+        const owner = "sopwerdream";
+        const repo = "Pocket-Guardian-Tail";
+        const branch = "main";
 
-  async function fetchFolder(folderName){
-    // GitHub contents API
-    // https://api.github.com/repos/{owner}/{repo}/contents/{path}?ref={branch}
-    const path = `assets/${folderName}`;
-    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+        const playlists = [
+            { key: "cover", folder: "cover 01_First page cover image" },
+            { key: "menu",  folder: "cover 02_Concept Visual for the Menu" }
+        ];
 
-    const res = await fetch(url, { headers: { "Accept": "application/vnd.github+json" } });
-    if (!res.ok) throw new Error(`โหลดโฟลเดอร์ไม่สำเร็จ: ${folderName} (${res.status})`);
+        const bgContainer = document.querySelector('.bg-slideshow');
+        const dotsContainer = document.querySelector('.slide-indicators');
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const textElements = document.querySelectorAll('[data-en]');
 
-    const data = await res.json();
-    // data = array of items
-    return data
-      .filter(item => item.type === "file" && isImage(item.name))
-      .map(item => ({
-        name: item.name,
-        folder: folderName,
-        raw: item.download_url, // direct raw url
-      }));
-  }
+        let slides = [];
+        let dots = [];
+        let currentSlide = 0;
+        let slideInterval = null;
+        let currentLang = 'en';
+        let currentPlaylist = 0;
 
-  async function loadAll(){
-    setStatus("กำลังโหลดรายการรูปจาก GitHub…");
-    slides = [];
-    idx = 0;
+        function isImage(name){
+            return /\.(png|jpg|jpeg|webp|gif)$/i.test(name);
+        }
 
-    for (const f of folders){
-      setStatus(`กำลังอ่านโฟลเดอร์: ${f}`);
-      const items = await fetchFolder(f);
-      slides.push(...items);
-    }
+        async function fetchFolderImages(folderName){
+            const path = `assets/${folderName}`;
+            const api = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+            const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
+            if (!res.ok) throw new Error(`Load failed: ${folderName} (${res.status})`);
+            const data = await res.json();
+            return data
+                .filter(it => it.type === "file" && isImage(it.name))
+                .map(it => it.download_url)
+                .sort((a,b) => a.localeCompare(b, undefined, { numeric:true }));
+        }
 
-    // เรียงชื่อไฟล์ (ถ้าคุณอยากเรียงตามวันที่/เลขหน้า บอกได้)
-    slides.sort((a,b) => (a.folder + "/" + a.name).localeCompare(b.folder + "/" + b.name, undefined, { numeric:true }));
+        function buildSlides(urls){
+            bgContainer.innerHTML = "";
+            dotsContainer.innerHTML = "";
 
-    if (!slides.length){
-      setStatus("ไม่พบไฟล์รูปในโฟลเดอร์ที่กำหนด (ตรวจชื่อโฟลเดอร์/นามสกุลไฟล์)");
-      imgEl.removeAttribute("src");
-      capEl.textContent = "";
-      return;
-    }
+            urls.forEach((url, i) => {
+                const slide = document.createElement("div");
+                slide.className = "bg-slide" + (i === 0 ? " active" : "");
+                slide.style.backgroundImage = `url('${url}')`;
+                bgContainer.appendChild(slide);
 
-    setStatus(`พร้อมแล้ว: ${slides.length} รูป`);
-    show(0);
-  }
+                const dot = document.createElement("div");
+                dot.className = "dot" + (i === 0 ? " active" : "");
+                dot.dataset.index = String(i);
+                dot.addEventListener("click", () => {
+                    showSlide(i);
+                    resetSlideshow();
+                });
+                dotsContainer.appendChild(dot);
+            });
 
-  function show(i){
-    if (!slides.length) return;
-    idx = (i + slides.length) % slides.length;
-    const s = slides[idx];
-    imgEl.src = s.raw;
-    capEl.textContent = `[${idx+1}/${slides.length}] assets/${s.folder}/${s.name}`;
-  }
+            slides = Array.from(document.querySelectorAll(".bg-slide"));
+            dots = Array.from(document.querySelectorAll(".dot"));
+            currentSlide = 0;
+        }
 
-  function next(){ show(idx + 1); }
-  function prev(){ show(idx - 1); }
+        function showSlide(index) {
+            if (!slides.length) return;
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (dots[i]) dots[i].classList.remove('active');
+            });
 
-  function toggleAuto(){
-    if (autoTimer){
-      clearInterval(autoTimer);
-      autoTimer = null;
-      toggleAutoBtn.textContent = "▶️ เล่นอัตโนมัติ";
-      return;
-    }
-    autoTimer = setInterval(next, 3000); // เปลี่ยนความเร็วได้
-    toggleAutoBtn.textContent = "⏸️ หยุดอัตโนมัติ";
-  }
+            const nextIndex = (index + slides.length) % slides.length;
+            slides[nextIndex].classList.add('active');
+            if (dots[nextIndex]) dots[nextIndex].classList.add('active');
+            currentSlide = nextIndex;
+        }
 
-  prevBtn.addEventListener("click", prev);
-  nextBtn.addEventListener("click", next);
-  reloadBtn.addEventListener("click", () => loadAll().catch(err => setStatus(err.message)));
-  toggleAutoBtn.addEventListener("click", toggleAuto);
+        function nextSlide() {
+            showSlide(currentSlide + 1);
+        }
 
-  // คีย์บอร์ด
-  window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight") next();
-    if (e.key === "ArrowLeft") prev();
-  });
+        function startSlideshow() {
+            if (slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(nextSlide, 4000);
+        }
 
-  // เริ่มโหลด
-  loadAll().catch(err => setStatus(err.message));
-})();
-</script>
-</body>
-</html>
+        function resetSlideshow() {
+            if (slideInterval) clearInterval(slideInterval);
+            startSlideshow();
+        }
+
+        // Language switcher
+        function setLanguage(lang) {
+            currentLang = lang;
+            langBtns.forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.lang-btn[data-lang="${lang}"]`)?.classList.add('active');
+
+            textElements.forEach(el => {
+                const text = el.getAttribute(`data-${lang}`);
+                if (text) el.textContent = text;
+            });
+        }
+
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+        });
+
+        // Next button behavior:
+        // - First click: switch to Concept Menu playlist (still same layout)
+        // - Second click: switch back to Cover playlist
+        async function goToNext() {
+            currentPlaylist = (currentPlaylist + 1) % playlists.length;
+            const folder = playlists[currentPlaylist].folder;
+            const urls = await fetchFolderImages(folder);
+            buildSlides(urls);
+            startSlideshow();
+        }
+
+        async function init() {
+            try {
+                // default: Cover playlist
+                const urls = await fetchFolderImages(playlists[currentPlaylist].folder);
+                buildSlides(urls);
+                startSlideshow();
+                setLanguage('en');
+            } catch (e) {
+                console.error(e);
+                // fallback: keep any existing markup (if any)
+            }
+        }
+
+        document.addEventListener('mousemove', resetSlideshow);
+        document.addEventListener('touchstart', resetSlideshow);
+
+        // Make goToNext available for inline onclick
+        window.goToNext = goToNext;
+
+        init();
+
+    </script>
+
+
+<div id="aoeWp0ejpanbWYa" style="color-scheme: initial; forced-color-adjust: initial; mask: initial; math-depth: initial; position: relative; position-anchor: initial; text-size-adjust: initial; appearance: initial; color: initial; font: initial; font-palette: initial; font-synthesis: initial; position-area: initial; text-orientation: initial; text-rendering: initial; text-spacing-trim: initial; -webkit-font-smoothing: initial; -webkit-locale: initial; -webkit-text-orientation: initial; -webkit-writing-mode: initial; writing-mode: initial; zoom: initial; accent-color: initial; place-content: initial; place-items: initial; place-self: initial; alignment-baseline: initial; anchor-name: initial; anchor-scope: initial; animation-composition: initial; animation: initial; app-region: initial; aspect-ratio: initial; backdrop-filter: initial; backface-visibility: initial; background: initial; background-blend-mode: initial; baseline-shift: initial; baseline-source: initial; block-size: initial; border-block: initial; border: initial; border-radius: initial; border-collapse: initial; border-end-end-radius: initial; border-end-start-radius: initial; border-inline: initial; border-start-end-radius: initial; border-start-start-radius: initial; inset: initial; box-decoration-break: initial; box-shadow: initial; box-sizing: initial; break-after: initial; break-before: initial; break-inside: initial; buffered-rendering: initial; caption-side: initial; caret-animation: initial; caret-color: initial; clear: initial; clip: initial; clip-path: initial; clip-rule: initial; color-interpolation: initial; color-interpolation-filters: initial; color-rendering: initial; columns: initial; column-fill: initial; gap: initial; column-rule: initial; column-span: initial; contain: initial; contain-intrinsic-block-size: initial; contain-intrinsic-size: initial; contain-intrinsic-inline-size: initial; container: initial; content: initial; content-visibility: initial; corner-shape: initial; corner-block-end-shape: initial; corner-block-start-shape: initial; counter-increment: initial; counter-reset: initial; counter-set: initial; cursor: initial; cx: initial; cy: initial; d: initial; display: initial; dominant-baseline: initial; dynamic-range-limit: initial; empty-cells: initial; field-sizing: initial; fill: initial; fill-opacity: initial; fill-rule: initial; filter: initial; flex: initial; flex-flow: initial; float: initial; flood-color: initial; flood-opacity: initial; grid: initial; grid-area: initial; height: initial; hyphenate-character: initial; hyphenate-limit-chars: initial; hyphens: initial; image-orientation: initial; image-rendering: initial; initial-letter: initial; inline-size: initial; inset-block: initial; inset-inline: initial; interest-delay: initial; interpolate-size: initial; isolation: initial; letter-spacing: initial; lighting-color: initial; line-break: initial; list-style: initial; margin-block: initial; margin: initial; margin-inline: initial; marker: initial; mask-type: initial; math-shift: initial; math-style: initial; max-block-size: initial; max-height: initial; max-inline-size: initial; max-width: initial; min-block-size: initial; min-height: initial; min-inline-size: initial; min-width: initial; mix-blend-mode: initial; object-fit: initial; object-position: initial; object-view-box: initial; offset: initial; opacity: initial; order: initial; orphans: initial; outline: initial; outline-offset: initial; overflow-anchor: initial; overflow-block: initial; overflow-clip-margin: initial; overflow-inline: initial; overflow-wrap: initial; overflow: initial; overlay: initial; overscroll-behavior-block: initial; overscroll-behavior-inline: initial; overscroll-behavior: initial; padding-block: initial; padding: initial; padding-inline: initial; page: initial; page-orientation: initial; paint-order: initial; perspective: initial; perspective-origin: initial; pointer-events: initial; position-try: initial; position-visibility: initial; print-color-adjust: initial; quotes: initial; r: initial; reading-flow: initial; reading-order: initial; resize: initial; rotate: initial; ruby-align: initial; ruby-position: initial; rx: initial; ry: initial; scale: initial; scroll-behavior: initial; scroll-initial-target: initial; scroll-margin-block: initial; scroll-margin: initial; scroll-margin-inline: initial; scroll-marker-group: initial; scroll-padding-block: initial; scroll-padding: initial; scroll-padding-inline: initial; scroll-snap-align: initial; scroll-snap-stop: initial; scroll-snap-type: initial; scroll-target-group: initial; scroll-timeline: initial; scrollbar-color: initial; scrollbar-gutter: initial; scrollbar-width: initial; shape-image-threshold: initial; shape-margin: initial; shape-outside: initial; shape-rendering: initial; size: initial; speak: initial; stop-color: initial; stop-opacity: initial; stroke: initial; stroke-dasharray: initial; stroke-dashoffset: initial; stroke-linecap: initial; stroke-linejoin: initial; stroke-miterlimit: initial; stroke-opacity: initial; stroke-width: initial; tab-size: initial; table-layout: initial; text-align: initial; text-align-last: initial; text-anchor: initial; text-autospace: initial; text-box: initial; text-combine-upright: initial; text-decoration: initial; text-decoration-skip-ink: initial; text-emphasis: initial; text-emphasis-position: initial; text-indent: initial; text-overflow: initial; text-shadow: initial; text-transform: initial; text-underline-offset: initial; text-underline-position: initial; text-wrap: initial; timeline-scope: initial; touch-action: initial; transform: initial; transform-box: initial; transform-origin: initial; transform-style: initial; transition: initial; translate: initial; user-select: initial; vector-effect: initial; vertical-align: initial; view-timeline: initial; view-transition-class: initial; view-transition-group: initial; view-transition-name: initial; visibility: initial; border-spacing: initial; -webkit-box-align: initial; -webkit-box-decoration-break: initial; -webkit-box-direction: initial; -webkit-box-flex: initial; -webkit-box-ordinal-group: initial; -webkit-box-orient: initial; -webkit-box-pack: initial; -webkit-box-reflect: initial; -webkit-line-break: initial; -webkit-line-clamp: initial; -webkit-mask-box-image: initial; -webkit-rtl-ordering: initial; -webkit-ruby-position: initial; -webkit-tap-highlight-color: initial; -webkit-text-combine: initial; -webkit-text-decorations-in-effect: initial; -webkit-text-fill-color: initial; -webkit-text-security: initial; -webkit-text-stroke: initial; -webkit-user-drag: initial; white-space-collapse: initial; widows: initial; width: initial; will-change: initial; word-break: initial; word-spacing: initial; x: initial; y: initial; z-index: 2147483647;"><div style="all: initial;"></div></div><div data-portal="true"><div><div class="m_9df02822 mantine-Modal-root" style="--modal-radius: calc(0.75rem * var(--mantine-scale)); --modal-y-offset: 5dvh; --mb-z-index: 201; --mb-padding: calc(1.25rem * var(--mantine-scale));"></div></div></div></body></html>
