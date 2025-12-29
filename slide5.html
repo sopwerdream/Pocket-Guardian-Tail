@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 5</title>
 
-  <!-- Global Zoom UI (Browser-like) -->
   <link rel="stylesheet" href="ui.css" />
 
   <style>
@@ -22,61 +21,43 @@
     html,body{height:100%;margin:0}
     body{
       font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
-      color:var(--fg);
-      background:#000;
-      overflow:hidden;
+      color:var(--fg); background:#000; overflow:hidden;
     }
 
-    /* Slide 5: subtle kinetic background */
     .bg{
       position:fixed; inset:0; z-index:-4;
       background:
-        radial-gradient(900px 520px at 20% 25%, rgba(120,255,180,.16), transparent 60%),
-        radial-gradient(900px 520px at 80% 28%, rgba(255,160,80,.16), transparent 60%),
+        radial-gradient(900px 520px at 22% 22%, rgba(120,255,180,.14), transparent 60%),
+        radial-gradient(900px 520px at 78% 28%, rgba(255,160,80,.14), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.86));
     }
 
     /* Language toggle */
     .lang{
-      position:fixed;
-      top:22px; right:22px;
-      display:flex; gap:8px;
-      z-index:1000;
+      position:fixed; top:22px; right:22px;
+      display:flex; gap:8px; z-index:1000;
     }
     .lang button{
       border:1px solid rgba(255,255,255,.25);
       background:rgba(0,0,0,.35);
-      color:#fff;
-      padding:6px 12px;
-      border-radius:8px;
-      font-weight:900;
-      cursor:pointer;
-      backdrop-filter:blur(10px);
-      opacity:.78;
+      color:#fff; padding:6px 12px; border-radius:8px;
+      font-weight:900; cursor:pointer;
+      backdrop-filter:blur(10px); opacity:.78;
     }
-    .lang button.active{
-      opacity:1;
-      background:var(--accent);
-      border-color:var(--accent);
-    }
+    .lang button.active{opacity:1;background:var(--accent);border-color:var(--accent)}
 
-    /* Layout */
     .wrap{
       height:100%;
       max-width:1200px;
       margin:0 auto;
       padding:70px 22px 22px;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-    .grid{
-      flex:1;
       display:grid;
-      grid-template-columns:1.05fr .95fr;
+      grid-template-columns: 1.12fr .88fr;
       gap:16px;
+      align-items:stretch;
       min-height:0;
     }
+
     .card{
       border:1px solid var(--line);
       background:var(--glass);
@@ -87,11 +68,15 @@
       min-height:0;
     }
 
-    /* Kicker */
+    /* Left: main diagram image */
+    .left{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
     .kicker{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
+      display:inline-flex; gap:8px; align-items:center;
       padding:8px 10px;
       border:1px solid rgba(255,255,255,.18);
       border-radius:999px;
@@ -104,95 +89,109 @@
     }
     .kicker b{color:#fff}
 
-    /* Left: Loop Diagram */
-    .left{
-      position:relative;
-      display:flex;
-      flex-direction:column;
+    .imgWrap{
+      padding:14px 18px 16px;
+      flex:1;
       min-height:0;
-    }
-    .loopArea{
-      padding:14px 18px 18px;
       display:flex;
       align-items:center;
       justify-content:center;
-      flex:1;
-      min-height:0;
     }
-
-    .loopGrid{
-      width:min(560px, 100%);
-      display:grid;
-      grid-template-columns: 1fr auto 1fr;
-      grid-template-rows: auto auto auto;
-      gap:12px 12px;
-      align-items:center;
-      justify-items:center;
-    }
-
-    .node{
+    .imgFrame{
       width:100%;
-      max-width:220px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(255,255,255,.06);
-      border-radius:14px;
+      height:100%;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
       overflow:hidden;
+      background:rgba(0,0,0,.22);
       box-shadow: 0 18px 50px rgba(0,0,0,.28);
+      position:relative;
     }
-    .node img{
+    .imgFrame img{
       width:100%;
-      height:120px;
-      object-fit:cover;
+      height:100%;
+      object-fit:contain; /* สำคัญ: ไดอะแกรมอย่าโดนครอป */
       display:block;
       opacity:0;
-      transform: scale(1.02);
-      transition: opacity .45s ease, transform .45s ease;
+      transform:scale(1.01);
+      transition:opacity .45s ease, transform .45s ease;
     }
-    .node img.ready{ opacity:1; transform: scale(1); }
-    .node .cap{
-      padding:10px 10px 9px;
+    .imgFrame img.ready{opacity:1; transform:scale(1)}
+    .imgLabel{
+      position:absolute;
+      left:12px; bottom:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+
+    /* Bottom horizontal loop strip (the only added component) */
+    .loopStrip{
+      margin: 0 18px 18px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:12px 12px 10px;
+    }
+    .stripRow{
       display:flex;
       align-items:center;
-      justify-content:space-between;
-      gap:10px;
-    }
-    .node .cap b{
-      font-size:13px;
-      letter-spacing:.02em;
-    }
-    .node .cap span{
-      font-size:12px;
-      color: rgba(255,255,255,.72);
-      white-space:nowrap;
-    }
-
-    .arrow{
-      color: rgba(255,255,255,.62);
-      font-weight:900;
-      letter-spacing:.06em;
-      font-size:16px;
-      user-select:none;
-      text-align:center;
-      padding:6px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.18);
-      backdrop-filter: blur(10px);
-    }
-
-    .loopHint{
-      margin: 0 18px 16px;
-      color: var(--muted);
-      font-size: 12px;
-      border-top:1px solid rgba(255,255,255,.14);
-      padding-top:12px;
-      display:flex;
       justify-content:space-between;
       gap:10px;
       flex-wrap:wrap;
+      margin-bottom:10px;
+    }
+    .stripRow h3{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      opacity:.92;
+    }
+    .stripRow .mini{
+      color:var(--muted);
+      font-size:12px;
+      user-select:none;
     }
 
-    /* Right: Explanation */
+    .flow{
+      display:flex;
+      align-items:stretch;
+      gap:8px;
+      overflow:auto;
+      padding-bottom:4px;
+    }
+    .step{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      border-radius:999px;
+      padding:8px 10px;
+      backdrop-filter: blur(10px);
+    }
+    .step b{font-size:12px; letter-spacing:.02em}
+    .step span{font-size:12px; color:rgba(255,255,255,.78)}
+    .arr{
+      flex:0 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:0 4px;
+      color:rgba(255,255,255,.65);
+      font-weight:900;
+      user-select:none;
+    }
+
+    /* Right: explanation */
     .right{
       padding:18px 18px 16px;
       display:flex;
@@ -212,7 +211,6 @@
       line-height: 1.5;
       margin-top:-6px;
     }
-
     .explain{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
@@ -235,18 +233,9 @@
     }
     li{ margin: 7px 0; }
 
-    /* minimal motion on language switch */
-    .fade{
-      transition: opacity .22s ease, transform .22s ease;
-      opacity:1;
-      transform: translateY(0);
-    }
-    .fade.out{
-      opacity:0;
-      transform: translateY(8px);
-    }
+    .fade{transition:opacity .22s ease, transform .22s ease;opacity:1;transform:translateY(0)}
+    .fade.out{opacity:0;transform:translateY(8px)}
 
-    /* Navigation */
     .nav{
       margin-top:auto;
       display:flex;
@@ -256,11 +245,7 @@
       padding-top:14px;
       border-top:1px solid rgba(255,255,255,.14);
     }
-    .navHint{
-      color:var(--muted);
-      font-size:12px;
-      user-select:none;
-    }
+    .navHint{color:var(--muted);font-size:12px;user-select:none}
     .btn{
       border:1px solid rgba(255,255,255,.25);
       background:var(--btn);
@@ -276,15 +261,11 @@
       gap:8px;
     }
     .btn:hover{background:var(--btnHover)}
-    .btn.primary{
-      background:var(--accent);
-      border-color:var(--accent);
-    }
+    .btn.primary{background:var(--accent);border-color:var(--accent)}
 
     @media (max-width: 980px){
-      .wrap{ padding-top:64px; }
-      .grid{ grid-template-columns:1fr; }
-      .node img{ height:140px; }
+      .wrap{ padding-top:64px; grid-template-columns:1fr; }
+      .imgWrap{ min-height: 44vh; }
     }
   </style>
 </head>
@@ -293,91 +274,67 @@
   <div class="bg"></div>
 
   <div id="pageRoot">
-    <!-- Language -->
     <div class="lang">
       <button id="btnEN" class="active" type="button">EN</button>
       <button id="btnTH" type="button">TH</button>
     </div>
 
     <div class="wrap">
-      <div class="grid">
-        <!-- Left: Loop diagram -->
-        <section class="card left">
-          <div class="kicker">Slide 5 / <b>Core Gameplay Loop</b></div>
+      <!-- LEFT -->
+      <section class="card left">
+        <div class="kicker">Slide 5 / <b>Core Gameplay Loop</b></div>
 
-          <div class="loopArea">
-            <!-- 5 nodes arranged with arrows (Explore → Engage → Battle → Recover → Grow) -->
-            <div class="loopGrid">
-              <!-- row 1 -->
-              <div class="node">
-                <img id="imgExplore" alt="Explore" />
-                <div class="cap"><b id="labExplore">Explore</b><span>01</span></div>
-              </div>
+        <div class="imgWrap">
+          <div class="imgFrame">
+            <img id="diagramImg" alt="Core Gameplay Loop Diagram" />
+            <div class="imgLabel" id="imgLabel">Loading diagram…</div>
+          </div>
+        </div>
 
-              <div class="arrow">→</div>
-
-              <div class="node">
-                <img id="imgEngage" alt="Engage" />
-                <div class="cap"><b id="labEngage">Engage</b><span>02</span></div>
-              </div>
-
-              <!-- row 2 -->
-              <div class="arrow" style="justify-self:end;">↘</div>
-              <div></div>
-              <div class="arrow" style="justify-self:start;">↙</div>
-
-              <!-- row 3 -->
-              <div class="node">
-                <img id="imgGrow" alt="Grow" />
-                <div class="cap"><b id="labGrow">Grow</b><span>05</span></div>
-              </div>
-
-              <div class="arrow">←</div>
-
-              <div class="node">
-                <img id="imgRecover" alt="Recover" />
-                <div class="cap"><b id="labRecover">Recover</b><span>04</span></div>
-              </div>
-
-              <!-- middle overlay node (Battle) – visually central -->
-              <div class="node" style="grid-column: 2; grid-row: 2; width:220px;">
-                <img id="imgBattle" alt="Battle" />
-                <div class="cap"><b id="labBattle">Battle</b><span>03</span></div>
-              </div>
-            </div>
+        <!-- Horizontal Loop Strip (NEW) -->
+        <div class="loopStrip">
+          <div class="stripRow">
+            <h3 id="stripHead">Gameplay Loop</h3>
+            <div class="mini" id="stripMini">Horizontal diagram (TH/EN)</div>
           </div>
 
-          <div class="loopHint">
-            <span id="loopLine">Explore → Engage → Battle → Recover → Grow</span>
-            <span id="loopSource">Source: assets/game loop</span>
+          <div class="flow" aria-label="Horizontal gameplay loop">
+            <div class="step"><b id="s1t">Explore</b><span id="s1d">Scout & choose route</span></div>
+            <div class="arr">→</div>
+            <div class="step"><b id="s2t">Engage</b><span id="s2d">Meet events</span></div>
+            <div class="arr">→</div>
+            <div class="step"><b id="s3t">Battle</b><span id="s3d">Plan turns</span></div>
+            <div class="arr">→</div>
+            <div class="step"><b id="s4t">Recover</b><span id="s4d">Heal & manage</span></div>
+            <div class="arr">→</div>
+            <div class="step"><b id="s5t">Grow</b><span id="s5d">Upgrade & evolve</span></div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- Right: Explanation -->
-        <aside class="card right">
-          <div id="textBlock" class="fade">
-            <h1 id="title">Core Gameplay Loop</h1>
-            <div class="sub" id="subtitle">Decisions → Consequences → Progression</div>
+      <!-- RIGHT -->
+      <aside class="card right">
+        <div id="textBlock" class="fade">
+          <h1 id="title">Core Gameplay Loop</h1>
+          <div class="sub" id="subtitle">Decisions → Consequences → Progression</div>
 
-            <div class="explain">
-              <h3 id="headExplain">Explanation</h3>
-              <ul id="listExplain"></ul>
-            </div>
+          <div class="explain">
+            <h3 id="headExplain">Explanation</h3>
+            <ul id="listExplain"></ul>
           </div>
+        </div>
 
-          <div class="nav">
-            <div class="navHint">Back → Slide 4 • Next → Slide 6</div>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <button class="btn" id="backBtn" type="button">⬅️ Back</button>
-              <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
-            </div>
+        <div class="nav">
+          <div class="navHint">Back → Slide 4 • Next → Slide 6</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+            <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
           </div>
-        </aside>
-      </div>
+        </div>
+      </aside>
     </div>
   </div>
 
-  <!-- Global Zoom -->
   <script src="ui.js"></script>
 
   <script>
@@ -385,67 +342,76 @@
     const REPO="Pocket-Guardian-Tail";
     const BRANCH="main";
 
-    const LOOP_FOLDER="assets/game loop"; // ใช้ภาพจากโฟลเดอร์นี้
+    const LOOP_FOLDER="assets/game loop";
     const BACK_PAGE="slide4.html";
     const NEXT_PAGE="slide6.html";
 
-    const COPY = {
+    const COPY={
       th:{
         title:"Core Gameplay Loop",
         subtitle:"การตัดสินใจ → ผลลัพธ์ → การเติบโต",
-        head:"คำอธิบาย (เน้นการตัดสินใจของผู้เล่น)",
-        labels:{Explore:"สำรวจ", Engage:"เผชิญหน้า", Battle:"ต่อสู้", Recover:"ฟื้นฟู", Grow:"เติบโต"},
+        headExplain:"คำอธิบาย",
         bullets:[
-          "Explore: เลือกเส้นทาง/ทรัพยากร/จุดเสี่ยง เพื่อเตรียมพร้อมก่อนเจอเหตุการณ์",
-          "Engage: เจอศัตรูหรือเหตุการณ์ ผู้เล่นเลือกแนวทางรับมือ (หลบ/คุย/เริ่มสู้) และจัดทีม",
-          "Battle: วางแผนผลัดตา ใช้สกิล ตำแหน่ง และ synergy ให้ชนะด้วยการคิดมากกว่าพลังดิบ",
-          "Recover: ฟื้นพลัง ซ่อมแซม/รักษา จัดการทรัพยากร และตัดสินใจว่าจะไปต่อหรือถอย",
-          "Grow: อัปเกรด/ปลดล็อกความสามารถ ปรับ build และความสัมพันธ์ เพื่อพร้อมรับความท้าทายใหม่"
+          "Explore: สำรวจพื้นที่ เลือกเส้นทางและเก็บทรัพยากร เพื่อเตรียมรับความเสี่ยง",
+          "Engage: เผชิญเหตุการณ์/ศัตรู ผู้เล่นตัดสินใจวิธีรับมือและจัดทีม",
+          "Battle: ต่อสู้ผลัดตา วางตำแหน่ง ใช้สกิลและ synergy ให้ชนะด้วยการคิด",
+          "Recover: ฟื้นฟู รักษา/ซ่อมแซม จัดการทรัพยากร และเลือกว่าจะไปต่อหรือถอย",
+          "Grow: อัปเกรด ปลดล็อกความสามารถ ปรับ build เพื่อพร้อมรับด่านถัดไป"
         ],
-        loopLine:"สำรวจ → เผชิญหน้า → ต่อสู้ → ฟื้นฟู → เติบโต",
-        source:"Source: assets/game loop"
+        stripHead:"แถบเกมลูป",
+        stripMini:"แนวนอน (เปลี่ยนภาษาได้)",
+        strip:{
+          s1t:"สำรวจ", s1d:"เลือกเส้นทาง/ทรัพยากร",
+          s2t:"เผชิญหน้า", s2d:"เหตุการณ์/ศัตรู",
+          s3t:"ต่อสู้", s3d:"วางแผนผลัดตา",
+          s4t:"ฟื้นฟู", s4d:"รักษา/จัดการทรัพยากร",
+          s5t:"เติบโต", s5d:"อัปเกรด/ปรับ build"
+        },
+        label:(name)=>`Diagram • ${name}`
       },
       en:{
         title:"Core Gameplay Loop",
         subtitle:"Decisions → Consequences → Progression",
-        head:"Explanation",
-        labels:{Explore:"Explore", Engage:"Engage", Battle:"Battle", Recover:"Recover", Grow:"Grow"},
+        headExplain:"Explanation",
         bullets:[
-          "Explore: choose routes, resources, and risk points to set up your run.",
-          "Engage: encounter threats/events and decide how to respond; prepare the team.",
-          "Battle: turn-based tactics—skills, positioning, and synergy win fights.",
-          "Recover: heal, repair, manage resources, and decide push forward or retreat.",
-          "Grow: upgrade abilities, refine builds, and strengthen bonds for the next challenges."
+          "Explore: scout areas, choose routes, and gather resources.",
+          "Engage: face events/enemies and decide your response; set up the team.",
+          "Battle: turn-based tactics—positioning, skills, and synergy decide outcomes.",
+          "Recover: heal/repair, manage resources, and choose push forward or retreat.",
+          "Grow: upgrade abilities, refine builds, and prepare for the next challenge."
         ],
-        loopLine:"Explore → Engage → Battle → Recover → Grow",
-        source:"Source: assets/game loop"
+        stripHead:"Gameplay Loop",
+        stripMini:"Horizontal strip (bilingual)",
+        strip:{
+          s1t:"Explore", s1d:"Routes & resources",
+          s2t:"Engage", s2d:"Events & threats",
+          s3t:"Battle", s3d:"Turn tactics",
+          s4t:"Recover", s4d:"Heal & manage",
+          s5t:"Grow", s5d:"Upgrade & evolve"
+        },
+        label:(name)=>`Diagram • ${name}`
       }
     };
 
-    // UI refs
-    const btnEN = document.getElementById("btnEN");
-    const btnTH = document.getElementById("btnTH");
-    const textBlock = document.getElementById("textBlock");
-    const titleEl = document.getElementById("title");
-    const subEl = document.getElementById("subtitle");
-    const headEl = document.getElementById("headExplain");
-    const listEl = document.getElementById("listExplain");
-    const loopLine = document.getElementById("loopLine");
-    const loopSource = document.getElementById("loopSource");
+    // Refs
+    const btnEN=document.getElementById("btnEN");
+    const btnTH=document.getElementById("btnTH");
+    const textBlock=document.getElementById("textBlock");
+    const titleEl=document.getElementById("title");
+    const subtitleEl=document.getElementById("subtitle");
+    const headExplain=document.getElementById("headExplain");
+    const listExplain=document.getElementById("listExplain");
 
-    // labels on nodes
-    const labExplore = document.getElementById("labExplore");
-    const labEngage = document.getElementById("labEngage");
-    const labBattle = document.getElementById("labBattle");
-    const labRecover = document.getElementById("labRecover");
-    const labGrow = document.getElementById("labGrow");
+    const stripHead=document.getElementById("stripHead");
+    const stripMini=document.getElementById("stripMini");
+    const s1t=document.getElementById("s1t"), s1d=document.getElementById("s1d");
+    const s2t=document.getElementById("s2t"), s2d=document.getElementById("s2d");
+    const s3t=document.getElementById("s3t"), s3d=document.getElementById("s3d");
+    const s4t=document.getElementById("s4t"), s4d=document.getElementById("s4d");
+    const s5t=document.getElementById("s5t"), s5d=document.getElementById("s5d");
 
-    // images
-    const imgExplore = document.getElementById("imgExplore");
-    const imgEngage = document.getElementById("imgEngage");
-    const imgBattle = document.getElementById("imgBattle");
-    const imgRecover = document.getElementById("imgRecover");
-    const imgGrow = document.getElementById("imgGrow");
+    const diagramImg=document.getElementById("diagramImg");
+    const imgLabel=document.getElementById("imgLabel");
 
     document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
     document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
@@ -454,6 +420,42 @@
       if(e.key==="ArrowLeft") location.href=BACK_PAGE;
       if(e.key==="ArrowRight") location.href=NEXT_PAGE;
     });
+
+    function renderBullets(arr){
+      listExplain.innerHTML = arr.map(t=>`<li>${t}</li>`).join("");
+    }
+
+    function setLang(lang){
+      textBlock.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+        titleEl.textContent=c.title;
+        subtitleEl.textContent=c.subtitle;
+        headExplain.textContent=c.headExplain;
+        renderBullets(c.bullets);
+
+        stripHead.textContent=c.stripHead;
+        stripMini.textContent=c.stripMini;
+        s1t.textContent=c.strip.s1t; s1d.textContent=c.strip.s1d;
+        s2t.textContent=c.strip.s2t; s2d.textContent=c.strip.s2d;
+        s3t.textContent=c.strip.s3t; s3d.textContent=c.strip.s3d;
+        s4t.textContent=c.strip.s4t; s4d.textContent=c.strip.s4d;
+        s5t.textContent=c.strip.s5t; s5d.textContent=c.strip.s5d;
+
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+
+        if(diagramImg.dataset.filename){
+          imgLabel.textContent=c.label(diagramImg.dataset.filename);
+        }
+
+        textBlock.classList.remove("out");
+      },160);
+    }
+
+    btnEN.onclick=()=>setLang("en");
+    btnTH.onclick=()=>setLang("th");
+    setLang("th");
 
     function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
 
@@ -464,76 +466,28 @@
       return await res.json();
     }
 
-    function pickByKeyword(images, keywords){
-      const lower = images.map(x=>({ ...x, _l:x.name.toLowerCase() }));
-      for(const k of keywords){
-        const hit = lower.find(x=>x._l.includes(k));
-        if(hit) return hit;
-      }
-      return null;
+    function pickDiagram(files){
+      const imgs = files.filter(x=>x.type==="file" && isImage(x.name))
+                        .map(x=>({name:x.name, url:x.download_url, l:x.name.toLowerCase()}));
+      if(!imgs.length) return null;
+
+      // Prefer a single combined loop diagram like your example
+      return imgs.find(x=>x.l.includes("diagram")) ||
+             imgs.find(x=>x.l.includes("loop")) ||
+             imgs[0];
     }
 
-    function setImg(el, url){
-      el.onload = ()=>el.classList.add("ready");
-      el.src = url;
-    }
-
-    async function loadLoopImages(){
+    (async ()=>{
       const files = await gh(LOOP_FOLDER);
-      const images = files
-        .filter(x=>x.type==="file" && isImage(x.name))
-        .map(x=>({ name:x.name, url:x.download_url }));
+      const pick = pickDiagram(files);
+      if(!pick) throw new Error(`No images found in ${LOOP_FOLDER}`);
 
-      if(!images.length) throw new Error(`No images in ${LOOP_FOLDER}`);
-
-      // Try to match common names first; fallback to sequential
-      const explore = pickByKeyword(images, ["explore", "01", "step1"]) || images[0];
-      const engage  = pickByKeyword(images, ["engage", "02", "step2"]) || images[1] || images[0];
-      const battle  = pickByKeyword(images, ["battle", "03", "step3"]) || images[2] || images[0];
-      const recover = pickByKeyword(images, ["recover", "04", "step4"]) || images[3] || images[0];
-      const grow    = pickByKeyword(images, ["grow", "05", "step5"]) || images[4] || images[0];
-
-      setImg(imgExplore, explore.url);
-      setImg(imgEngage,  engage.url);
-      setImg(imgBattle,  battle.url);
-      setImg(imgRecover, recover.url);
-      setImg(imgGrow,    grow.url);
-    }
-
-    function renderBullets(items){
-      listEl.innerHTML = items.map(t=>`<li>${t}</li>`).join("");
-    }
-
-    function setLang(lang){
-      textBlock.classList.add("out");
-      setTimeout(()=>{
-        const c = COPY[lang];
-        titleEl.textContent = c.title;
-        subEl.textContent = c.subtitle;
-        headEl.textContent = c.head;
-        renderBullets(c.bullets);
-
-        labExplore.textContent = c.labels.Explore;
-        labEngage.textContent  = c.labels.Engage;
-        labBattle.textContent  = c.labels.Battle;
-        labRecover.textContent = c.labels.Recover;
-        labGrow.textContent    = c.labels.Grow;
-
-        loopLine.textContent = c.loopLine;
-        loopSource.textContent = c.source;
-
-        btnEN.classList.toggle("active", lang==="en");
-        btnTH.classList.toggle("active", lang==="th");
-        textBlock.classList.remove("out");
-      }, 160);
-    }
-
-    btnEN.onclick=()=>setLang("en");
-    btnTH.onclick=()=>setLang("th");
-    setLang("th");
-
-    loadLoopImages().catch(err=>{
-      loopSource.textContent = err.message;
+      diagramImg.onload=()=>diagramImg.classList.add("ready");
+      diagramImg.src=pick.url;
+      diagramImg.dataset.filename=pick.name;
+      imgLabel.textContent=COPY.th.label(pick.name);
+    })().catch(err=>{
+      imgLabel.textContent=err.message;
       console.error(err);
     });
   </script>
