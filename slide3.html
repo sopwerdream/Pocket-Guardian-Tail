@@ -4,464 +4,227 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 3</title>
-
+  <link rel="stylesheet" href="ui.css" />
   <style>
     :root{
-      --fg:#fff;
-      --muted: rgba(255,255,255,.78);
-      --line: rgba(255,255,255,.18);
-      --card: rgba(0,0,0,.38);
-      --btn: rgba(0,0,0,.35);
-      --btnHover: rgba(0,0,0,.55);
-      --accent: #e08a2e;
+      --fg:#fff; --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.18); --glass:rgba(0,0,0,.38);
+      --btn:rgba(0,0,0,.35); --btnHover:rgba(0,0,0,.55);
+      --accent:#e08a2e;
     }
     *{box-sizing:border-box}
-    html,body{height:100%; margin:0;}
+    html,body{height:100%;margin:0}
     body{
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
-      color:var(--fg);
-      background:#000;
-      overflow:hidden;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+      color:var(--fg); background:#000; overflow:hidden;
     }
-
-    /* Background: static dark (keeps focus) */
-    .bg{
-      position:fixed; inset:0;
+    .bg{position:fixed;inset:0;z-index:-3;
       background:
         radial-gradient(900px 520px at 15% 20%, rgba(40,80,255,.18), transparent 60%),
         radial-gradient(900px 520px at 85% 25%, rgba(255,120,40,.14), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.78));
-      z-index:-3;
-    }
-    .grain{
-      position:fixed; inset:0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      opacity:.28;
-      pointer-events:none;
-      z-index:-2;
-    }
-
-    /* Top language toggle */
-    .lang{
-      position:fixed;
-      top:22px; right:22px;
-      display:flex; gap:8px;
-      z-index:10;
-    }
-    .lang button{
-      border:1px solid rgba(255,255,255,.25);
-      background: rgba(0,0,0,.35);
-      color:#fff;
-      padding:6px 12px;
-      border-radius:8px;
-      font-weight:900;
-      cursor:pointer;
-      backdrop-filter: blur(10px);
-      opacity:.75;
-    }
-    .lang button.active{
-      opacity:1;
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    .wrap{
-      height:100%;
-      max-width:1200px;
-      margin:0 auto;
-      padding:70px 22px 22px;
-      display:flex;
-      flex-direction:column;
-      gap:16px;
-    }
-
-    /* Two-column layout */
-    .grid{
-      flex:1;
-      display:grid;
-      grid-template-columns: 1.05fr .95fr;
-      gap:16px;
-      align-items:stretch;
-      min-height:0;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      background: var(--card);
-      border-radius:16px;
-      backdrop-filter: blur(14px);
-      overflow:hidden;
-      box-shadow: 0 30px 80px rgba(0,0,0,.35);
-      min-height:0;
-    }
-
-    /* Left: text */
-    .left{
-      padding:20px 20px 16px;
-      display:flex;
-      flex-direction:column;
-      gap:14px;
-      min-height:0;
-    }
-    .kicker{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 10px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:999px;
-      background: rgba(0,0,0,.25);
-      width: fit-content;
-      color: var(--muted);
-      font-size:12px;
-    }
-    .kicker b{ color:#fff; }
-    h1{
-      margin:0;
-      font-size: clamp(26px, 3.2vw, 38px);
-      line-height: 1.12;
-      letter-spacing:.2px;
-    }
-
-    .cols{
-      display:grid;
-      grid-template-columns: 1fr 1fr;
-      gap:12px;
-      min-height:0;
-    }
-    .section{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      border-radius:14px;
-      padding:12px 12px 10px;
-      min-height:0;
-    }
-    .section h3{
-      margin:0 0 8px 0;
-      font-size: 13px;
-      letter-spacing:.04em;
-      text-transform: uppercase;
-      opacity:.92;
-    }
-    ul{
-      margin:0;
-      padding-left:18px;
-      color: rgba(255,255,255,.84);
-      font-size: 14px;
-      line-height: 1.55;
-    }
-    li{ margin: 6px 0; }
-    .note{
-      margin-top:auto;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.5;
-      border-top: 1px solid rgba(255,255,255,.14);
-      padding-top: 12px;
-    }
-
-    /* Right: static image */
-    .right{
-      position:relative;
-      background: rgba(0,0,0,.25);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-    }
-    .right img{
-      width:100%;
-      height:100%;
-      object-fit: cover;
-      display:block;
-      opacity:0;
-      transform: scale(1.02);
-      transition: opacity .45s ease, transform .45s ease;
-    }
-    .right img.ready{
-      opacity:1;
-      transform: scale(1);
-    }
-    .right .label{
-      position:absolute;
-      left:12px; bottom:12px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.35);
-      font-size: 12px;
-      color: rgba(255,255,255,.86);
-      backdrop-filter: blur(10px);
-      max-width: calc(100% - 24px);
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-    }
-
-    /* Minimal motion: fade + slide */
-    .anim{
-      transition: opacity .22s ease, transform .22s ease;
-      opacity:1;
-      transform: translateY(0);
-    }
-    .anim.out{
-      opacity:0;
-      transform: translateY(8px);
-    }
-
-    /* Bottom navigation */
-    .nav{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding: 10px 2px 0;
-    }
-    .navHint{
-      color: var(--muted);
-      font-size: 12px;
-      user-select:none;
-    }
-    .btn{
-      border:1px solid rgba(255,255,255,.25);
-      background: var(--btn);
-      color:#fff;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:900;
-      cursor:pointer;
-      letter-spacing:.2px;
-      backdrop-filter: blur(10px);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-    }
-    .btn:hover{ background: var(--btnHover); }
-    .btn.primary{
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    @media (max-width: 980px){
-      .grid{ grid-template-columns: 1fr; }
-      .cols{ grid-template-columns: 1fr; }
-      .wrap{ padding-top: 64px; }
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.80));}
+    .lang{position:fixed;top:22px;right:22px;display:flex;gap:8px;z-index:1000}
+    .lang button{border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.35);color:#fff;
+      padding:6px 12px;border-radius:8px;font-weight:900;cursor:pointer;backdrop-filter:blur(10px);opacity:.78}
+    .lang button.active{opacity:1;background:var(--accent);border-color:var(--accent)}
+    .wrap{height:100%;max-width:1200px;margin:0 auto;padding:70px 22px 22px;display:flex;flex-direction:column;gap:16px}
+    .grid{flex:1;display:grid;grid-template-columns:1.05fr .95fr;gap:16px;align-items:stretch;min-height:0}
+    .card{border:1px solid var(--line);background:var(--glass);border-radius:16px;backdrop-filter:blur(14px);
+      box-shadow:0 30px 80px rgba(0,0,0,.35);overflow:hidden;min-height:0}
+    .left{padding:20px 20px 16px;display:flex;flex-direction:column;gap:14px;min-height:0}
+    .kicker{display:inline-flex;gap:8px;align-items:center;padding:8px 10px;border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;background:rgba(0,0,0,.25);width:fit-content;color:var(--muted);font-size:12px}
+    .kicker b{color:#fff}
+    h1{margin:0;font-size:clamp(26px,3.2vw,38px);line-height:1.12;letter-spacing:.2px}
+    .cols{display:grid;grid-template-columns:1fr 1fr;gap:12px;min-height:0}
+    .section{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:14px;padding:12px 12px 10px;min-height:0}
+    .section h3{margin:0 0 8px 0;font-size:13px;letter-spacing:.04em;text-transform:uppercase;opacity:.92}
+    ul{margin:0;padding-left:18px;color:rgba(255,255,255,.84);font-size:14px;line-height:1.55}
+    li{margin:6px 0}
+    .anim{transition:opacity .22s ease,transform .22s ease;opacity:1;transform:translateY(0)}
+    .anim.out{opacity:0;transform:translateY(8px)}
+    .right{position:relative;background:rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
+    .right img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transform:scale(1.02);
+      transition:opacity .45s ease,transform .45s ease}
+    .right img.ready{opacity:1;transform:scale(1)}
+    .right .label{position:absolute;left:12px;bottom:12px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);font-size:12px;color:rgba(255,255,255,.86);backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 2px 0}
+    .navHint{color:var(--muted);font-size:12px;user-select:none}
+    .btn{border:1px solid rgba(255,255,255,.25);background:var(--btn);color:#fff;padding:10px 14px;border-radius:10px;
+      font-weight:900;cursor:pointer;letter-spacing:.2px;backdrop-filter:blur(10px);display:inline-flex;align-items:center;gap:8px}
+    .btn:hover{background:var(--btnHover)}
+    .btn.primary{background:var(--accent);border-color:var(--accent)}
+    @media (max-width:980px){
+      .grid{grid-template-columns:1fr}
+      .cols{grid-template-columns:1fr}
+      .wrap{padding-top:64px}
+      .right{height:40vh}
     }
   </style>
 </head>
-
 <body>
-  <div class="bg"></div>
-  <div class="grain"></div>
+  <div id="pageRoot">
+    <div class="bg"></div>
 
-  <!-- Language toggle -->
-  <div class="lang">
-    <button id="btnEN" class="active" type="button">ENGLISH</button>
-    <button id="btnTH" type="button">ไทย</button>
-  </div>
-
-  <div class="wrap">
-    <div class="grid">
-      <!-- Left: text -->
-      <section class="card left">
-        <div class="kicker">Slide 3 / <b>Problem & Opportunity</b></div>
-
-        <div id="textBlock" class="anim">
-          <h1 id="title">Problem & Opportunity</h1>
-
-          <div class="cols">
-            <div class="section">
-              <h3 id="pHead">Problem</h3>
-              <ul id="pList"></ul>
-            </div>
-
-            <div class="section">
-              <h3 id="oHead">Opportunity</h3>
-              <ul id="oList"></ul>
-            </div>
-          </div>
-        </div>
-
-        <div class="note" id="note">
-          Minimal motion: fade + slide only. Image stays static.
-        </div>
-      </section>
-
-      <!-- Right: one static image -->
-      <aside class="card right">
-        <img id="arenaImg" alt="Battle Arena map for battle scenes" />
-        <div class="label" id="imgLabel">Loading “Battle Arena map”…</div>
-      </aside>
+    <div class="lang">
+      <button id="btnEN" class="active" type="button">EN</button>
+      <button id="btnTH" type="button">TH</button>
     </div>
 
-    <!-- Bottom navigation -->
-    <div class="nav">
-      <div class="navHint">Back → Slide 2 • Next → Slide 4</div>
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button class="btn" id="backBtn" type="button">⬅️ Back</button>
-        <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+    <div class="wrap">
+      <div class="grid">
+        <section class="card left">
+          <div class="kicker">Slide 3 / <b>Problem & Opportunity</b></div>
+
+          <div id="textBlock" class="anim">
+            <h1 id="title">Problem & Opportunity</h1>
+            <div class="cols">
+              <div class="section">
+                <h3 id="pHead">Problem</h3>
+                <ul id="pList"></ul>
+              </div>
+              <div class="section">
+                <h3 id="oHead">Opportunity</h3>
+                <ul id="oList"></ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="card right">
+          <img id="arenaImg" alt="Battle Arena map for battle scenes" />
+          <div class="label" id="imgLabel">Loading “Battle Arena map”…</div>
+        </aside>
+      </div>
+
+      <div class="nav">
+        <div class="navHint">Back → Slide 2 • Next → Slide 4</div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+          <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+        </div>
       </div>
     </div>
   </div>
 
+  <script src="ui.js"></script>
   <script>
-    // ===== Repo config =====
-    const OWNER  = "sopwerdream";
-    const REPO   = "Pocket-Guardian-Tail";
-    const BRANCH = "main";
+    const OWNER="sopwerdream", REPO="Pocket-Guardian-Tail", BRANCH="main";
+    const BACK_PAGE="slide2.html", NEXT_PAGE="slide4.html";
 
-    // Navigation
-    const BACK_PAGE = "slide2.html";
-    const NEXT_PAGE = "slide4.html";
-
-    // Language copy
-    const COPY = {
-      th: {
-        title: "Problem & Opportunity",
-        pHead: "Problem",
-        oHead: "Opportunity",
-        problems: [
+    const COPY={
+      th:{
+        title:"Problem & Opportunity",
+        pHead:"Problem",
+        oHead:"Opportunity",
+        problems:[
           "เกม Tactical RPG ส่วนใหญ่เข้าถึงยาก",
           "เกมน่ารักมักขาดความลึกเชิงกลยุทธ์",
           "ผู้เล่นต้องการเกมที่คิดแต่ไม่เครียด",
         ],
-        opportunities: [
+        opportunities:[
           "ผสมภาพเข้าถึงง่ายกับ Tactical จริง",
           "Exploration + Battle ช่วยให้เรียนรู้เป็นขั้น",
           "เหมาะกับตลาด Indie PC Premium",
         ],
-        note: "แอนิเมชันน้อย ๆ: fade + slide เท่านั้น • ภาพนิ่งไม่ขยับ",
-        imgLabel: (name) => `Battle Arena • ${name}`,
+        imgLabel:(name)=>`Battle Arena • ${name}`,
       },
-      en: {
-        title: "Problem & Opportunity",
-        pHead: "Problem",
-        oHead: "Opportunity",
-        problems: [
+      en:{
+        title:"Problem & Opportunity",
+        pHead:"Problem",
+        oHead:"Opportunity",
+        problems:[
           "Many tactical RPGs are complex.",
           "Casual-looking games often lack depth.",
           "Players want thoughtful but accessible gameplay.",
         ],
-        opportunities: [
+        opportunities:[
           "Blends accessible visuals with deep tactics.",
           "Exploration and turn-based combat support gradual learning.",
           "Strong fit for premium indie PC market.",
         ],
-        note: "Minimal motion: fade + slide only • Image stays static",
-        imgLabel: (name) => `Battle Arena • ${name}`,
+        imgLabel:(name)=>`Battle Arena • ${name}`,
       }
     };
 
-    // ===== Elements =====
-    const btnEN = document.getElementById("btnEN");
-    const btnTH = document.getElementById("btnTH");
+    const btnEN=document.getElementById("btnEN");
+    const btnTH=document.getElementById("btnTH");
+    const textBlock=document.getElementById("textBlock");
+    const titleEl=document.getElementById("title");
+    const pHeadEl=document.getElementById("pHead");
+    const oHeadEl=document.getElementById("oHead");
+    const pListEl=document.getElementById("pList");
+    const oListEl=document.getElementById("oList");
 
-    const textBlock = document.getElementById("textBlock");
-    const titleEl = document.getElementById("title");
-    const pHeadEl = document.getElementById("pHead");
-    const oHeadEl = document.getElementById("oHead");
-    const pListEl = document.getElementById("pList");
-    const oListEl = document.getElementById("oList");
-    const noteEl  = document.getElementById("note");
+    const arenaImg=document.getElementById("arenaImg");
+    const imgLabel=document.getElementById("imgLabel");
 
-    const arenaImg = document.getElementById("arenaImg");
-    const imgLabel = document.getElementById("imgLabel");
+    document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
+    document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
 
-    const backBtn = document.getElementById("backBtn");
-    const nextBtn = document.getElementById("nextBtn");
+    window.addEventListener("keydown",(e)=>{
+      if(e.key==="ArrowLeft") location.href=BACK_PAGE;
+      if(e.key==="ArrowRight") location.href=NEXT_PAGE;
+    });
 
-    // ===== Helpers =====
+    function renderList(el, items){ el.innerHTML = items.map(t=>`<li>${t}</li>`).join(""); }
+
+    function setLang(lang){
+      textBlock.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+        titleEl.textContent=c.title;
+        pHeadEl.textContent=c.pHead;
+        oHeadEl.textContent=c.oHead;
+        renderList(pListEl,c.problems);
+        renderList(oListEl,c.opportunities);
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+        if(arenaImg.dataset.filename) imgLabel.textContent=c.imgLabel(arenaImg.dataset.filename);
+        textBlock.classList.remove("out");
+      },170);
+    }
+
+    btnEN.onclick=()=>setLang("en");
+    btnTH.onclick=()=>setLang("th");
+    setLang("th");
+
     function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
 
     async function ghContents(path){
-      const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
-      const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
+      const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
+      const res=await fetch(api,{headers:{"Accept":"application/vnd.github+json"}});
       if(!res.ok) throw new Error(`GitHub API failed (${res.status}) for ${path}`);
       return await res.json();
     }
 
     async function findBattleArenaImage(){
-      // 1) list /assets folders
-      const assets = await ghContents("assets");
-      const dirs = assets.filter(x => x.type === "dir").map(x => x.name);
+      // จะพยายามหาโฟลเดอร์ที่ชื่อมี battle/arena ก่อน
+      const assets=await ghContents("assets");
+      const dirs=assets.filter(x=>x.type==="dir").map(x=>x.name);
+      const candidates=dirs.filter(n=>/battle|arena/i.test(n));
+      const folder=candidates[0] || dirs.find(n=>/map/i.test(n)) || dirs[0];
+      if(!folder) throw new Error("No assets folder found");
 
-      // 2) choose folder that likely matches "Battle Arena map for battle scenes"
-      const candidates = dirs.filter(n =>
-        /battle|arena|battle arena/i.test(n)
-      );
-
-      // fallback: if no folder matches, try any folder with "map"
-      const pickFolder = (candidates[0] || dirs.find(n => /map/i.test(n)) || dirs[0]);
-      if(!pickFolder) throw new Error("No assets folder found");
-
-      // 3) read files inside folder
-      const files = await ghContents(`assets/${pickFolder}`);
-      const images = files
-        .filter(x => x.type === "file" && isImage(x.name))
-        .sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}));
-
-      if(!images.length) throw new Error(`No images found in assets/${pickFolder}`);
-
-      // 4) choose first image (static)
-      return { folder: pickFolder, file: images[0].name, url: images[0].download_url };
+      const files=await ghContents(`assets/${folder}`);
+      const imgs=files.filter(x=>x.type==="file" && isImage(x.name))
+                      .sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));
+      if(!imgs.length) throw new Error(`No images found in assets/${folder}`);
+      return { file: imgs[0].name, url: imgs[0].download_url };
     }
 
-    function renderList(el, items){
-      el.innerHTML = items.map(t => `<li>${t}</li>`).join("");
-    }
-
-    function setLang(lang){
-      // fade+slide
-      textBlock.classList.add("out");
-      setTimeout(()=>{
-        const c = COPY[lang];
-        titleEl.textContent = c.title;
-        pHeadEl.textContent = c.pHead;
-        oHeadEl.textContent = c.oHead;
-        renderList(pListEl, c.problems);
-        renderList(oListEl, c.opportunities);
-        noteEl.textContent = c.note;
-
-        btnEN.classList.toggle("active", lang==="en");
-        btnTH.classList.toggle("active", lang==="th");
-
-        // update image label language if we already loaded
-        if (arenaImg.dataset.filename){
-          imgLabel.textContent = c.imgLabel(arenaImg.dataset.filename);
-        }
-
-        textBlock.classList.remove("out");
-      }, 170);
-    }
-
-    // ===== Init =====
-    (async function init(){
-      // Nav
-      backBtn.addEventListener("click", ()=>location.href = BACK_PAGE);
-      nextBtn.addEventListener("click", ()=>location.href = NEXT_PAGE);
-
-      // Keyboard
-      window.addEventListener("keydown", (e)=>{
-        if(e.key === "ArrowLeft") location.href = BACK_PAGE;
-        if(e.key === "ArrowRight") location.href = NEXT_PAGE;
-      });
-
-      // Language
-      btnEN.addEventListener("click", ()=>setLang("en"));
-      btnTH.addEventListener("click", ()=>setLang("th"));
-      setLang("en");
-
-      // Load image
-      try{
-        const picked = await findBattleArenaImage();
-        arenaImg.onload = ()=>arenaImg.classList.add("ready");
-        arenaImg.src = picked.url;
-        arenaImg.dataset.filename = picked.file;
-        imgLabel.textContent = COPY.en.imgLabel(picked.file);
-      }catch(err){
-        imgLabel.textContent = err.message;
-      }
-    })();
+    (async ()=>{
+      const picked=await findBattleArenaImage();
+      arenaImg.onload=()=>arenaImg.classList.add("ready");
+      arenaImg.src=picked.url;
+      arenaImg.dataset.filename=picked.file;
+      imgLabel.textContent=COPY.th.imgLabel(picked.file);
+    })().catch(err=>{
+      imgLabel.textContent=err.message;
+      console.error(err);
+    });
   </script>
 </body>
 </html>
