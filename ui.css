@@ -1,36 +1,59 @@
-:root{ --page-scale: 1; }
+:root{ --page-zoom: 1; }
 
+/* Zoom จริง (Chromium) */
 #pageRoot{
-  position: relative;
-  width: 100%;
-  height: 100%;
-  transform: scale(var(--page-scale));
-  transform-origin: top center;
+  width:100%;
+  height:100%;
+  zoom: var(--page-zoom);
 }
 
-/* Zoom Controls (fixed, not scaled) */
+/* fallback เผื่อ browser ที่ไม่รองรับ zoom */
+@supports not (zoom: 1){
+  #pageRoot{
+    transform: scale(var(--page-zoom));
+    transform-origin: top left;
+    width: calc(100% / var(--page-zoom));
+    height: calc(100% / var(--page-zoom));
+  }
+}
+
+/* ปุ่มซูม: FIXED และไม่โดนซูม (อยู่นอก #pageRoot) */
 .zoomCtl{
-  position: fixed; top: 22px; right: 170px;
-  z-index: 9999;
-  display:flex; gap:8px; align-items:center;
+  position: fixed;
+  top: 22px;
+  right: 170px;
+  z-index: 99999;
+  display:flex;
+  gap:8px;
+  align-items:center;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
 }
+
 .zoomCtl button{
   border:1px solid rgba(255,255,255,.25);
   background: rgba(0,0,0,.35);
-  color:#fff; padding:6px 10px; border-radius:8px;
-  font-weight:900; cursor:pointer;
+  color:#fff;
+  padding:6px 10px;
+  border-radius:8px;
+  font-weight:900;
+  cursor:pointer;
   backdrop-filter: blur(10px);
-  opacity:.9;
+  opacity:.92;
 }
 .zoomCtl button:hover{ opacity:1; }
+
 .zoomCtl .pill{
   border:1px solid rgba(255,255,255,.25);
   background: rgba(0,0,0,.35);
   color:rgba(255,255,255,.92);
-  padding:6px 10px; border-radius:999px;
-  font-weight:900; letter-spacing:.2px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-weight:900;
+  letter-spacing:.2px;
   backdrop-filter: blur(10px);
   user-select:none;
 }
-@media (max-width: 900px){ .zoomCtl{ right:150px; } }
+
+@media (max-width: 900px){
+  .zoomCtl{ right:150px; }
+}
