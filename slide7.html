@@ -464,9 +464,7 @@
     const imgMeta=document.getElementById("imgMeta");
     const thumbs=document.getElementById("thumbs");
 
-    const introOverlay = document.getElementById("introOverlay");
-    const introTitle = document.getElementById("introTitle");
-    const introSub = document.getElementById("introSub");
+
 
     // Navigation
     document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
@@ -514,14 +512,6 @@
     btnEN.onclick=()=>setLang("en");
     btnTH.onclick=()=>setLang("th");
 
-    function runIntroOnce(){
-      const c = COPY[currentLang()];
-      introTitle.textContent = c.introTitle;
-      introSub.textContent = c.introSub;
-
-      setTimeout(()=> introOverlay.classList.add("hide"), ASSETS.introHoldMs ?? 1400);
-      setTimeout(()=> { introOverlay.style.display="none"; }, ASSETS.introEndMs ?? 2200);
-    }
 
     // ---- GitHub helpers
     function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
