@@ -3,378 +3,268 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Pocket Guardian Tail — Game Pitch</title>
-
+  <title>Pocket Guardian Tail — Slide 1</title>
   <style>
-    :root{
-      --bg:#0b1020;
-      --fg:#ffffff;
-      --muted: rgba(255,255,255,.78);
-      --line: rgba(255,255,255,.18);
-      --card: rgba(255,255,255,.10);
-      --card2: rgba(0,0,0,.35);
-      --btn: rgba(255,255,255,.12);
-      --btnHover: rgba(255,255,255,.18);
-    }
-
-    *{box-sizing:border-box}
-    body{
-      margin:0;
+    html, body { height: 100%; margin: 0; }
+    body {
       font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      overflow-x:hidden;
+      overflow: hidden;
+      background: #000;
     }
 
-    /* ===== Background layers ===== */
-    .bg{
+    /* Fullscreen background slideshow */
+    .bg {
       position: fixed;
       inset: 0;
-      background: #0b1020;
+      background: #000;
       background-size: cover;
       background-position: center;
-      filter: saturate(1.05) contrast(1.05);
       transform: scale(1.02);
-      z-index: -3;
+      filter: saturate(1.05) contrast(1.05);
+      transition: opacity 700ms ease;
+      opacity: 0;
     }
-    .shade{
+    .bg.show { opacity: 1; }
+
+    /* Optional dark overlay */
+    .overlay {
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(1200px 600px at 20% 20%, rgba(40,80,255,.22), transparent 60%),
-        radial-gradient(900px 500px at 80% 20%, rgba(255,80,200,.18), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.78));
-      z-index: -2;
+      background: linear-gradient(180deg, rgba(0,0,0,.12), rgba(0,0,0,.42));
+      pointer-events: none;
     }
-    .grain{
+
+    /* Minimal navigation only */
+    .nav {
       position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
-      mix-blend-mode: overlay;
-      opacity:.35;
-      z-index: -1;
-      pointer-events:none;
-    }
-
-    /* ===== Layout ===== */
-    .wrap{
-      max-width: 1180px;
-      margin: 0 auto;
-      padding: 22px 20px 28px;
-      min-height: 100vh;
-      display:flex;
-      flex-direction:column;
-      gap: 18px;
-    }
-
-    .topbar{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
+      left: 24px;
+      right: 24px;
+      bottom: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       gap: 12px;
+      z-index: 10;
     }
 
-    .brand{
+    .leftControls{
       display:flex;
       align-items:center;
-      gap: 10px;
-      padding:10px 12px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.06);
+      gap:10px;
+      min-width: 0;
+    }
+
+    .btn {
+      border: 1px solid rgba(255,255,255,.22);
+      background: rgba(0,0,0,.35);
+      color: #fff;
+      padding: 10px 14px;
       border-radius: 14px;
+      cursor: pointer;
+      font-weight: 800;
+      letter-spacing: .2px;
       backdrop-filter: blur(10px);
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background: rgba(255,255,255,.85);
-      box-shadow: 0 0 24px rgba(255,255,255,.25);
-    }
-    .brand .title{
-      font-weight:700;
-      letter-spacing:.2px;
-    }
-    .brand .sub{
-      display:block;
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 2px;
-    }
-
-    .rightmeta{
-      display:flex;
+      display:inline-flex;
       align-items:center;
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content:flex-end;
+      gap:8px;
     }
-    .pill{
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.06);
-      color: var(--muted);
+    .btn:hover { background: rgba(0,0,0,.50); }
+
+    /* Tiny status (optional) */
+    .status {
+      color: rgba(255,255,255,.75);
       font-size: 12px;
-      backdrop-filter: blur(10px);
+      user-select: none;
+      max-width: 60vw;
+      text-overflow: ellipsis;
+      overflow: hidden;
       white-space: nowrap;
     }
 
-    .hero{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 18px;
-      align-items: stretch;
-      flex: 1;
+    /* ===== Info Panel (collapsible drawer) ===== */
+    .panelScrim{
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.40);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .20s ease;
+      z-index: 20;
     }
-
-    .card{
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.06);
+    .panel{
+      position: fixed;
+      right: 18px;
+      top: 18px;
+      bottom: 18px;
+      width: min(460px, calc(100vw - 36px));
       border-radius: 18px;
+      border: 1px solid rgba(255,255,255,.20);
+      background: rgba(0,0,0,.42);
+      backdrop-filter: blur(14px);
+      box-shadow: 0 30px 80px rgba(0,0,0,.45);
+      transform: translateX(110%);
+      transition: transform .25s ease;
+      z-index: 30;
+      display:flex;
+      flex-direction:column;
       overflow:hidden;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 24px 60px rgba(0,0,0,.30);
     }
-
-    .heroLeft{
-      padding: 26px 26px 18px;
-      display:flex;
-      flex-direction:column;
-      gap: 14px;
-      position:relative;
-    }
-
-    .kicker{
-      display:inline-flex;
-      gap: 8px;
-      align-items:center;
-      padding: 8px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(0,0,0,.18);
-      width: fit-content;
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .kicker b{ color: #fff; font-weight: 700; }
-
-    h1{
-      margin: 0;
-      font-size: clamp(34px, 4.2vw, 56px);
-      line-height: 1.05;
-      letter-spacing: .2px;
-    }
-    .tagline{
-      margin: 0;
-      color: var(--muted);
-      font-size: clamp(14px, 1.3vw, 18px);
-      line-height: 1.55;
-      max-width: 60ch;
-    }
-
-    .highlights{
-      display:grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 8px;
-    }
-    .hl{
-      padding: 12px 12px;
-      border-radius: 14px;
-      background: rgba(0,0,0,.22);
-      border: 1px solid rgba(255,255,255,.14);
-    }
-    .hl b{
-      display:block;
-      font-size: 13px;
-      margin-bottom: 4px;
-    }
-    .hl span{
-      display:block;
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.45;
-    }
-
-    .heroRight{
-      display:flex;
-      flex-direction:column;
-      gap: 12px;
-    }
-
-    .cover{
-      aspect-ratio: 16/9;
-      width: 100%;
-      background: rgba(0,0,0,.22);
+    .panelHeader{
+      padding: 14px 14px 12px;
       border-bottom: 1px solid rgba(255,255,255,.14);
       display:flex;
       align-items:center;
-      justify-content:center;
-      position:relative;
+      justify-content:space-between;
+      gap:12px;
     }
-    .cover img{
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display:block;
-      opacity: 0;
-      transform: scale(1.02);
-      transition: opacity .45s ease, transform .45s ease;
+    .panelTitle{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width:0;
     }
-    .cover img.ready{
-      opacity: 1;
-      transform: scale(1);
+    .panelTitle b{
+      font-size: 14px;
+      letter-spacing:.2px;
     }
-    .cover .overlay{
-      position:absolute; inset:0;
-      background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.55));
-      pointer-events:none;
-    }
-    .cover .label{
-      position:absolute;
-      left: 14px; bottom: 12px;
-      padding: 8px 10px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.35);
+    .panelTitle span{
       font-size: 12px;
-      color: rgba(255,255,255,.86);
-      backdrop-filter: blur(10px);
-      max-width: calc(100% - 28px);
+      color: rgba(255,255,255,.75);
       overflow:hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-
-    .info{
-      padding: 14px 14px 14px;
-      display:flex;
-      flex-direction:column;
-      gap: 10px;
+    .panelBody{
+      padding: 14px;
+      overflow:auto;
+      color: rgba(255,255,255,.86);
+      animation: none;
     }
-    .info .line{
+    .panelBody h3{
+      margin: 0 0 10px 0;
+      font-size: 14px;
+    }
+    .panelBody p{
+      margin: 0 0 12px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: rgba(255,255,255,.80);
+    }
+    .chips{
       display:flex;
-      justify-content:space-between;
-      gap: 10px;
+      flex-wrap:wrap;
+      gap:8px;
+      margin: 10px 0 14px;
+    }
+    .chip{
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(255,255,255,.08);
       font-size: 12px;
-      color: var(--muted);
+      color: rgba(255,255,255,.82);
     }
-    .info .line b{ color:#fff; font-weight: 700; }
-
-    .footerNav{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap: 10px;
-      margin-top: 6px;
-      padding-top: 12px;
-      border-top: 1px solid rgba(255,255,255,.14);
+    .grid3{
+      display:grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap:10px;
     }
-    .navHint{
-      color: var(--muted);
-      font-size: 12px;
-    }
-    .btn{
-      appearance:none;
-      border: 1px solid var(--line);
-      background: var(--btn);
-      color:#fff;
-      padding: 10px 14px;
+    .box{
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
       border-radius: 14px;
-      cursor:pointer;
-      font-weight: 700;
-      letter-spacing:.2px;
-      display:inline-flex;
-      gap: 8px;
-      align-items:center;
-      backdrop-filter: blur(10px);
+      padding: 10px;
     }
-    .btn:hover{ background: var(--btnHover); }
-    .btn:active{ transform: translateY(1px); }
+    .box b{
+      display:block;
+      font-size: 12px;
+      margin-bottom: 4px;
+    }
+    .box span{
+      display:block;
+      font-size: 11px;
+      line-height: 1.45;
+      color: rgba(255,255,255,.76);
+    }
 
-    /* Responsive */
-    @media (max-width: 920px){
-      .hero{ grid-template-columns: 1fr; }
-      .highlights{ grid-template-columns: 1fr; }
+    /* panel open state */
+    .open .panel{ transform: translateX(0); }
+    .open .panelScrim{ opacity: 1; pointer-events: auto; }
+
+    /* text fade when opening */
+    .open .panelBody{
+      animation: fadeIn .18s ease;
+    }
+    @keyframes fadeIn{
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 860px){
+      .grid3{ grid-template-columns: 1fr; }
+      .status{ max-width: 46vw; }
     }
   </style>
 </head>
 
 <body>
-  <div class="bg" id="bg"></div>
-  <div class="shade"></div>
-  <div class="grain"></div>
+  <div id="bg" class="bg"></div>
+  <div class="overlay"></div>
 
-  <div class="wrap">
-    <div class="topbar">
-      <div class="brand">
-        <span class="dot"></span>
-        <div>
-          <div class="title">Pocket Guardian Tail</div>
-          <span class="sub">Game Pitch — Web Deck</span>
-        </div>
+  <!-- Collapsible info panel -->
+  <div id="scrim" class="panelScrim" aria-hidden="true"></div>
+  <aside id="panel" class="panel" aria-label="Info panel" aria-hidden="true">
+    <div class="panelHeader">
+      <div class="panelTitle">
+        <b>Pocket Guardian Tail — Info</b>
+        <span id="panelSub">Slide 1 • Cover Set</span>
       </div>
-
-      <div class="rightmeta">
-        <span class="pill">Genre: Action / Adventure</span>
-        <span class="pill">Platform: PC / Console (Demo)</span>
-        <span class="pill" id="imgCountPill">Cover Set: Loading…</span>
-      </div>
+      <button class="btn" id="closeBtn" type="button" aria-label="Close info">✕</button>
     </div>
 
-    <div class="hero">
-      <!-- Left: Text -->
-      <section class="card heroLeft">
-        <div class="kicker">Slide 1 / <b>Cover</b> • เปิดเรื่องและทิศทางเกม</div>
+    <div class="panelBody" id="panelBody">
+      <div class="chips">
+        <span class="chip">Genre: Action / Adventure</span>
+        <span class="chip">Platform: PC / Console (Demo)</span>
+        <span class="chip" id="chipCount">Cover Set: …</span>
+      </div>
 
-        <h1>
-          ปกป้องโลกด้วย “หางผู้พิทักษ์”
-          <br/>ในมิติ Pocket World
-        </h1>
+      <h3>Concept (TH)</h3>
+      <p>
+        เมื่อเอเลี่ยนบุกโลกและจับผู้คนไป ตัวละครถูกดึงเข้าสู่ “Pocket World” —
+        มิติทางผ่านที่เชื่อมโลกมนุษย์กับเทคโนโลยีของเอเลี่ยน เป้าหมายคือเอาตัวรอด
+        สร้างพลัง และหาทางกลับโลกให้ได้
+      </p>
 
-        <p class="tagline">
-          เมื่อเอเลี่ยนบุกโลกและจับมนุษย์ไป กลุ่มผู้รอดชีวิตถูกดึงเข้าสู่ “Pocket World” —
-          มิติทางผ่านที่เชื่อมโลกมนุษย์กับเทคโนโลยีของเอเลี่ยน
-          ภารกิจคือเอาตัวรอด เก็บพลัง สร้างพันธมิตร และหาทางกลับโลกให้ได้
-          <br/><br/>
-          <span style="opacity:.9">EN:</span> Survive the Pocket World, build power & allies, and fight your way back home.
-        </p>
+      <h3>Concept (EN)</h3>
+      <p>
+        Survive the Pocket World, build power & allies, and fight your way back home.
+      </p>
 
-        <div class="highlights">
-          <div class="hl">
-            <b>Hook / จุดขาย</b>
-            <span>โลกสองชั้น: Earth ↔ Pocket World / โทน Sci-Fi ผสมแฟนตาซี</span>
-          </div>
-          <div class="hl">
-            <b>Core Loop</b>
-            <span>สำรวจ → เผชิญหน้า → ต่อสู้ → ฟื้นฟู → เติบโต</span>
-          </div>
-          <div class="hl">
-            <b>Pitch Goal</b>
-            <span>โชว์ “ความเป็นไปได้” ของ Demo + ระบบหลัก + วิชวล</span>
-          </div>
+      <div class="grid3">
+        <div class="box">
+          <b>Hook</b>
+          <span>Earth ↔ Pocket World • Sci-Fi x Fantasy</span>
         </div>
-
-        <div class="footerNav">
-          <div class="navHint">กด Next เพื่อไปสไลด์ 2: “Concept Visual / Menu Mood”</div>
-          <button class="btn" id="nextBtn" type="button">Next ➜</button>
+        <div class="box">
+          <b>Core Loop</b>
+          <span>Explore → Engage → Battle → Recover → Grow</span>
         </div>
-      </section>
-
-      <!-- Right: Auto cover image -->
-      <aside class="card heroRight">
-        <div class="cover">
-          <img id="coverImg" alt="Cover image" />
-          <div class="overlay"></div>
-          <div class="label" id="coverLabel">กำลังโหลดรูปจาก assets/cover 01…</div>
+        <div class="box">
+          <b>Pitch Goal</b>
+          <span>Show feasibility of Demo + key systems + visual mood</span>
         </div>
-
-        <div class="info">
-          <div class="line"><span>ชุดรูปที่ใช้ในสไลด์นี้</span><b>Cover 01</b></div>
-          <div class="line"><span>การเปลี่ยนหน้า</span><b>Next = ไป slide2.html เท่านั้น</b></div>
-          <div class="line"><span>คีย์บอร์ด</span><b>→ = Next</b></div>
-        </div>
-      </aside>
+      </div>
     </div>
+  </aside>
+
+  <div class="nav">
+    <div class="leftControls">
+      <button class="btn" id="infoBtn" type="button">ℹ️ Info</button>
+      <div class="status" id="status">Loading cover images…</div>
+    </div>
+
+    <button class="btn" id="nextBtn" type="button">Next ➜</button>
   </div>
 
   <script>
@@ -383,74 +273,107 @@
     const REPO   = "Pocket-Guardian-Tail";
     const BRANCH = "main";
 
-    // ชุดรูปหน้า 1 (Cover)
-    const COVER_FOLDER = "assets/cover 01_First page cover image";
+    // Slide 1 background images folder (Cover 01)
+    const FOLDER = "assets/cover 01_First page cover image";
 
-    // หน้า 2 ที่ต้องไปต่อ
+    // slideshow speed (ms)
+    const INTERVAL = 3500;
+
+    // navigation
     const NEXT_PAGE = "slide2.html";
 
-    // ====== HELPERS ======
+    // ====== ELEMENTS ======
     const bgEl = document.getElementById("bg");
-    const coverImg = document.getElementById("coverImg");
-    const coverLabel = document.getElementById("coverLabel");
-    const imgCountPill = document.getElementById("imgCountPill");
+    const statusEl = document.getElementById("status");
+    const nextBtn = document.getElementById("nextBtn");
 
+    // panel elements
+    const root = document.documentElement;
+    const scrim = document.getElementById("scrim");
+    const panel = document.getElementById("panel");
+    const infoBtn = document.getElementById("infoBtn");
+    const closeBtn = document.getElementById("closeBtn");
+    const chipCount = document.getElementById("chipCount");
+    const panelSub = document.getElementById("panelSub");
+
+    // ====== HELPERS ======
     function isImage(name){
       return /\.(png|jpg|jpeg|webp|gif)$/i.test(name);
     }
 
     async function fetchFolderImages(folderPath){
-      // GitHub contents API: /contents/{path}?ref=branch
       const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(folderPath)}?ref=${encodeURIComponent(BRANCH)}`;
       const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
-      if(!res.ok) throw new Error(`โหลดโฟลเดอร์ไม่สำเร็จ: ${folderPath} (${res.status})`);
+      if(!res.ok) throw new Error(`Folder load failed: ${folderPath} (${res.status})`);
       const data = await res.json();
       return data
         .filter(item => item.type === "file" && isImage(item.name))
-        .map(item => ({
-          name: item.name,
-          raw: item.download_url
-        }))
+        .map(item => ({ name: item.name, raw: item.download_url }))
         .sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true }));
     }
 
-    function setCover(src, label){
-      coverImg.classList.remove("ready");
-      coverImg.onload = () => coverImg.classList.add("ready");
-      coverImg.src = src;
-      coverLabel.textContent = label;
-      bgEl.style.backgroundImage = `url('${src}')`;
+    function setBg(url, label){
+      bgEl.classList.remove("show");
+      setTimeout(() => {
+        bgEl.style.backgroundImage = `url('${url}')`;
+        bgEl.classList.add("show");
+        statusEl.textContent = label;
+        panelSub.textContent = `Slide 1 • ${label}`;
+      }, 40);
     }
 
     function goNext(){
-      // ✅ Next = ไปหน้าถัดไปเท่านั้น
-      window.location.href = NEXT_PAGE;
+      window.location.href = NEXT_PAGE; // ✅ Next = เปลี่ยนหน้าเท่านั้น
+    }
+
+    function openPanel(){
+      document.body.classList.add("open");
+      panel.setAttribute("aria-hidden", "false");
+      scrim.setAttribute("aria-hidden", "false");
+    }
+    function closePanel(){
+      document.body.classList.remove("open");
+      panel.setAttribute("aria-hidden", "true");
+      scrim.setAttribute("aria-hidden", "true");
+    }
+    function togglePanel(){
+      if(document.body.classList.contains("open")) closePanel();
+      else openPanel();
     }
 
     // ====== INIT ======
     (async function init(){
-      document.getElementById("nextBtn").addEventListener("click", goNext);
+      nextBtn.addEventListener("click", goNext);
 
-      // คีย์บอร์ด: → ไปหน้า 2
+      infoBtn.addEventListener("click", togglePanel);
+      closeBtn.addEventListener("click", closePanel);
+      scrim.addEventListener("click", closePanel);
+
       window.addEventListener("keydown", (e) => {
-        if(e.key === "ArrowRight") goNext();
+        if (e.key === "ArrowRight") goNext();
+        if (e.key === "i" || e.key === "I") togglePanel();
+        if (e.key === "Escape") closePanel();
       });
 
       try{
-        const images = await fetchFolderImages(COVER_FOLDER);
-        imgCountPill.textContent = `Cover Set: ${images.length} images`;
+        const images = await fetchFolderImages(FOLDER);
+        chipCount.textContent = `Cover Set: ${images.length} images`;
 
         if(!images.length){
-          coverLabel.textContent = `ไม่พบรูปใน ${COVER_FOLDER}`;
+          statusEl.textContent = `No images found in: ${FOLDER}`;
           return;
         }
 
-        // ใช้รูปแรกเป็น default (ถ้าต้องการสุ่ม เปลี่ยนเป็น Math.random())
-        const first = images[0];
-        setCover(first.raw, `assets/cover 01…/${first.name}`);
-      }catch(err){
-        imgCountPill.textContent = "Cover Set: Error";
-        coverLabel.textContent = err.message;
+        let i = 0;
+        setBg(images[i].raw, `cover 01 • ${images[i].name}`);
+
+        setInterval(() => {
+          i = (i + 1) % images.length;
+          setBg(images[i].raw, `cover 01 • ${images[i].name}`);
+        }, INTERVAL);
+      } catch (err){
+        statusEl.textContent = err.message;
+        chipCount.textContent = "Cover Set: Error";
       }
     })();
   </script>
