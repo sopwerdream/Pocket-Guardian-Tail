@@ -1,1 +1,475 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Guardian Tail — Slide 2</title>
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --fg:#ffffff;
+      --muted: rgba(255,255,255,.78);
+      --line: rgba(255,255,255,.18);
+      --btn: rgba(255,255,255,.12);
+      --btnHover: rgba(255,255,255,.18);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+      background: var(--bg);
+      color: var(--fg);
+      overflow-x:hidden;
+    }
+
+    /* Background (same vibe as slide 1) */
+    .bg{
+      position: fixed; inset: 0;
+      background: #0b1020;
+      background-size: cover;
+      background-position: center;
+      filter: saturate(1.05) contrast(1.05);
+      transform: scale(1.02);
+      z-index: -3;
+    }
+    .shade{
+      position: fixed; inset: 0;
+      background:
+        radial-gradient(1200px 600px at 20% 20%, rgba(40,80,255,.22), transparent 60%),
+        radial-gradient(900px 500px at 80% 20%, rgba(255,80,200,.18), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.35), rgba(0,0,0,.78));
+      z-index: -2;
+    }
+    .grain{
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='220' height='220' filter='url(%23n)' opacity='.18'/%3E%3C/svg%3E");
+      mix-blend-mode: overlay;
+      opacity:.35;
+      z-index: -1;
+      pointer-events:none;
+    }
+
+    .wrap{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 22px 20px 28px;
+      min-height: 100vh;
+      display:flex;
+      flex-direction:column;
+      gap: 18px;
+    }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      padding:10px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 14px;
+      backdrop-filter: blur(10px);
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background: rgba(255,255,255,.85);
+      box-shadow: 0 0 24px rgba(255,255,255,.25);
+    }
+    .brand .title{ font-weight:700; letter-spacing:.2px; }
+    .brand .sub{
+      display:block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 2px;
+    }
+
+    .rightmeta{
+      display:flex;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .pill{
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      color: var(--muted);
+      font-size: 12px;
+      backdrop-filter: blur(10px);
+      white-space: nowrap;
+    }
+
+    .card{
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.06);
+      border-radius: 18px;
+      overflow:hidden;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 24px 60px rgba(0,0,0,.30);
+    }
+
+    /* Split layout: left image, right text */
+    .split{
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap: 18px;
+      align-items: stretch;
+      flex: 1;
+    }
+
+    .leftImage{
+      position: relative;
+      min-height: 60vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background: rgba(0,0,0,.22);
+    }
+    .leftImage img{
+      width:100%;
+      height:100%;
+      object-fit: cover;
+      display:block;
+      opacity:0;
+      transform: scale(1.02);
+      transition: opacity .45s ease, transform .45s ease;
+    }
+    .leftImage img.ready{
+      opacity:1;
+      transform: scale(1);
+    }
+    .leftImage .overlay{
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.10), rgba(0,0,0,.55));
+      pointer-events:none;
+    }
+    .leftImage .label{
+      position:absolute;
+      left: 14px; bottom: 12px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.35);
+      font-size: 12px;
+      color: rgba(255,255,255,.86);
+      backdrop-filter: blur(10px);
+      max-width: calc(100% - 28px);
+      overflow:hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .rightText{
+      padding: 22px 22px 18px;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: rgba(0,0,0,.18);
+      width: fit-content;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .kicker b{ color: #fff; font-weight: 700; }
+
+    h1{
+      margin: 0;
+      font-size: clamp(28px, 3.3vw, 40px);
+      line-height: 1.12;
+      letter-spacing: .2px;
+    }
+    .desc{
+      margin: 0;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.65;
+      white-space: pre-line;
+    }
+
+    /* Language toggle */
+    .langRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255,255,255,.14);
+    }
+    .langToggle{
+      display:flex;
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      overflow:hidden;
+      background: rgba(0,0,0,.18);
+    }
+    .langToggle button{
+      border: none;
+      background: transparent;
+      color: rgba(255,255,255,.72);
+      padding: 10px 12px;
+      cursor:pointer;
+      font-weight: 800;
+      letter-spacing:.2px;
+    }
+    .langToggle button.active{
+      background: rgba(255,255,255,.14);
+      color: #fff;
+    }
+
+    /* Fade on switch */
+    .fade{
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity .22s ease, transform .22s ease;
+    }
+    .fade.out{
+      opacity: 0;
+      transform: translateY(6px);
+    }
+
+    .footerNav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-top: auto;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255,255,255,.14);
+    }
+    .navHint{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .btn{
+      appearance:none;
+      border: 1px solid var(--line);
+      background: var(--btn);
+      color:#fff;
+      padding: 10px 14px;
+      border-radius: 14px;
+      cursor:pointer;
+      font-weight: 800;
+      letter-spacing:.2px;
+      display:inline-flex;
+      gap: 8px;
+      align-items:center;
+      backdrop-filter: blur(10px);
+    }
+    .btn:hover{ background: var(--btnHover); }
+    .btn:active{ transform: translateY(1px); }
+
+    @media (max-width: 980px){
+      .split{ grid-template-columns: 1fr; }
+      .leftImage{ min-height: 42vh; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg" id="bg"></div>
+  <div class="shade"></div>
+  <div class="grain"></div>
+
+  <div class="wrap">
+    <div class="topbar">
+      <div class="brand">
+        <span class="dot"></span>
+        <div>
+          <div class="title">Pocket Guardian Tail</div>
+          <span class="sub">Game Pitch — Web Deck</span>
+        </div>
+      </div>
+
+      <div class="rightmeta">
+        <span class="pill">Slide 2 / Concept</span>
+        <span class="pill" id="imgCountPill">Exploration Map: Loading…</span>
+      </div>
+    </div>
+
+    <div class="split">
+      <!-- Left: one large image (static) -->
+      <section class="card leftImage" aria-label="Exploration map image">
+        <img id="mainImg" alt="Exploration map" />
+        <div class="overlay"></div>
+        <div class="label" id="imgLabel">กำลังโหลดรูปจาก assets/exploration map/…</div>
+      </section>
+
+      <!-- Right: text content -->
+      <aside class="card rightText">
+        <div class="langRow">
+          <div class="kicker">Slide 2 / <b>Concept & Experience</b></div>
+
+          <div class="langToggle" role="tablist" aria-label="Language toggle">
+            <button id="btnTH" class="active" type="button" aria-selected="true">TH</button>
+            <button id="btnEN" type="button" aria-selected="false">EN</button>
+          </div>
+        </div>
+
+        <div id="textBlock" class="fade">
+          <h1 id="title">Pocket Guardian Tail</h1>
+          <p id="desc" class="desc"></p>
+        </div>
+
+        <div class="footerNav">
+          <div class="navHint">Back ไปสไลด์ 1 • Next ไปสไลด์ 3</div>
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+            <button class="btn" id="nextBtn" type="button">Next ➜</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
+  <script>
+    // ====== CONFIG ======
+    const OWNER  = "sopwerdream";
+    const REPO   = "Pocket-Guardian-Tail";
+    const BRANCH = "main";
+
+    // Image folder (as requested)
+    const IMAGE_FOLDER = "assets/exploration map";
+
+    // Navigation
+    const BACK_PAGE = "index.html";
+    const NEXT_PAGE = "slide3.html";
+
+    // Copy (bilingual)
+    const COPY = {
+      th: {
+        title: "Pocket Guardian Tail",
+        desc:
+`เกมวางแผนกลยุทธ์แบบผลัดตา ผสานการสำรวจโลกในมุมมอง Isometric 3D
+ผู้เล่นจะได้ออกสำรวจโลกขนาดเล็กที่เปราะบาง และควบคุมเหล่าผู้พิทักษ์เพื่อปกป้องโลกจากการบิดเบือน
+เกมถูกออกแบบให้ภาพลักษณ์เข้าถึงง่าย แต่มีความลึกเชิงกลยุทธ์และอารมณ์ร่วม`
+      },
+      en: {
+        title: "Pocket Guardian Tail",
+        desc:
+`A turn-based tactical RPG with isometric exploration.
+Players explore a fragile pocket world and command small guardians to protect it from corruption.
+The game blends accessible visuals with deep strategic decision-making and emotional progression.`
+      }
+    };
+
+    // ====== ELEMENTS ======
+    const bgEl = document.getElementById("bg");
+    const imgEl = document.getElementById("mainImg");
+    const imgLabel = document.getElementById("imgLabel");
+    const imgCountPill = document.getElementById("imgCountPill");
+
+    const btnTH = document.getElementById("btnTH");
+    const btnEN = document.getElementById("btnEN");
+    const textBlock = document.getElementById("textBlock");
+    const titleEl = document.getElementById("title");
+    const descEl = document.getElementById("desc");
+
+    const backBtn = document.getElementById("backBtn");
+    const nextBtn = document.getElementById("nextBtn");
+
+    // ====== HELPERS ======
+    function isImage(name){
+      return /\.(png|jpg|jpeg|webp|gif)$/i.test(name);
+    }
+
+    async function fetchFolderImages(folderPath){
+      const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(folderPath)}?ref=${encodeURIComponent(BRANCH)}`;
+      const res = await fetch(api, { headers: { "Accept": "application/vnd.github+json" } });
+      if(!res.ok) throw new Error(`โหลดโฟลเดอร์ไม่สำเร็จ: ${folderPath} (${res.status})`);
+      const data = await res.json();
+      return data
+        .filter(item => item.type === "file" && isImage(item.name))
+        .map(item => ({ name: item.name, raw: item.download_url }))
+        .sort((a,b) => a.name.localeCompare(b.name, undefined, { numeric:true }));
+    }
+
+    function setMainImage(src, label){
+      imgEl.classList.remove("ready");
+      imgEl.onload = () => imgEl.classList.add("ready");
+      imgEl.src = src;
+      imgLabel.textContent = label;
+
+      // Keep a subtle background using same image
+      bgEl.style.backgroundImage = `url('${src}')`;
+    }
+
+    function setLang(lang){
+      // Fade out
+      textBlock.classList.add("out");
+      window.setTimeout(() => {
+        titleEl.textContent = COPY[lang].title;
+        descEl.textContent = COPY[lang].desc;
+
+        // Toggle buttons
+        const isTH = (lang === "th");
+        btnTH.classList.toggle("active", isTH);
+        btnEN.classList.toggle("active", !isTH);
+        btnTH.setAttribute("aria-selected", isTH ? "true" : "false");
+        btnEN.setAttribute("aria-selected", !isTH ? "true" : "false");
+
+        // Fade in
+        textBlock.classList.remove("out");
+      }, 170);
+    }
+
+    function goBack(){ window.location.href = BACK_PAGE; }
+    function goNext(){ window.location.href = NEXT_PAGE; }
+
+    // ====== INIT ======
+    (async function init(){
+      // Language
+      btnTH.addEventListener("click", () => setLang("th"));
+      btnEN.addEventListener("click", () => setLang("en"));
+      setLang("th"); // default
+
+      // Navigation buttons
+      backBtn.addEventListener("click", goBack);
+      nextBtn.addEventListener("click", goNext);
+
+      // Keyboard: Left=Back, Right=Next
+      window.addEventListener("keydown", (e) => {
+        if(e.key === "ArrowLeft") goBack();
+        if(e.key === "ArrowRight") goNext();
+      });
+
+      // Load image
+      try{
+        const images = await fetchFolderImages(IMAGE_FOLDER);
+        imgCountPill.textContent = `Exploration Map: ${images.length} images`;
+
+        if(!images.length){
+          imgLabel.textContent = `ไม่พบรูปใน ${IMAGE_FOLDER}`;
+          return;
+        }
+
+        // Use first image (static)
+        const first = images[0];
+        setMainImage(first.raw, `assets/exploration map/${first.name}`);
+      }catch(err){
+        imgCountPill.textContent = "Exploration Map: Error";
+        imgLabel.textContent = err.message;
+      }
+    })();
+  </script>
+</body>
+</html>
 
