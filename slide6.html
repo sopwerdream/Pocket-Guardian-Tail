@@ -31,8 +31,8 @@
     .bg{
       position:fixed; inset:0; z-index:-4;
       background:
-        radial-gradient(900px 520px at 20% 25%, rgba(80,120,255,.18), transparent 60%),
-        radial-gradient(900px 520px at 80% 28%, rgba(255,180,80,.14), transparent 60%),
+        radial-gradient(900px 520px at 18% 25%, rgba(80,120,255,.18), transparent 60%),
+        radial-gradient(900px 520px at 82% 28%, rgba(255,180,80,.14), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.86));
     }
 
@@ -257,7 +257,7 @@
     }
     li{ margin: 7px 0; }
 
-    /* Minimal animation (image first, then text) */
+    /* Minimal animation (image first, then text panel) */
     .fade{
       transition: opacity .28s ease, transform .28s ease;
       opacity:1;
@@ -303,6 +303,47 @@
       border-color:var(--accent);
     }
 
+    /* Intro overlay before slide shows */
+    .introOverlay{
+      position:fixed;
+      inset:0;
+      z-index:2000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(900px 520px at 50% 40%, rgba(255,255,255,.06), transparent 60%),
+        rgba(0,0,0,.78);
+      backdrop-filter: blur(10px);
+      transition: opacity .55s ease, transform .55s ease;
+      opacity:1;
+    }
+    .introOverlay.hide{
+      opacity:0;
+      transform: translateY(8px);
+      pointer-events:none;
+    }
+    .introText{
+      text-align:center;
+      padding:20px 22px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.35);
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      max-width:min(760px, 92vw);
+    }
+    .introText h2{
+      margin:0;
+      font-size: clamp(28px, 4vw, 54px);
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+    .introText p{
+      margin:10px 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: 14px;
+    }
+
     @media (max-width: 980px){
       .wrap{ padding-top:64px; }
       .grid{ grid-template-columns:1fr; }
@@ -314,6 +355,14 @@
 <body>
   <div class="bg"></div>
 
+  <!-- Intro Title Card -->
+  <div class="introOverlay" id="introOverlay" aria-label="intro">
+    <div class="introText">
+      <h2 id="introTitle"></h2>
+      <p id="introSub"></p>
+    </div>
+  </div>
+
   <div id="pageRoot">
     <div class="lang">
       <button id="btnEN" class="active" type="button">EN</button>
@@ -324,12 +373,17 @@
       <div class="grid">
         <!-- LEFT -->
         <section class="card left">
-          <div class="kicker" id="kicker">Slide 6 / <b>Exploration Mode</b> <span style="opacity:.75">•</span> <span id="totalHint" style="opacity:.75">6/10</span></div>
+          <div class="kicker" id="kicker">
+            <span id="kickerLeft"></span>
+            <b id="kickerTitle"></b>
+            <span style="opacity:.75">•</span>
+            <span id="totalHint" style="opacity:.75"></span>
+          </div>
 
           <div class="visualArea">
             <div class="frame">
               <img id="mainImg" class="mainImg" alt="Exploration visual" />
-              <div class="overlayLabel" id="overlayLabel">Isometric Exploration (Camera locked + slight rotate)</div>
+              <div class="overlayLabel" id="overlayLabel"></div>
               <div class="imgMeta" id="imgMeta">Loading…</div>
             </div>
 
@@ -339,18 +393,19 @@
 
         <!-- RIGHT -->
         <aside class="card right">
+          <!-- IMPORTANT: keep empty to avoid bilingual overlap -->
           <div id="textBlock" class="fade out">
-            <h1 id="title">Exploration Mode</h1>
-            <div class="sub" id="subtitle">Isometric diorama navigation → encounter → tactical battle</div>
+            <h1 id="title"></h1>
+            <div class="sub" id="subtitle"></div>
 
             <div class="panel">
-              <h3 id="head">Overview</h3>
+              <h3 id="head"></h3>
               <ul id="bullets"></ul>
             </div>
           </div>
 
           <div class="nav">
-            <div class="navHint">Back → Slide 5 • Next → Slide 7</div>
+            <div class="navHint" id="navHint"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
               <button class="btn" id="backBtn" type="button">⬅️ Back</button>
               <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
@@ -367,18 +422,14 @@
   <script>
     /* ==========================================================
       Slide 6 Asset Config (RAW GitHub URLs)
-      - Replace easily by pasting direct raw URLs here.
-      - If left empty, it will auto-pull from repo folders.
+      - If you want FULL control: paste RAW urls into ASSETS.s6
+      - If empty: auto-load from repo folders.
     ========================================================== */
     const ASSETS = {
-      // Main rotation list (recommended): put 3–8 RAW URLs here
-      // Example:
       // s6: [
-      //   "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/exploration%20map/xxx.png",
-      // ]
+      //   "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/exploration%20map/yourfile.png",
+      // ],
       s6: [],
-
-      // Optional fixed thumbs (RAW URLs). If empty, auto-thumbs will be used.
       s6_thumb1: "",
       s6_thumb2: "",
       s6_thumb3: ""
@@ -389,19 +440,25 @@
     const BRANCH="main";
 
     const BACK_PAGE="slide5.html";
-    const NEXT_PAGE="slide7.html"; // placeholder (create later)
+    const NEXT_PAGE="slide7.html"; // placeholder
 
-    // Slide indicator (edit total if needed)
     const SLIDE_NO = 6;
     const TOTAL_SLIDES = 10;
 
     const COPY = {
       th:{
-        kicker:`Slide ${SLIDE_NO} / `,
+        introTitle:"เกมเพลย์โหมด",
+        introSub:"Exploration Mode",
+
+        kickerLeft:`Slide ${SLIDE_NO} /`,
+        kickerTitle:"Exploration Mode",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
         title:"Exploration Mode",
         subtitle:"เดินสำรวจโลกแบบไดโอราม่า → เจอศัตรู → เข้าสู่ Tactical Battle",
-        head:"รายละเอียด (Exploration Mode)",
+        head:"รายละเอียด (EXPLORATION MODE)",
         overlay:"Isometric Exploration (Camera locked + slight rotate)",
+        navHint:"Back → Slide 5 • Next → Slide 7",
         bullets:[
           "Exploration Mode คือการ “เดินสำรวจโลก” ในมุมมอง Isometric 3D แบบ Diorama",
           "กล้อง “ล็อกเป็นหลัก” แต่หมุนได้เล็กน้อยเพื่ออ่านพื้นที่และวางแผนเส้นทาง",
@@ -409,14 +466,21 @@
           "มี Monster / Alien Encounter Node ให้เห็นบนแผนที่ (จุดเสี่ยง/จุดรางวัล)",
           "เมื่อผู้เล่น “เข้าใกล้ศัตรู” → เปลี่ยนเข้าสู่ Turn-Based Tactical Battle",
           "มี Pocket Home Portal: พัก/ฟื้นฟู, อัปเกรด, เรียกตัวละคร Support"
-        ]
+        ],
       },
       en:{
-        kicker:`Slide ${SLIDE_NO} / `,
+        introTitle:"Gameplay Mode",
+        introSub:"Exploration Mode",
+
+        kickerLeft:`Slide ${SLIDE_NO} /`,
+        kickerTitle:"Exploration Mode",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
         title:"Exploration Mode",
         subtitle:"Isometric diorama navigation → encounters → tactical battle",
-        head:"Overview (Exploration Mode)",
+        head:"Overview (EXPLORATION MODE)",
         overlay:"Isometric Exploration (Camera locked + slight rotate)",
+        navHint:"Back → Slide 5 • Next → Slide 7",
         bullets:[
           "Explore a fragile pocket world in an isometric 3D diorama view.",
           "Camera is mostly locked, with slight rotation for readability and planning.",
@@ -424,25 +488,35 @@
           "Visible encounter nodes (risk/reward points) on the map.",
           "Approach an enemy → transition into turn-based tactical battle.",
           "Pocket Home portal: rest/recover, upgrades, and support character calls."
-        ]
+        ],
       }
     };
 
-    // UI refs
+    // Refs
     const btnEN=document.getElementById("btnEN");
     const btnTH=document.getElementById("btnTH");
+
+    const kickerLeft=document.getElementById("kickerLeft");
+    const kickerTitle=document.getElementById("kickerTitle");
+    const totalHint=document.getElementById("totalHint");
+
     const titleEl=document.getElementById("title");
     const subtitleEl=document.getElementById("subtitle");
     const headEl=document.getElementById("head");
     const bulletsEl=document.getElementById("bullets");
     const overlayLabel=document.getElementById("overlayLabel");
+    const navHint=document.getElementById("navHint");
     const textBlock=document.getElementById("textBlock");
+
     const mainImg=document.getElementById("mainImg");
     const imgMeta=document.getElementById("imgMeta");
     const thumbs=document.getElementById("thumbs");
-    const totalHint=document.getElementById("totalHint");
-    totalHint.textContent = `${SLIDE_NO}/${TOTAL_SLIDES}`;
 
+    const introOverlay = document.getElementById("introOverlay");
+    const introTitle = document.getElementById("introTitle");
+    const introSub = document.getElementById("introSub");
+
+    // Navigation
     document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
     document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
 
@@ -455,25 +529,54 @@
       bulletsEl.innerHTML = arr.map(t=>`<li>${t}</li>`).join("");
     }
 
+    function currentLang(){
+      return btnTH.classList.contains("active") ? "th" : "en";
+    }
+
     function setLang(lang){
+      // text panel minimal motion
       textBlock.classList.add("out");
       setTimeout(()=>{
         const c=COPY[lang];
+
+        // Intro text (in case user switches quickly)
+        introTitle.textContent = c.introTitle;
+        introSub.textContent = c.introSub;
+
+        // Kicker / slide indicator
+        kickerLeft.textContent = c.kickerLeft;
+        kickerTitle.textContent = c.kickerTitle;
+        totalHint.textContent = c.total;
+
+        // Right panel (single source of truth => no overlap)
         titleEl.textContent = c.title;
         subtitleEl.textContent = c.subtitle;
         headEl.textContent = c.head;
         overlayLabel.textContent = c.overlay;
+        navHint.textContent = c.navHint;
         renderBullets(c.bullets);
 
         btnEN.classList.toggle("active", lang==="en");
         btnTH.classList.toggle("active", lang==="th");
+
         textBlock.classList.remove("out");
       }, 170);
     }
 
     btnEN.onclick=()=>setLang("en");
     btnTH.onclick=()=>setLang("th");
-    setLang("th");
+
+    // ---- Intro sequence
+    function runIntroOnce(){
+      const langNow = currentLang();
+      const c = COPY[langNow];
+      introTitle.textContent = c.introTitle;
+      introSub.textContent = c.introSub;
+
+      // show intro for a moment, then fade out
+      setTimeout(()=> introOverlay.classList.add("hide"), 1100);
+      setTimeout(()=> { introOverlay.style.display="none"; }, 1800);
+    }
 
     // ---- GitHub helpers
     function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
@@ -485,9 +588,9 @@
       return await res.json();
     }
 
-    function pickPreferred(images){
-      // Prefer isometric/exploration keywords
-      const lower = images.map(x=>({ ...x, l:x.name.toLowerCase() }));
+    function pickPreferred(list){
+      // prefer isometric/exploration keywords
+      const lower = list.map(x=>({ ...x, l:(x.name||"").toLowerCase() }));
       return lower.find(x=>x.l.includes("isometric")) ||
              lower.find(x=>x.l.includes("explor")) ||
              lower.find(x=>x.l.includes("map")) ||
@@ -499,17 +602,17 @@
     let rotationIndex = 0;
     let rotationTimer = null;
 
+    function highlightThumb(url){
+      [...thumbs.querySelectorAll(".thumb")].forEach(t=>{
+        t.classList.toggle("active", t.dataset.url === url);
+      });
+    }
+
     function setMainImage(url, label){
-      // Fade switch (minimal)
       mainImg.classList.remove("ready");
-      // wait a tick for opacity transition
       setTimeout(()=>{
         mainImg.onload = ()=>{
           mainImg.classList.add("ready");
-          // reveal text after first image loaded
-          if(textBlock.classList.contains("out")){
-            // keep text out until first image is visible
-          }
         };
         mainImg.src = url;
         imgMeta.textContent = label || url.split("/").slice(-1)[0];
@@ -524,13 +627,7 @@
         const item = rotationList[rotationIndex];
         setMainImage(item.url, `assets/exploration map • ${item.name}`);
         highlightThumb(item.url);
-      }, 3800); // subtle pacing
-    }
-
-    function highlightThumb(url){
-      [...thumbs.querySelectorAll(".thumb")].forEach(t=>{
-        t.classList.toggle("active", t.dataset.url === url);
-      });
+      }, 3800);
     }
 
     function addThumb(url, cap){
@@ -549,7 +646,6 @@
       el.appendChild(tcap);
 
       el.onclick=()=>{
-        // manual select: stop auto-rotation briefly then resume
         const idx = rotationList.findIndex(x=>x.url===url);
         if(idx>=0) rotationIndex=idx;
         setMainImage(url, cap);
@@ -561,86 +657,80 @@
     }
 
     async function autoLoadFromRepo(){
-      // 1) Build main rotation list from exploration map
+      // Main rotation from exploration map folder
       const expFiles = await gh("assets/exploration map");
       const expImgs = expFiles
         .filter(x=>x.type==="file" && isImage(x.name))
         .map(x=>({name:x.name, url:x.download_url}));
 
-      if(!expImgs.length) throw new Error("No exploration images found in assets/exploration map");
+      if(!expImgs.length) throw new Error("No images found in assets/exploration map");
 
-      // pick 5–8 images for rotation (stable-ish random)
+      // Choose 5–8 images (stable-ish)
       const pool = [...expImgs];
-      pool.sort(()=>Math.random()-0.5);
+      // prefer sorted by name to keep consistent order
+      pool.sort((a,b)=>a.name.localeCompare(b.name));
       rotationList = pool.slice(0, Math.min(8, Math.max(5, pool.length)));
 
-      // 2) Thumbnails: prefer 2–3 from cover/menu if available, else from exploration
-      let thumbUrls = [];
+      // Thumbnails: prefer cover/menu if available; else from exploration
+      thumbs.innerHTML="";
+      let thumbItems = [];
+
       const fixedThumbs = [ASSETS.s6_thumb1, ASSETS.s6_thumb2, ASSETS.s6_thumb3].filter(Boolean);
       if(fixedThumbs.length){
-        thumbUrls = fixedThumbs.map(u=>({url:u, cap:"thumb"}));
+        thumbItems = fixedThumbs.map((u,i)=>({url:u, cap:`Thumb • ${i+1}`}));
       } else {
-        // try cover folders
         let extra = [];
         try{
           const cover1 = await gh("assets/cover 01_First page cover image");
-          extra.push(...cover1.filter(x=>x.type==="file"&&isImage(x.name)).map(x=>({name:x.name,url:x.download_url,cap:"Cover"})));
+          extra.push(...cover1.filter(x=>x.type==="file"&&isImage(x.name))
+            .slice(0,3).map(x=>({url:x.download_url, cap:`Cover • ${x.name}`})));
         }catch(e){}
         try{
           const cover2 = await gh("assets/cover 02_Concept Visual for the Menu");
-          extra.push(...cover2.filter(x=>x.type==="file"&&isImage(x.name)).map(x=>({name:x.name,url:x.download_url,cap:"Menu"})));
+          extra.push(...cover2.filter(x=>x.type==="file"&&isImage(x.name))
+            .slice(0,3).map(x=>({url:x.download_url, cap:`Menu • ${x.name}`})));
         }catch(e){}
 
         extra = extra.slice(0,3);
-        const expThumbs = rotationList.slice(0,3).map(x=>({name:x.name,url:x.url,cap:"Exploration"}));
-
-        const combined = [...extra, ...expThumbs].slice(0,3);
-        thumbUrls = combined.map(x=>({url:x.url, cap:`${x.cap} • ${x.name}`}));
+        const expThumbs = rotationList.slice(0,3).map(x=>({url:x.url, cap:`Exploration • ${x.name}`}));
+        thumbItems = [...extra, ...expThumbs].slice(0,3);
       }
 
-      // Render thumbs (unique urls)
-      thumbs.innerHTML="";
+      // unique
       const used = new Set();
-      for(const t of thumbUrls){
+      for(const t of thumbItems){
         if(used.has(t.url)) continue;
         used.add(t.url);
         addThumb(t.url, t.cap);
       }
 
-      // Ensure there is at least one thumb for main
-      if(!thumbUrls.length){
-        addThumb(rotationList[0].url, `assets/exploration map • ${rotationList[0].name}`);
-      }
-
-      // Set first image: prefer a "best" one
-      const first = pickPreferred(rotationList.map(x=>({name:x.name,url:x.url})));
+      // first image preference
+      const first = pickPreferred(rotationList);
       rotationIndex = Math.max(0, rotationList.findIndex(x=>x.url===first.url));
       setMainImage(rotationList[rotationIndex].url, `assets/exploration map • ${rotationList[rotationIndex].name}`);
       highlightThumb(rotationList[rotationIndex].url);
 
-      // Fade-in order: main image first, then text
-      const revealText = ()=>{
-        // wait a short moment after image becomes visible
-        setTimeout(()=>textBlock.classList.remove("out"), 220);
-      };
+      // Reveal text panel AFTER first image is visible (minimal professional)
       mainImg.onload = ()=>{
         mainImg.classList.add("ready");
-        revealText();
+        setTimeout(()=>textBlock.classList.remove("out"), 220);
       };
 
       startRotation();
     }
 
     async function init(){
+      // Default language start TH (change if you prefer)
+      setLang("th");
+      runIntroOnce();
+
       try{
-        // If ASSETS.s6 is provided (raw urls), use it directly
         if(Array.isArray(ASSETS.s6) && ASSETS.s6.length){
           rotationList = ASSETS.s6.map((url,i)=>({
             url,
             name: `custom-${String(i+1).padStart(2,"0")}`
           }));
 
-          // thumbs: fixed if provided, else first 3 of rotation
           thumbs.innerHTML="";
           const fixedThumbs = [ASSETS.s6_thumb1, ASSETS.s6_thumb2, ASSETS.s6_thumb3].filter(Boolean);
           const thumbList = fixedThumbs.length ? fixedThumbs : rotationList.slice(0,3).map(x=>x.url);
@@ -650,7 +740,6 @@
           setMainImage(rotationList[0].url, "ASSETS.s6");
           highlightThumb(rotationList[0].url);
 
-          // image first then text
           mainImg.onload = ()=>{
             mainImg.classList.add("ready");
             setTimeout(()=>textBlock.classList.remove("out"), 220);
@@ -663,7 +752,7 @@
       } catch(err){
         imgMeta.textContent = err.message;
         console.error(err);
-        // still reveal text panel so user can read
+        // still show text if image load fails
         setTimeout(()=>textBlock.classList.remove("out"), 220);
       }
     }
