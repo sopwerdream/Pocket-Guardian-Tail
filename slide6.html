@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Guardian Tail — Slide 6</title>
+
+  <!-- Global Zoom UI (Browser-like) -->
+  <link rel="stylesheet" href="ui.css" />
+
+  <style>
+    :root{
+      --fg:#fff;
+      --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.18);
+      --glass:rgba(0,0,0,.40);
+      --btn:rgba(0,0,0,.35);
+      --btnHover:rgba(0,0,0,.55);
+      --accent:#e08a2e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+      color:var(--fg);
+      background:#000;
+      overflow:hidden;
+    }
+
+    /* Slide 6 ambience */
+    .bg{
+      position:fixed; inset:0; z-index:-4;
+      background:
+        radial-gradient(900px 520px at 20% 25%, rgba(80,120,255,.18), transparent 60%),
+        radial-gradient(900px 520px at 80% 28%, rgba(255,180,80,.14), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.86));
+    }
+
+    /* Language toggle */
+    .lang{
+      position:fixed;
+      top:22px; right:22px;
+      display:flex; gap:8px;
+      z-index:1000;
+    }
+    .lang button{
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.35);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:8px;
+      font-weight:900;
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      opacity:.78;
+    }
+    .lang button.active{
+      opacity:1;
+      background:var(--accent);
+      border-color:var(--accent);
+    }
+
+    /* Layout */
+    .wrap{
+      height:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:70px 22px 22px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .grid{
+      flex:1;
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:16px;
+      min-height:0;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background:var(--glass);
+      border-radius:16px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 30px 80px rgba(0,0,0,.35);
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      background:rgba(0,0,0,.25);
+      width:fit-content;
+      color:var(--muted);
+      font-size:12px;
+      backdrop-filter: blur(10px);
+      margin:18px 18px 0;
+    }
+    .kicker b{color:#fff}
+
+    /* Left: visual panel */
+    .left{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    .visualArea{
+      padding:14px 18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex:1;
+      min-height:0;
+    }
+    .frame{
+      position:relative;
+      flex:1;
+      min-height:0;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(0,0,0,.22);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+    .mainImg{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      opacity:0;
+      transition:opacity .55s ease;
+    }
+    .mainImg.ready{ opacity:1; }
+
+    .overlayLabel{
+      position:absolute;
+      left:12px; top:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .imgMeta{
+      position:absolute;
+      left:12px; bottom:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .thumbs{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:4px;
+    }
+    .thumb{
+      flex:0 0 auto;
+      width:150px;
+      height:84px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      cursor:pointer;
+      position:relative;
+      opacity:.92;
+    }
+    .thumb:hover{opacity:1}
+    .thumb.active{ outline:2px solid rgba(224,138,46,.9); }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .thumb .tcap{
+      position:absolute;
+      left:8px; bottom:8px;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);
+      color:rgba(255,255,255,.88);
+      backdrop-filter: blur(10px);
+      max-width: calc(100% - 16px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    /* Right: text */
+    .right{
+      padding:18px 18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height:0;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height:1.12;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top:-6px;
+    }
+    .panel{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:14px 14px 12px;
+      min-height:0;
+      overflow:auto;
+    }
+    .panel h3{
+      margin:0 0 10px 0;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      opacity:.92;
+    }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color: rgba(255,255,255,.86);
+      font-size:14.5px;
+      line-height:1.65;
+    }
+    li{ margin: 7px 0; }
+
+    /* Minimal animation (image first, then text) */
+    .fade{
+      transition: opacity .28s ease, transform .28s ease;
+      opacity:1;
+      transform: translateY(0);
+    }
+    .fade.out{
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    /* Navigation */
+    .nav{
+      margin-top:auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.14);
+    }
+    .navHint{
+      color:var(--muted);
+      font-size:12px;
+      user-select:none;
+    }
+    .btn{
+      border:1px solid rgba(255,255,255,.25);
+      background:var(--btn);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:900;
+      cursor:pointer;
+      letter-spacing:.2px;
+      backdrop-filter:blur(10px);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{background:var(--btnHover)}
+    .btn.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+    }
+
+    @media (max-width: 980px){
+      .wrap{ padding-top:64px; }
+      .grid{ grid-template-columns:1fr; }
+      .thumb{ width:140px; height:78px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <div id="pageRoot">
+    <div class="lang">
+      <button id="btnEN" class="active" type="button">EN</button>
+      <button id="btnTH" type="button">TH</button>
+    </div>
+
+    <div class="wrap">
+      <div class="grid">
+        <!-- LEFT -->
+        <section class="card left">
+          <div class="kicker" id="kicker">Slide 6 / <b>Exploration Mode</b> <span style="opacity:.75">•</span> <span id="totalHint" style="opacity:.75">6/10</span></div>
+
+          <div class="visualArea">
+            <div class="frame">
+              <img id="mainImg" class="mainImg" alt="Exploration visual" />
+              <div class="overlayLabel" id="overlayLabel">Isometric Exploration (Camera locked + slight rotate)</div>
+              <div class="imgMeta" id="imgMeta">Loading…</div>
+            </div>
+
+            <div class="thumbs" id="thumbs" aria-label="thumbnails"></div>
+          </div>
+        </section>
+
+        <!-- RIGHT -->
+        <aside class="card right">
+          <div id="textBlock" class="fade out">
+            <h1 id="title">Exploration Mode</h1>
+            <div class="sub" id="subtitle">Isometric diorama navigation → encounter → tactical battle</div>
+
+            <div class="panel">
+              <h3 id="head">Overview</h3>
+              <ul id="bullets"></ul>
+            </div>
+          </div>
+
+          <div class="nav">
+            <div class="navHint">Back → Slide 5 • Next → Slide 7</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+              <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <!-- Global Zoom -->
+  <script src="ui.js"></script>
+
+  <script>
+    /* ==========================================================
+      Slide 6 Asset Config (RAW GitHub URLs)
+      - Replace easily by pasting direct raw URLs here.
+      - If left empty, it will auto-pull from repo folders.
+    ========================================================== */
+    const ASSETS = {
+      // Main rotation list (recommended): put 3–8 RAW URLs here
+      // Example:
+      // s6: [
+      //   "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/exploration%20map/xxx.png",
+      // ]
+      s6: [],
+
+      // Optional fixed thumbs (RAW URLs). If empty, auto-thumbs will be used.
+      s6_thumb1: "",
+      s6_thumb2: "",
+      s6_thumb3: ""
+    };
+
+    const OWNER="sopwerdream";
+    const REPO="Pocket-Guardian-Tail";
+    const BRANCH="main";
+
+    const BACK_PAGE="slide5.html";
+    const NEXT_PAGE="slide7.html"; // placeholder (create later)
+
+    // Slide indicator (edit total if needed)
+    const SLIDE_NO = 6;
+    const TOTAL_SLIDES = 10;
+
+    const COPY = {
+      th:{
+        kicker:`Slide ${SLIDE_NO} / `,
+        title:"Exploration Mode",
+        subtitle:"เดินสำรวจโลกแบบไดโอราม่า → เจอศัตรู → เข้าสู่ Tactical Battle",
+        head:"รายละเอียด (Exploration Mode)",
+        overlay:"Isometric Exploration (Camera locked + slight rotate)",
+        bullets:[
+          "Exploration Mode คือการ “เดินสำรวจโลก” ในมุมมอง Isometric 3D แบบ Diorama",
+          "กล้อง “ล็อกเป็นหลัก” แต่หมุนได้เล็กน้อยเพื่ออ่านพื้นที่และวางแผนเส้นทาง",
+          "มี Light Platforming: วิ่ง / กระโดด / ข้ามสิ่งกีดขวาง",
+          "มี Monster / Alien Encounter Node ให้เห็นบนแผนที่ (จุดเสี่ยง/จุดรางวัล)",
+          "เมื่อผู้เล่น “เข้าใกล้ศัตรู” → เปลี่ยนเข้าสู่ Turn-Based Tactical Battle",
+          "มี Pocket Home Portal: พัก/ฟื้นฟู, อัปเกรด, เรียกตัวละคร Support"
+        ]
+      },
+      en:{
+        kicker:`Slide ${SLIDE_NO} / `,
+        title:"Exploration Mode",
+        subtitle:"Isometric diorama navigation → encounters → tactical battle",
+        head:"Overview (Exploration Mode)",
+        overlay:"Isometric Exploration (Camera locked + slight rotate)",
+        bullets:[
+          "Explore a fragile pocket world in an isometric 3D diorama view.",
+          "Camera is mostly locked, with slight rotation for readability and planning.",
+          "Light platforming traversal: run / jump / cross obstacles.",
+          "Visible encounter nodes (risk/reward points) on the map.",
+          "Approach an enemy → transition into turn-based tactical battle.",
+          "Pocket Home portal: rest/recover, upgrades, and support character calls."
+        ]
+      }
+    };
+
+    // UI refs
+    const btnEN=document.getElementById("btnEN");
+    const btnTH=document.getElementById("btnTH");
+    const titleEl=document.getElementById("title");
+    const subtitleEl=document.getElementById("subtitle");
+    const headEl=document.getElementById("head");
+    const bulletsEl=document.getElementById("bullets");
+    const overlayLabel=document.getElementById("overlayLabel");
+    const textBlock=document.getElementById("textBlock");
+    const mainImg=document.getElementById("mainImg");
+    const imgMeta=document.getElementById("imgMeta");
+    const thumbs=document.getElementById("thumbs");
+    const totalHint=document.getElementById("totalHint");
+    totalHint.textContent = `${SLIDE_NO}/${TOTAL_SLIDES}`;
+
+    document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
+    document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
+
+    window.addEventListener("keydown",(e)=>{
+      if(e.key==="ArrowLeft") location.href=BACK_PAGE;
+      if(e.key==="ArrowRight") location.href=NEXT_PAGE;
+    });
+
+    function renderBullets(arr){
+      bulletsEl.innerHTML = arr.map(t=>`<li>${t}</li>`).join("");
+    }
+
+    function setLang(lang){
+      textBlock.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+        titleEl.textContent = c.title;
+        subtitleEl.textContent = c.subtitle;
+        headEl.textContent = c.head;
+        overlayLabel.textContent = c.overlay;
+        renderBullets(c.bullets);
+
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+        textBlock.classList.remove("out");
+      }, 170);
+    }
+
+    btnEN.onclick=()=>setLang("en");
+    btnTH.onclick=()=>setLang("th");
+    setLang("th");
+
+    // ---- GitHub helpers
+    function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
+
+    async function gh(path){
+      const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
+      const res=await fetch(api,{headers:{Accept:"application/vnd.github+json"}});
+      if(!res.ok) throw new Error(`GitHub API failed (${res.status}) for ${path}`);
+      return await res.json();
+    }
+
+    function pickPreferred(images){
+      // Prefer isometric/exploration keywords
+      const lower = images.map(x=>({ ...x, l:x.name.toLowerCase() }));
+      return lower.find(x=>x.l.includes("isometric")) ||
+             lower.find(x=>x.l.includes("explor")) ||
+             lower.find(x=>x.l.includes("map")) ||
+             lower[0];
+    }
+
+    // ---- Slide 6 image rotation
+    let rotationList = [];
+    let rotationIndex = 0;
+    let rotationTimer = null;
+
+    function setMainImage(url, label){
+      // Fade switch (minimal)
+      mainImg.classList.remove("ready");
+      // wait a tick for opacity transition
+      setTimeout(()=>{
+        mainImg.onload = ()=>{
+          mainImg.classList.add("ready");
+          // reveal text after first image loaded
+          if(textBlock.classList.contains("out")){
+            // keep text out until first image is visible
+          }
+        };
+        mainImg.src = url;
+        imgMeta.textContent = label || url.split("/").slice(-1)[0];
+      }, 60);
+    }
+
+    function startRotation(){
+      if(rotationTimer) clearInterval(rotationTimer);
+      if(rotationList.length <= 1) return;
+      rotationTimer = setInterval(()=>{
+        rotationIndex = (rotationIndex + 1) % rotationList.length;
+        const item = rotationList[rotationIndex];
+        setMainImage(item.url, `assets/exploration map • ${item.name}`);
+        highlightThumb(item.url);
+      }, 3800); // subtle pacing
+    }
+
+    function highlightThumb(url){
+      [...thumbs.querySelectorAll(".thumb")].forEach(t=>{
+        t.classList.toggle("active", t.dataset.url === url);
+      });
+    }
+
+    function addThumb(url, cap){
+      const el = document.createElement("div");
+      el.className="thumb";
+      el.dataset.url=url;
+
+      const img=document.createElement("img");
+      img.src=url;
+
+      const tcap=document.createElement("div");
+      tcap.className="tcap";
+      tcap.textContent=cap;
+
+      el.appendChild(img);
+      el.appendChild(tcap);
+
+      el.onclick=()=>{
+        // manual select: stop auto-rotation briefly then resume
+        const idx = rotationList.findIndex(x=>x.url===url);
+        if(idx>=0) rotationIndex=idx;
+        setMainImage(url, cap);
+        highlightThumb(url);
+        startRotation();
+      };
+
+      thumbs.appendChild(el);
+    }
+
+    async function autoLoadFromRepo(){
+      // 1) Build main rotation list from exploration map
+      const expFiles = await gh("assets/exploration map");
+      const expImgs = expFiles
+        .filter(x=>x.type==="file" && isImage(x.name))
+        .map(x=>({name:x.name, url:x.download_url}));
+
+      if(!expImgs.length) throw new Error("No exploration images found in assets/exploration map");
+
+      // pick 5–8 images for rotation (stable-ish random)
+      const pool = [...expImgs];
+      pool.sort(()=>Math.random()-0.5);
+      rotationList = pool.slice(0, Math.min(8, Math.max(5, pool.length)));
+
+      // 2) Thumbnails: prefer 2–3 from cover/menu if available, else from exploration
+      let thumbUrls = [];
+      const fixedThumbs = [ASSETS.s6_thumb1, ASSETS.s6_thumb2, ASSETS.s6_thumb3].filter(Boolean);
+      if(fixedThumbs.length){
+        thumbUrls = fixedThumbs.map(u=>({url:u, cap:"thumb"}));
+      } else {
+        // try cover folders
+        let extra = [];
+        try{
+          const cover1 = await gh("assets/cover 01_First page cover image");
+          extra.push(...cover1.filter(x=>x.type==="file"&&isImage(x.name)).map(x=>({name:x.name,url:x.download_url,cap:"Cover"})));
+        }catch(e){}
+        try{
+          const cover2 = await gh("assets/cover 02_Concept Visual for the Menu");
+          extra.push(...cover2.filter(x=>x.type==="file"&&isImage(x.name)).map(x=>({name:x.name,url:x.download_url,cap:"Menu"})));
+        }catch(e){}
+
+        extra = extra.slice(0,3);
+        const expThumbs = rotationList.slice(0,3).map(x=>({name:x.name,url:x.url,cap:"Exploration"}));
+
+        const combined = [...extra, ...expThumbs].slice(0,3);
+        thumbUrls = combined.map(x=>({url:x.url, cap:`${x.cap} • ${x.name}`}));
+      }
+
+      // Render thumbs (unique urls)
+      thumbs.innerHTML="";
+      const used = new Set();
+      for(const t of thumbUrls){
+        if(used.has(t.url)) continue;
+        used.add(t.url);
+        addThumb(t.url, t.cap);
+      }
+
+      // Ensure there is at least one thumb for main
+      if(!thumbUrls.length){
+        addThumb(rotationList[0].url, `assets/exploration map • ${rotationList[0].name}`);
+      }
+
+      // Set first image: prefer a "best" one
+      const first = pickPreferred(rotationList.map(x=>({name:x.name,url:x.url})));
+      rotationIndex = Math.max(0, rotationList.findIndex(x=>x.url===first.url));
+      setMainImage(rotationList[rotationIndex].url, `assets/exploration map • ${rotationList[rotationIndex].name}`);
+      highlightThumb(rotationList[rotationIndex].url);
+
+      // Fade-in order: main image first, then text
+      const revealText = ()=>{
+        // wait a short moment after image becomes visible
+        setTimeout(()=>textBlock.classList.remove("out"), 220);
+      };
+      mainImg.onload = ()=>{
+        mainImg.classList.add("ready");
+        revealText();
+      };
+
+      startRotation();
+    }
+
+    async function init(){
+      try{
+        // If ASSETS.s6 is provided (raw urls), use it directly
+        if(Array.isArray(ASSETS.s6) && ASSETS.s6.length){
+          rotationList = ASSETS.s6.map((url,i)=>({
+            url,
+            name: `custom-${String(i+1).padStart(2,"0")}`
+          }));
+
+          // thumbs: fixed if provided, else first 3 of rotation
+          thumbs.innerHTML="";
+          const fixedThumbs = [ASSETS.s6_thumb1, ASSETS.s6_thumb2, ASSETS.s6_thumb3].filter(Boolean);
+          const thumbList = fixedThumbs.length ? fixedThumbs : rotationList.slice(0,3).map(x=>x.url);
+          thumbList.forEach((u,idx)=>addThumb(u, `S6 • ${idx+1}`));
+
+          rotationIndex = 0;
+          setMainImage(rotationList[0].url, "ASSETS.s6");
+          highlightThumb(rotationList[0].url);
+
+          // image first then text
+          mainImg.onload = ()=>{
+            mainImg.classList.add("ready");
+            setTimeout(()=>textBlock.classList.remove("out"), 220);
+          };
+
+          startRotation();
+        } else {
+          await autoLoadFromRepo();
+        }
+      } catch(err){
+        imgMeta.textContent = err.message;
+        console.error(err);
+        // still reveal text panel so user can read
+        setTimeout(()=>textBlock.classList.remove("out"), 220);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
