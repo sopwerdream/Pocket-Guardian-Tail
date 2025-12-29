@@ -1,64 +1,69 @@
 (function(){
-  const STORAGE_KEY = "pageScale";
-  const MIN = 0.75, MAX = 1.35, STEP = 0.10;
-  const clamp = (v)=>Math.max(MIN, Math.min(MAX, v));
+  const KEY="pageZoom";
+  const MIN=0.75, MAX=1.50, STEP=0.10;
 
-  function getScale(){
-    const raw = sessionStorage.getItem(STORAGE_KEY);
-    const v = raw ? Number(raw) : 1;
-    return Number.isFinite(v) ? clamp(v) : 1;
-  }
+  const clamp=(v)=>Math.max(MIN, Math.min(MAX, v));
+  const get=()=>{
+    const raw=sessionStorage.getItem(KEY);
+    const v=raw?Number(raw):1;
+    return Number.isFinite(v)?clamp(v):1;
+  };
 
-  function setScale(v){
-    const scale = clamp(v);
-    document.documentElement.style.setProperty("--page-scale", scale.toFixed(2));
-    sessionStorage.setItem(STORAGE_KEY, String(scale));
-    const pill = document.getElementById("zoomPill");
-    if(pill) pill.textContent = `Zoom: ${Math.round(scale*100)}%`;
+  function apply(v){
+    const z=clamp(v);
+    document.documentElement.style.setProperty("--page-zoom", z.toFixed(2));
+    sessionStorage.setItem(KEY, String(z));
+
+    const pill=document.getElementById("zoomPill");
+    if(pill) pill.textContent = `Zoom: ${Math.round(z*100)}%`;
   }
 
   function mountControls(){
-    // ถ้าคุณมีปุ่มซูมของคุณเองอยู่แล้ว จะไม่สร้างซ้ำ
     if(document.getElementById("zoomCtl")) return;
 
-    const ctl = document.createElement("div");
-    ctl.className = "zoomCtl"; ctl.id="zoomCtl";
+    const ctl=document.createElement("div");
+    ctl.className="zoomCtl";
+    ctl.id="zoomCtl";
 
-    const btnOut = document.createElement("button");
-    btnOut.type="button"; btnOut.textContent="−"; btnOut.title="Zoom out";
+    const out=document.createElement("button");
+    out.type="button"; out.textContent="−"; out.title="Zoom out";
 
-    const btnIn = document.createElement("button");
-    btnIn.type="button"; btnIn.textContent="+"; btnIn.title="Zoom in";
+    const inn=document.createElement("button");
+    inn.type="button"; inn.textContent="+"; inn.title="Zoom in";
 
-    const btnReset = document.createElement("button");
-    btnReset.type="button"; btnReset.textContent="Reset"; btnReset.title="Reset 100%";
+    const reset=document.createElement("button");
+    reset.type="button"; reset.textContent="Reset"; reset.title="Reset 100%";
 
-    const pill = document.createElement("span");
+    const pill=document.createElement("span");
     pill.className="pill"; pill.id="zoomPill"; pill.textContent="Zoom: 100%";
 
-    btnOut.addEventListener("click", ()=>setScale(getScale()-STEP));
-    btnIn.addEventListener("click", ()=>setScale(getScale()+STEP));
-    btnReset.addEventListener("click", ()=>setScale(1));
+    out.onclick=()=>apply(get()-STEP);
+    inn.onclick=()=>apply(get()+STEP);
+    reset.onclick=()=>apply(1);
 
-    ctl.append(btnOut, btnIn, btnReset, pill);
+    ctl.append(out, inn, reset, pill);
     document.body.appendChild(ctl);
 
-    // คีย์ลัดแบบ browser: Ctrl/Cmd + / - / 0
+    // คีย์ลัดเหมือน browser
     window.addEventListener("keydown",(e)=>{
-      if((e.ctrlKey||e.metaKey) && (e.key==="+"||e.key==="=")){ e.preventDefault(); setScale(getScale()+STEP); }
-      if((e.ctrlKey||e.metaKey) && e.key==="-" ){ e.preventDefault(); setScale(getScale()-STEP); }
-      if((e.ctrlKey||e.metaKey) && e.key==="0" ){ e.preventDefault(); setScale(1); }
+      if((e.ctrlKey||e.metaKey) && (e.key==="+"||e.key==="=")){ e.preventDefault(); apply(get()+STEP); }
+      if((e.ctrlKey||e.metaKey) && e.key==="-" ){ e.preventDefault(); apply(get()-STEP); }
+      if((e.ctrlKey||e.metaKey) && e.key==="0" ){ e.preventDefault(); apply(1); }
     });
   }
 
   document.addEventListener("DOMContentLoaded", ()=>{
-    // บังคับให้ทุกอย่างอยู่ใน #pageRoot เพื่อ scale ทั้งหน้า
+    // ถ้ายังไม่มี #pageRoot ให้ครอบทุกอย่างอัตโนมัติ
     if(!document.getElementById("pageRoot")){
-      const root=document.createElement("div"); root.id="pageRoot";
+      const root=document.createElement("div");
+      root.id="pageRoot";
       while(document.body.firstChild){ root.appendChild(document.body.firstChild); }
       document.body.appendChild(root);
     }
-    setScale(getScale());
+
+    // IMPORTANT: ให้ปุ่มซูมอยู่ “นอก” #pageRoot เพื่อไม่โดน zoom
+    // (เพราะเราจะ append controls หลังจาก #pageRoot อยู่แล้ว)
     mountControls();
+    apply(get());
   });
 })();
