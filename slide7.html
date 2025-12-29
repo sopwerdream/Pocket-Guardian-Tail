@@ -303,46 +303,7 @@
       border-color:var(--accent);
     }
 
-    /* Intro overlay */
-    .introOverlay{
-      position:fixed;
-      inset:0;
-      z-index:2000;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      background:
-        radial-gradient(900px 520px at 50% 40%, rgba(255,255,255,.06), transparent 60%),
-        rgba(0,0,0,.78);
-      backdrop-filter: blur(10px);
-      transition: opacity .55s ease, transform .55s ease;
-      opacity:1;
-    }
-    .introOverlay.hide{
-      opacity:0;
-      transform: translateY(8px);
-      pointer-events:none;
-    }
-    .introText{
-      text-align:center;
-      padding:20px 22px;
-      border-radius:18px;
-      border:1px solid rgba(255,255,255,.16);
-      background: rgba(0,0,0,.35);
-      box-shadow: 0 30px 90px rgba(0,0,0,.45);
-      max-width:min(760px, 92vw);
-    }
-    .introText h2{
-      margin:0;
-      font-size: clamp(28px, 4vw, 54px);
-      font-weight: 950;
-      letter-spacing:.2px;
-    }
-    .introText p{
-      margin:10px 0 0;
-      color: rgba(255,255,255,.78);
-      font-size: 14px;
-    }
+
 
     @media (max-width: 980px){
       .wrap{ padding-top:64px; }
@@ -355,13 +316,7 @@
 <body>
   <div class="bg"></div>
 
-  <!-- Intro Title Card -->
-  <div class="introOverlay" id="introOverlay" aria-label="intro">
-    <div class="introText">
-      <h2 id="introTitle"></h2>
-      <p id="introSub"></p>
-    </div>
-  </div>
+
 
   <div id="pageRoot">
     <div class="lang">
