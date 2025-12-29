@@ -1,0 +1,55 @@
+/* ===============================
+   Global UI Preset (Small / Medium / Large)
+   =============================== */
+
+:root{
+  --ui-scale: 1; /* S=0.9 | M=1.0 | L=1.15 */
+}
+
+/* ---------- Preset Button ---------- */
+.presetBtn{
+  position: fixed;
+  top: 22px;
+  right: 170px; /* เว้นที่ให้ปุ่มภาษา */
+  z-index: 20;
+
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.35);
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 900;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  opacity: .85;
+  transition: opacity .15s ease, transform .15s ease;
+}
+
+.presetBtn:hover{
+  opacity: 1;
+  transform: translateY(-1px);
+}
+
+/* ---------- Apply scale to CONTENT only ---------- */
+/* Slide 1 (text block left) */
+.content, .content *{
+  font-size: calc(1em * var(--ui-scale));
+}
+
+/* Slide 2 (right text panel) */
+.rightText, .rightText *{
+  font-size: calc(1em * var(--ui-scale));
+}
+
+/* Slide 3 (left text column) */
+.left, .left *{
+  font-size: calc(1em * var(--ui-scale));
+}
+
+/* ---------- Mobile tweak ---------- */
+@media (max-width: 900px){
+  .presetBtn{
+    right: 140px;
+    padding: 6px 10px;
+  }
+}
