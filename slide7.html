@@ -1,0 +1,739 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Guardian Tail — Slide 7</title>
+
+  <!-- Global Zoom UI -->
+  <link rel="stylesheet" href="ui.css" />
+
+  <style>
+    :root{
+      --fg:#fff;
+      --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.18);
+      --glass:rgba(0,0,0,.40);
+      --btn:rgba(0,0,0,.35);
+      --btnHover:rgba(0,0,0,.55);
+      --accent:#e08a2e;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+      color:var(--fg);
+      background:#000;
+      overflow:hidden;
+    }
+
+    /* Slide 7 ambience (battle-ish) */
+    .bg{
+      position:fixed; inset:0; z-index:-4;
+      background:
+        radial-gradient(900px 520px at 20% 25%, rgba(255,80,80,.14), transparent 60%),
+        radial-gradient(900px 520px at 80% 28%, rgba(120,180,255,.14), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.86));
+    }
+
+    /* Language toggle */
+    .lang{
+      position:fixed;
+      top:22px; right:22px;
+      display:flex; gap:8px;
+      z-index:1000;
+    }
+    .lang button{
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.35);
+      color:#fff;
+      padding:6px 12px;
+      border-radius:8px;
+      font-weight:900;
+      cursor:pointer;
+      backdrop-filter:blur(10px);
+      opacity:.78;
+    }
+    .lang button.active{
+      opacity:1;
+      background:var(--accent);
+      border-color:var(--accent);
+    }
+
+    /* Layout */
+    .wrap{
+      height:100%;
+      max-width:1200px;
+      margin:0 auto;
+      padding:70px 22px 22px;
+      display:flex;
+      flex-direction:column;
+      gap:16px;
+    }
+    .grid{
+      flex:1;
+      display:grid;
+      grid-template-columns:1.08fr .92fr;
+      gap:16px;
+      min-height:0;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background:var(--glass);
+      border-radius:16px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 30px 80px rgba(0,0,0,.35);
+      overflow:hidden;
+      min-height:0;
+    }
+
+    .kicker{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      background:rgba(0,0,0,.25);
+      width:fit-content;
+      color:var(--muted);
+      font-size:12px;
+      backdrop-filter: blur(10px);
+      margin:18px 18px 0;
+    }
+    .kicker b{color:#fff}
+
+    /* Left: visual panel */
+    .left{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    .visualArea{
+      padding:14px 18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      flex:1;
+      min-height:0;
+    }
+    .frame{
+      position:relative;
+      flex:1;
+      min-height:0;
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:16px;
+      overflow:hidden;
+      background:rgba(0,0,0,.22);
+      box-shadow: 0 18px 50px rgba(0,0,0,.28);
+    }
+    .mainImg{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      opacity:0;
+      transition:opacity .55s ease;
+    }
+    .mainImg.ready{ opacity:1; }
+
+    .overlayLabel{
+      position:absolute;
+      left:12px; top:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      user-select:none;
+    }
+    .imgMeta{
+      position:absolute;
+      left:12px; bottom:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    .thumbs{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:4px;
+    }
+    .thumb{
+      flex:0 0 auto;
+      width:150px;
+      height:84px;
+      border-radius:12px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.18);
+      cursor:pointer;
+      position:relative;
+      opacity:.92;
+    }
+    .thumb:hover{opacity:1}
+    .thumb.active{ outline:2px solid rgba(224,138,46,.9); }
+    .thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .thumb .tcap{
+      position:absolute;
+      left:8px; bottom:8px;
+      font-size:11px;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.35);
+      color:rgba(255,255,255,.88);
+      backdrop-filter: blur(10px);
+      max-width: calc(100% - 16px);
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+
+    /* Right: text */
+    .right{
+      padding:18px 18px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height:0;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(24px, 3vw, 36px);
+      line-height:1.12;
+      letter-spacing:.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      margin-top:-6px;
+    }
+    .panel{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:14px;
+      padding:14px 14px 12px;
+      min-height:0;
+      overflow:auto;
+    }
+    .panel h3{
+      margin:0 0 10px 0;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      opacity:.92;
+    }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color: rgba(255,255,255,.86);
+      font-size:14.5px;
+      line-height:1.65;
+    }
+    li{ margin: 7px 0; }
+
+    /* Minimal animation (image first, then text panel) */
+    .fade{
+      transition: opacity .28s ease, transform .28s ease;
+      opacity:1;
+      transform: translateY(0);
+    }
+    .fade.out{
+      opacity:0;
+      transform: translateY(10px);
+    }
+
+    /* Navigation */
+    .nav{
+      margin-top:auto;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding-top:14px;
+      border-top:1px solid rgba(255,255,255,.14);
+    }
+    .navHint{
+      color:var(--muted);
+      font-size:12px;
+      user-select:none;
+    }
+    .btn{
+      border:1px solid rgba(255,255,255,.25);
+      background:var(--btn);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:900;
+      cursor:pointer;
+      letter-spacing:.2px;
+      backdrop-filter:blur(10px);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{background:var(--btnHover)}
+    .btn.primary{
+      background:var(--accent);
+      border-color:var(--accent);
+    }
+
+    /* Intro overlay */
+    .introOverlay{
+      position:fixed;
+      inset:0;
+      z-index:2000;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      background:
+        radial-gradient(900px 520px at 50% 40%, rgba(255,255,255,.06), transparent 60%),
+        rgba(0,0,0,.78);
+      backdrop-filter: blur(10px);
+      transition: opacity .55s ease, transform .55s ease;
+      opacity:1;
+    }
+    .introOverlay.hide{
+      opacity:0;
+      transform: translateY(8px);
+      pointer-events:none;
+    }
+    .introText{
+      text-align:center;
+      padding:20px 22px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(0,0,0,.35);
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      max-width:min(760px, 92vw);
+    }
+    .introText h2{
+      margin:0;
+      font-size: clamp(28px, 4vw, 54px);
+      font-weight: 950;
+      letter-spacing:.2px;
+    }
+    .introText p{
+      margin:10px 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: 14px;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ padding-top:64px; }
+      .grid{ grid-template-columns:1fr; }
+      .thumb{ width:140px; height:78px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <!-- Intro Title Card -->
+  <div class="introOverlay" id="introOverlay" aria-label="intro">
+    <div class="introText">
+      <h2 id="introTitle"></h2>
+      <p id="introSub"></p>
+    </div>
+  </div>
+
+  <div id="pageRoot">
+    <div class="lang">
+      <button id="btnEN" class="active" type="button">EN</button>
+      <button id="btnTH" type="button">TH</button>
+    </div>
+
+    <div class="wrap">
+      <div class="grid">
+        <!-- LEFT -->
+        <section class="card left">
+          <div class="kicker" id="kicker">
+            <span id="kickerLeft"></span>
+            <b id="kickerTitle"></b>
+            <span style="opacity:.75">•</span>
+            <span id="totalHint" style="opacity:.75"></span>
+          </div>
+
+          <div class="visualArea">
+            <div class="frame">
+              <img id="mainImg" class="mainImg" alt="Battle visual" />
+              <div class="overlayLabel" id="overlayLabel"></div>
+              <div class="imgMeta" id="imgMeta">Loading…</div>
+            </div>
+
+            <div class="thumbs" id="thumbs" aria-label="thumbnails"></div>
+          </div>
+        </section>
+
+        <!-- RIGHT -->
+        <aside class="card right">
+          <div id="textBlock" class="fade out">
+            <h1 id="title"></h1>
+            <div class="sub" id="subtitle"></div>
+
+            <div class="panel">
+              <h3 id="head"></h3>
+              <ul id="bullets"></ul>
+            </div>
+          </div>
+
+          <div class="nav">
+            <div class="navHint" id="navHint"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+              <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </div>
+
+  <script src="ui.js"></script>
+
+  <script>
+    /* ==========================================================
+      Slide 7 Asset Config (RAW GitHub URLs)
+      - If ASSETS.s7 is empty: auto-load from repo folders.
+    ========================================================== */
+    const ASSETS = {
+      // s7: [
+      //   "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/Battle%20Arena%20map%20for%20battle%20scenes/xxx.png",
+      // ],
+      s7: [],
+      s7_thumb1: "",
+      s7_thumb2: "",
+      s7_thumb3: "",
+      introHoldMs: 1400,   // how long to keep intro text
+      introEndMs: 2200     // when to remove intro overlay
+    };
+
+    const OWNER="sopwerdream";
+    const REPO="Pocket-Guardian-Tail";
+    const BRANCH="main";
+
+    const BACK_PAGE="slide6.html";
+    const NEXT_PAGE="slide8.html"; // placeholder
+
+    const SLIDE_NO = 7;
+    const TOTAL_SLIDES = 10;
+
+    const COPY = {
+      th:{
+        introTitle:"เกมเพลย์โหมด",
+        introSub:"Tactical Battle",
+
+        kickerLeft:`Slide ${SLIDE_NO} /`,
+        kickerTitle:"Tactical Battle",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
+        title:"Tactical Battle",
+        subtitle:"ผลัดตา • ตำแหน่ง • สกิล • การตัดสินใจที่มีผลจริง",
+        head:"รายละเอียด (TACTICAL BATTLE)",
+        overlay:"Turn-Based Tactical Battle (Positioning + Skills + Synergy)",
+        navHint:"Back → Slide 6 • Next → Slide 8",
+        bullets:[
+          "เข้าสู่ฉากต่อสู้เมื่อผู้เล่น “เข้าใกล้ศัตรู” จาก Exploration Mode",
+          "ระบบผลัดตา: คิดก่อนทำ วางตำแหน่ง และเลือกสกิลให้เหมาะกับสถานการณ์",
+          "มี Terrain / พื้นที่สำคัญ: ทางแคบ, จุดสูง, อุปสรรค ช่วยสร้างการตัดสินใจเชิงกลยุทธ์",
+          "Synergy ระหว่างผู้พิทักษ์: บัฟ/ดีบัฟ/คอมโบ เพื่อชนะด้วยแผน ไม่ใช่แค่ค่า Stat",
+          "รางวัลหลังชนะ: วัตถุดิบ/อัปเกรด/ปลดล็อกเส้นทาง → กลับไป Explore ต่อ"
+        ],
+      },
+      en:{
+        introTitle:"Gameplay Mode",
+        introSub:"Tactical Battle",
+
+        kickerLeft:`Slide ${SLIDE_NO} /`,
+        kickerTitle:"Tactical Battle",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
+        title:"Tactical Battle",
+        subtitle:"Turn-based • Positioning • Skills • Meaningful decisions",
+        head:"Overview (TACTICAL BATTLE)",
+        overlay:"Turn-Based Tactical Battle (Positioning + Skills + Synergy)",
+        navHint:"Back → Slide 6 • Next → Slide 8",
+        bullets:[
+          "Triggered when players approach an enemy during Exploration mode.",
+          "Turn-based tactics: plan actions, manage positioning, and choose skills wisely.",
+          "Terrain matters: choke points, elevations, obstacles create strategic choices.",
+          "Guardian synergy: buffs/debuffs/combos to win through planning, not raw stats.",
+          "Post-battle rewards feed progression, unlocking upgrades and new exploration routes."
+        ],
+      }
+    };
+
+    // Refs
+    const btnEN=document.getElementById("btnEN");
+    const btnTH=document.getElementById("btnTH");
+
+    const kickerLeft=document.getElementById("kickerLeft");
+    const kickerTitle=document.getElementById("kickerTitle");
+    const totalHint=document.getElementById("totalHint");
+
+    const titleEl=document.getElementById("title");
+    const subtitleEl=document.getElementById("subtitle");
+    const headEl=document.getElementById("head");
+    const bulletsEl=document.getElementById("bullets");
+    const overlayLabel=document.getElementById("overlayLabel");
+    const navHint=document.getElementById("navHint");
+    const textBlock=document.getElementById("textBlock");
+
+    const mainImg=document.getElementById("mainImg");
+    const imgMeta=document.getElementById("imgMeta");
+    const thumbs=document.getElementById("thumbs");
+
+    const introOverlay = document.getElementById("introOverlay");
+    const introTitle = document.getElementById("introTitle");
+    const introSub = document.getElementById("introSub");
+
+    // Navigation
+    document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
+    document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
+
+    window.addEventListener("keydown",(e)=>{
+      if(e.key==="ArrowLeft") location.href=BACK_PAGE;
+      if(e.key==="ArrowRight") location.href=NEXT_PAGE;
+    });
+
+    function renderBullets(arr){
+      bulletsEl.innerHTML = arr.map(t=>`<li>${t}</li>`).join("");
+    }
+
+    function currentLang(){
+      return btnTH.classList.contains("active") ? "th" : "en";
+    }
+
+    function setLang(lang){
+      textBlock.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+
+        introTitle.textContent = c.introTitle;
+        introSub.textContent = c.introSub;
+
+        kickerLeft.textContent = c.kickerLeft;
+        kickerTitle.textContent = c.kickerTitle;
+        totalHint.textContent = c.total;
+
+        titleEl.textContent = c.title;
+        subtitleEl.textContent = c.subtitle;
+        headEl.textContent = c.head;
+        overlayLabel.textContent = c.overlay;
+        navHint.textContent = c.navHint;
+        renderBullets(c.bullets);
+
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+
+        textBlock.classList.remove("out");
+      }, 170);
+    }
+
+    btnEN.onclick=()=>setLang("en");
+    btnTH.onclick=()=>setLang("th");
+
+    function runIntroOnce(){
+      const c = COPY[currentLang()];
+      introTitle.textContent = c.introTitle;
+      introSub.textContent = c.introSub;
+
+      setTimeout(()=> introOverlay.classList.add("hide"), ASSETS.introHoldMs ?? 1400);
+      setTimeout(()=> { introOverlay.style.display="none"; }, ASSETS.introEndMs ?? 2200);
+    }
+
+    // ---- GitHub helpers
+    function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
+
+    async function gh(path){
+      const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
+      const res=await fetch(api,{headers:{Accept:"application/vnd.github+json"}});
+      if(!res.ok) throw new Error(`GitHub API failed (${res.status}) for ${path}`);
+      return await res.json();
+    }
+
+    // Try multiple folder name variants (in case of naming differences)
+    const BATTLE_FOLDERS = [
+      "assets/Battle Arena map for battle scenes",
+      "assets/battle arena map for battle scenes",
+      "assets/battle arena",
+      "assets/Battle Arena"
+    ];
+
+    async function firstExistingFolder(folders){
+      for(const f of folders){
+        try{
+          const data = await gh(f);
+          if(Array.isArray(data)) return {folder:f, data};
+        }catch(e){}
+      }
+      throw new Error("Cannot find battle folder. Please check assets folder name.");
+    }
+
+    function pickPreferred(list){
+      const lower = list.map(x=>({ ...x, l:(x.name||"").toLowerCase() }));
+      return lower.find(x=>x.l.includes("arena")) ||
+             lower.find(x=>x.l.includes("battle")) ||
+             lower.find(x=>x.l.includes("scene")) ||
+             lower[0];
+    }
+
+    // ---- Rotation
+    let rotationList = [];
+    let rotationIndex = 0;
+    let rotationTimer = null;
+
+    function highlightThumb(url){
+      [...thumbs.querySelectorAll(".thumb")].forEach(t=>{
+        t.classList.toggle("active", t.dataset.url === url);
+      });
+    }
+
+    function setMainImage(url, label){
+      mainImg.classList.remove("ready");
+      setTimeout(()=>{
+        mainImg.onload = ()=> mainImg.classList.add("ready");
+        mainImg.src = url;
+        imgMeta.textContent = label || url.split("/").slice(-1)[0];
+      }, 60);
+    }
+
+    function startRotation(){
+      if(rotationTimer) clearInterval(rotationTimer);
+      if(rotationList.length <= 1) return;
+      rotationTimer = setInterval(()=>{
+        rotationIndex = (rotationIndex + 1) % rotationList.length;
+        const item = rotationList[rotationIndex];
+        setMainImage(item.url, `${item.label} • ${item.name}`);
+        highlightThumb(item.url);
+      }, 3800);
+    }
+
+    function addThumb(url, cap){
+      const el = document.createElement("div");
+      el.className="thumb";
+      el.dataset.url=url;
+
+      const img=document.createElement("img");
+      img.src=url;
+
+      const tcap=document.createElement("div");
+      tcap.className="tcap";
+      tcap.textContent=cap;
+
+      el.appendChild(img);
+      el.appendChild(tcap);
+
+      el.onclick=()=>{
+        const idx = rotationList.findIndex(x=>x.url===url);
+        if(idx>=0) rotationIndex=idx;
+        setMainImage(url, cap);
+        highlightThumb(url);
+        startRotation();
+      };
+
+      thumbs.appendChild(el);
+    }
+
+    async function autoLoadFromRepo(){
+      const found = await firstExistingFolder(BATTLE_FOLDERS);
+      const folder = found.folder;
+      const files = found.data;
+
+      const imgs = files
+        .filter(x=>x.type==="file" && isImage(x.name))
+        .map(x=>({name:x.name, url:x.download_url, label: folder.replace("assets/","assets/") }));
+
+      if(!imgs.length) throw new Error(`No images found in ${folder}`);
+
+      imgs.sort((a,b)=>a.name.localeCompare(b.name));
+      rotationList = imgs.slice(0, Math.min(8, Math.max(5, imgs.length)));
+
+      // thumbs
+      thumbs.innerHTML="";
+      const fixedThumbs = [ASSETS.s7_thumb1, ASSETS.s7_thumb2, ASSETS.s7_thumb3].filter(Boolean);
+      if(fixedThumbs.length){
+        fixedThumbs.forEach((u,i)=>addThumb(u, `Thumb • ${i+1}`));
+      } else {
+        rotationList.slice(0,3).forEach(x=>addThumb(x.url, `Battle • ${x.name}`));
+      }
+
+      const first = pickPreferred(rotationList);
+      rotationIndex = Math.max(0, rotationList.findIndex(x=>x.url===first.url));
+      setMainImage(rotationList[rotationIndex].url, `Battle • ${rotationList[rotationIndex].name}`);
+      highlightThumb(rotationList[rotationIndex].url);
+
+      // reveal text after first image ready
+      mainImg.onload = ()=>{
+        mainImg.classList.add("ready");
+        setTimeout(()=>textBlock.classList.remove("out"), 220);
+      };
+
+      startRotation();
+    }
+
+    async function init(){
+      setLang("th");
+      runIntroOnce();
+
+      try{
+        if(Array.isArray(ASSETS.s7) && ASSETS.s7.length){
+          rotationList = ASSETS.s7.map((url,i)=>({
+            url, name:`custom-${String(i+1).padStart(2,"0")}`, label:"ASSETS.s7"
+          }));
+
+          thumbs.innerHTML="";
+          const fixedThumbs = [ASSETS.s7_thumb1, ASSETS.s7_thumb2, ASSETS.s7_thumb3].filter(Boolean);
+          const thumbList = fixedThumbs.length ? fixedThumbs : rotationList.slice(0,3).map(x=>x.url);
+          thumbList.forEach((u,idx)=>addThumb(u, `S7 • ${idx+1}`));
+
+          rotationIndex = 0;
+          setMainImage(rotationList[0].url, "ASSETS.s7");
+          highlightThumb(rotationList[0].url);
+
+          mainImg.onload = ()=>{
+            mainImg.classList.add("ready");
+            setTimeout(()=>textBlock.classList.remove("out"), 220);
+          };
+
+          startRotation();
+        } else {
+          await autoLoadFromRepo();
+        }
+      } catch(err){
+        imgMeta.textContent = err.message;
+        console.error(err);
+        setTimeout(()=>textBlock.classList.remove("out"), 220);
+      }
+    }
+
+    init();
+  </script>
+</body>
+</html>
