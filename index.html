@@ -1,23 +1,447 @@
 <!DOCTYPE html>
-<html lang="th">
-<head>
-  <meta charset="UTF-8">
-  <title>Pocket Guardian Tail</title>
-  <style>
-    body{
-      margin:0;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      height:100vh;
-      font-family:Arial, sans-serif;
-      background:#0b1020;
-      color:#fff;
-    }
-  </style>
+<!-- saved from url=(0073)https://8080-iedj2qf84g67ynlkjrnf9-d147d00b.sg1.manus.computer/index.html -->
+<html lang="th"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pocket Guardian Tail - Game Pitch</title>
+    <link href="./css2" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000;
+        }
+
+        /* Background slideshow container */
+        .bg-slideshow {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .bg-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .bg-slide.active {
+            opacity: 1;
+        }
+
+        /* Dark gradient overlay for text readability */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                135deg,
+                rgba(0, 0, 0, 0.6) 0%,
+                rgba(0, 0, 0, 0.3) 50%,
+                rgba(0, 0, 0, 0.5) 100%
+            );
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        /* Content container */
+        .content {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 80px 100px;
+            z-index: 3;
+        }
+
+        /* Text content */
+        .text-container {
+            max-width: 700px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .title {
+            font-family: 'Poppins', sans-serif;
+            font-size: 72px;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.1;
+            opacity: 0;
+            animation: slideUpFadeIn 0.8s ease-out forwards;
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .tagline {
+            font-family: 'Poppins', sans-serif;
+            font-size: 28px;
+            font-weight: 300;
+            color: #e8d5c4;
+            line-height: 1.4;
+            opacity: 0;
+            animation: slideUpFadeIn 0.8s ease-out 1s forwards;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            color: #999;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: fadeIn 0.8s ease-out 1.6s forwards;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Language toggle */
+        .language-toggle {
+            position: fixed;
+            top: 40px;
+            right: 40px;
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .lang-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 10px 20px;
+            font-family: 'Inter', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .lang-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .lang-btn.active {
+            background: rgba(230, 126, 34, 0.8);
+            border-color: rgba(230, 126, 34, 1);
+            color: #fff;
+        }
+
+        /* Slide indicator dots */
+        .slide-indicators {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: rgba(230, 126, 34, 0.9);
+            width: 30px;
+            border-radius: 5px;
+        }
+
+        /* Navigation buttons */
+        .navigation {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            z-index: 10;
+            display: flex;
+            gap: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(230, 126, 34, 0.2);
+            border: 2px solid rgba(230, 126, 34, 0.5);
+            color: #fff;
+            padding: 12px 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn:hover {
+            background: rgba(230, 126, 34, 0.4);
+            border-color: rgba(230, 126, 34, 1);
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0);
+        }
+
+        .nav-btn.next::after {
+            content: "→";
+            font-size: 16px;
+        }
+
+        /* Animations */
+        @keyframes slideUpFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 1024px) {
+            .content {
+                padding: 60px 60px;
+            }
+
+            .title {
+                font-size: 56px;
+            }
+
+            .tagline {
+                font-size: 22px;
+            }
+
+            .text-container {
+                max-width: 600px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                padding: 40px 30px;
+                justify-content: flex-end;
+                padding-bottom: 120px;
+            }
+
+            .title {
+                font-size: 42px;
+            }
+
+            .tagline {
+                font-size: 18px;
+            }
+
+            .text-container {
+                max-width: 100%;
+                gap: 20px;
+            }
+
+            .language-toggle {
+                top: 20px;
+                right: 20px;
+                gap: 8px;
+            }
+
+            .lang-btn {
+                padding: 8px 16px;
+                font-size: 12px;
+            }
+
+            .slide-indicators {
+                bottom: 30px;
+                gap: 8px;
+            }
+
+            .dot {
+                width: 8px;
+                height: 8px;
+            }
+
+            .dot.active {
+                width: 24px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>🚀 Pocket Guardian Tail – Web Pitch</h1>
-</body>
-</html>
+<!-- Background slideshow -->
+    <div class="bg-slideshow">
+        <div class="bg-slide active" style="background-image: url(&#39;bg1.png&#39;);"></div>
+        <div class="bg-slide" style="background-image: url(&#39;bg2.png&#39;);"></div>
+        <div class="bg-slide" style="background-image: url(&#39;bg3.png&#39;);"></div>
+        <div class="bg-slide" style="background-image: url(&#39;bg4.png&#39;);"></div>
+    </div>
 
+    <!-- Dark overlay -->
+    <div class="overlay"></div>
+
+    <!-- Main content -->
+    <div class="content">
+        <div class="text-container">
+            <h1 class="title" data-en="Pocket Guardian Tail" data-th="Pocket Guardian Tail">Pocket Guardian Tail</h1>
+            <p class="tagline" data-en="Where cute heroes fight real battles." data-th="ที่ที่วีรชนน้อยน่ารักต่อสู้กับการต่อสู้ที่แท้จริง">Where cute heroes fight real battles.</p>
+            <p class="footer" data-en="PC • Tactical RPG • SkyKick Studio" data-th="PC • Tactical RPG • SkyKick Studio">PC • Tactical RPG • SkyKick Studio</p>
+        </div>
+    </div>
+
+    <!-- Language toggle -->
+    <div class="language-toggle">
+        <button class="lang-btn" data-lang="en">English</button>
+        <button class="lang-btn active" data-lang="th">ไทย</button>
+    </div>
+
+    <!-- Slide indicators -->
+    <div class="slide-indicators">
+        <div class="dot active" data-index="0"></div>
+        <div class="dot" data-index="1"></div>
+        <div class="dot" data-index="2"></div>
+        <div class="dot" data-index="3"></div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="navigation">
+        <button class="nav-btn next" data-en="Next" data-th="ถัดไป" onclick="goToNext()">Next</button>
+    </div>
+
+    <script>
+        // Background slideshow functionality
+        const slides = document.querySelectorAll('.bg-slide');
+        const dots = document.querySelectorAll('.dot');
+        const langBtns = document.querySelectorAll('.lang-btn');
+        const textElements = document.querySelectorAll('[data-en]');
+        
+        let currentSlide = 0;
+        let slideInterval;
+        let currentLang = 'th';
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                dots[i].classList.remove('active');
+            });
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(nextSlide, 5000);
+        }
+
+        function resetSlideshow() {
+            clearInterval(slideInterval);
+            startSlideshow();
+            updateLanguage();
+        }
+
+        // Dot click handlers
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                showSlide(index);
+                resetSlideshow();
+            });
+        });
+
+        // Language toggle functionality
+        langBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const lang = btn.getAttribute('data-lang');
+                currentLang = lang;
+
+                // Update active button
+                langBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update text content
+                textElements.forEach(el => {
+                    const text = el.getAttribute(`data-${lang}`);
+                    if (text) {
+                        el.textContent = text;
+                    }
+                });
+            });
+        });
+
+        // Start slideshow on page load
+        window.addEventListener('load', () => {
+            startSlideshow();
+            updateLanguage();
+        });
+
+        // Pause slideshow on mouse/touch interaction
+        document.addEventListener('mousemove', () => {
+            resetSlideshow();
+        });
+
+        document.addEventListener('touchstart', () => {
+            resetSlideshow();
+        });
+
+        // Navigation function
+        function goToNext() {
+            nextSlide();
+            resetSlideshow();
+        }
+    </script>
+
+
+
+</body></html>
