@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 4</title>
 
-  <!-- Global Zoom UI -->
+  <!-- Global Zoom UI (Browser-like) -->
   <link rel="stylesheet" href="ui.css" />
 
   <style>
@@ -13,12 +13,11 @@
       --fg:#fff;
       --muted:rgba(255,255,255,.78);
       --line:rgba(255,255,255,.18);
-      --glass:rgba(0,0,0,.40);
+      --glass:rgba(0,0,0,.42);
       --btn:rgba(0,0,0,.35);
       --btnHover:rgba(0,0,0,.55);
       --accent:#e08a2e;
     }
-
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
     body{
@@ -28,16 +27,16 @@
       overflow:hidden;
     }
 
-    /* Atmospheric background (unique for Slide 4) */
+    /* Subtle themed background behind hero image */
     .bg{
-      position:fixed; inset:0; z-index:-3;
+      position:fixed; inset:0; z-index:-4;
       background:
-        radial-gradient(800px 420px at 20% 25%, rgba(80,120,255,.20), transparent 60%),
-        radial-gradient(800px 420px at 80% 30%, rgba(255,160,80,.18), transparent 60%),
+        radial-gradient(900px 520px at 18% 22%, rgba(80,120,255,.20), transparent 60%),
+        radial-gradient(900px 520px at 82% 30%, rgba(255,160,80,.18), transparent 60%),
         linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.85));
     }
 
-    /* Language toggle */
+    /* Language toggle (same as other slides) */
     .lang{
       position:fixed;
       top:22px; right:22px;
@@ -61,7 +60,7 @@
       border-color:var(--accent);
     }
 
-    /* Layout */
+    /* Main layout */
     .wrap{
       height:100%;
       max-width:1200px;
@@ -69,35 +68,17 @@
       padding:70px 22px 22px;
       display:flex;
       flex-direction:column;
-      gap:16px;
+      gap:14px;
     }
 
-    .grid{
-      flex:1;
-      display:grid;
-      grid-template-columns:1.05fr .95fr;
-      gap:16px;
-      min-height:0;
-    }
-
-    .card{
-      border:1px solid var(--line);
-      background:var(--glass);
-      border-radius:16px;
-      backdrop-filter:blur(14px);
-      box-shadow:0 30px 80px rgba(0,0,0,.35);
-      overflow:hidden;
-      min-height:0;
-    }
-
-    /* Left: text */
-    .left{
-      padding:22px 22px 18px;
+    /* Header kicker (unique but same theme) */
+    .headerRow{
       display:flex;
-      flex-direction:column;
-      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
     }
-
     .kicker{
       display:inline-flex;
       gap:8px;
@@ -109,67 +90,54 @@
       width:fit-content;
       color:var(--muted);
       font-size:12px;
+      backdrop-filter: blur(10px);
     }
     .kicker b{color:#fff}
-
-    h1{
+    .title{
       margin:0;
-      font-size:clamp(26px,3.2vw,38px);
-      line-height:1.12;
+      font-size: clamp(22px, 2.4vw, 30px);
       letter-spacing:.2px;
+      line-height:1.15;
+      font-weight:900;
     }
 
-    .sections{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:14px;
-    }
-
-    .section{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(255,255,255,.06);
-      border-radius:14px;
-      padding:14px 14px 12px;
-    }
-
-    .section h3{
-      margin:0 0 8px 0;
-      font-size:13px;
-      letter-spacing:.04em;
-      text-transform:uppercase;
-      opacity:.92;
-    }
-
-    .section p{
-      margin:0;
-      font-size:14.5px;
-      line-height:1.65;
-      color:rgba(255,255,255,.85);
-      white-space:pre-line;
-    }
-
-    /* Right: image */
-    .right{
+    /* ===== HERO STAGE (image dominates) ===== */
+    .stage{
       position:relative;
-      background:rgba(0,0,0,.25);
-      display:flex;
-      align-items:center;
-      justify-content:center;
+      flex:1;
+      min-height:0;
+      border-radius:18px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      box-shadow: 0 30px 90px rgba(0,0,0,.45);
+      background: rgba(0,0,0,.25);
     }
-    .right img{
+
+    .heroImg{
       width:100%;
       height:100%;
       object-fit:cover;
       display:block;
       opacity:0;
-      transform:scale(1.02);
-      transition:opacity .45s ease, transform .45s ease;
+      transform: scale(1.02);
+      transition: opacity .5s ease, transform .5s ease;
+      filter: saturate(1.06) contrast(1.04);
     }
-    .right img.ready{
+    .heroImg.ready{
       opacity:1;
-      transform:scale(1);
+      transform: scale(1);
     }
-    .right .label{
+
+    /* Gradient to support floating text readability */
+    .stageShade{
+      position:absolute; inset:0;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,.18) 0%, rgba(0,0,0,.20) 45%, rgba(0,0,0,.55) 100%),
+        radial-gradient(900px 420px at 50% 70%, rgba(0,0,0,.15), transparent 60%);
+      pointer-events:none;
+    }
+
+    .imgLabel{
       position:absolute;
       left:12px; bottom:12px;
       padding:8px 10px;
@@ -185,13 +153,81 @@
       white-space:nowrap;
     }
 
-    /* Bottom navigation */
+    /* ===== Floating cards ===== */
+    .floatRow{
+      position:absolute;
+      left:16px;
+      right:16px;
+      bottom:18px;
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+      align-items:stretch;
+      z-index:5;
+    }
+
+    .card{
+      border:1px solid var(--line);
+      background:var(--glass);
+      border-radius:16px;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.35);
+      padding:14px 14px 12px;
+      min-height: 140px;
+    }
+
+    .cardHead{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:8px;
+    }
+
+    .cardHead h3{
+      margin:0;
+      font-size:13px;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      opacity:.92;
+    }
+
+    .badge{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      border-radius:999px;
+      padding:6px 10px;
+      font-size:12px;
+      color: rgba(255,255,255,.84);
+      white-space:nowrap;
+    }
+
+    .card p{
+      margin:0;
+      font-size:14.5px;
+      line-height:1.65;
+      color:rgba(255,255,255,.86);
+      white-space:pre-line;
+    }
+
+    /* Minimal text animation on language switch */
+    .fade{
+      transition: opacity .22s ease, transform .22s ease;
+      opacity:1;
+      transform: translateY(0);
+    }
+    .fade.out{
+      opacity:0;
+      transform: translateY(8px);
+    }
+
+    /* Bottom navigation (same pattern) */
     .nav{
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      padding:10px 2px 0;
+      padding: 2px 2px 0;
     }
     .navHint{
       color:var(--muted);
@@ -212,25 +248,24 @@
       align-items:center;
       gap:8px;
     }
-    .btn:hover{background:var(--btnHover)}
+    .btn:hover{ background:var(--btnHover); }
     .btn.primary{
       background:var(--accent);
       border-color:var(--accent);
     }
 
-    @media (max-width:980px){
-      .grid{grid-template-columns:1fr}
-      .sections{grid-template-columns:1fr}
-      .wrap{padding-top:64px}
-      .right{height:42vh}
+    @media (max-width: 980px){
+      .wrap{ padding-top:64px; }
+      .floatRow{ grid-template-columns: 1fr; }
+      .card{ min-height: auto; }
     }
   </style>
 </head>
 
 <body>
-  <div id="pageRoot">
-    <div class="bg"></div>
+  <div class="bg"></div>
 
+  <div id="pageRoot">
     <!-- Language toggle -->
     <div class="lang">
       <button id="btnEN" class="active" type="button">EN</button>
@@ -238,32 +273,36 @@
     </div>
 
     <div class="wrap">
-      <div class="grid">
-        <!-- Left -->
-        <section class="card left">
-          <div class="kicker">Slide 4 / <b>Genre & Core Fantasy</b></div>
-
-          <h1 id="title">Genre & Core Fantasy</h1>
-
-          <div class="sections">
-            <div class="section">
-              <h3 id="genreHead">Genre</h3>
-              <p id="genreText"></p>
-            </div>
-
-            <div class="section">
-              <h3 id="fantasyHead">Core Fantasy</h3>
-              <p id="fantasyText"></p>
-            </div>
-          </div>
-        </section>
-
-        <!-- Right -->
-        <aside class="card right">
-          <img id="mainImg" alt="Exploration / Battle Arena" />
-          <div class="label" id="imgLabel">Loading image…</div>
-        </aside>
+      <div class="headerRow">
+        <div class="kicker">Slide 4 / <b>Genre & Core Fantasy</b></div>
+        <h1 class="title" id="title">Genre & Core Fantasy</h1>
       </div>
+
+      <!-- HERO STAGE -->
+      <section class="stage">
+        <img id="heroImg" class="heroImg" alt="Exploration / Battle Arena" />
+        <div class="stageShade"></div>
+        <div class="imgLabel" id="imgLabel">Loading atmosphere image…</div>
+
+        <!-- Floating Cards -->
+        <div class="floatRow fade" id="textBlock">
+          <div class="card">
+            <div class="cardHead">
+              <h3 id="genreHead">Genre</h3>
+              <span class="badge">Tactical × Isometric</span>
+            </div>
+            <p id="genreText"></p>
+          </div>
+
+          <div class="card">
+            <div class="cardHead">
+              <h3 id="fantasyHead">Core Fantasy</h3>
+              <span class="badge">Protection & Choice</span>
+            </div>
+            <p id="fantasyText"></p>
+          </div>
+        </div>
+      </section>
 
       <!-- Navigation -->
       <div class="nav">
@@ -300,7 +339,7 @@
 `ผู้เล่นรับบทเป็นผู้พิทักษ์
 ที่ต้องดูแลโลกขนาดเล็กที่เปราะบาง
 และรับผิดชอบต่อผลลัพธ์ของการตัดสินใจ`,
-        imgLabel:(name)=>`Atmosphere • ${name}`
+        label:(name)=>`Atmosphere • ${name}`
       },
       en:{
         title:"Genre & Core Fantasy",
@@ -312,44 +351,50 @@ The game is accessible, yet every decision carries consequences.`,
         fantasy:
 `Players are guardians of a fragile pocket world,
 focused on protection, responsibility, and emotional decision-making.`,
-        imgLabel:(name)=>`Atmosphere • ${name}`
+        label:(name)=>`Atmosphere • ${name}`
       }
     };
 
     const btnEN=document.getElementById("btnEN");
     const btnTH=document.getElementById("btnTH");
-
     const titleEl=document.getElementById("title");
     const genreHead=document.getElementById("genreHead");
     const fantasyHead=document.getElementById("fantasyHead");
     const genreText=document.getElementById("genreText");
     const fantasyText=document.getElementById("fantasyText");
 
-    const mainImg=document.getElementById("mainImg");
+    const textBlock=document.getElementById("textBlock");
+    const heroImg=document.getElementById("heroImg");
     const imgLabel=document.getElementById("imgLabel");
 
     document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
     document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
 
     function setLang(lang){
-      const c=COPY[lang];
-      titleEl.textContent=c.title;
-      genreHead.textContent=c.genreHead;
-      fantasyHead.textContent=c.fantasyHead;
-      genreText.textContent=c.genre;
-      fantasyText.textContent=c.fantasy;
-      btnEN.classList.toggle("active", lang==="en");
-      btnTH.classList.toggle("active", lang==="th");
-      if(mainImg.dataset.filename){
-        imgLabel.textContent=c.imgLabel(mainImg.dataset.filename);
-      }
+      textBlock.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+        titleEl.textContent=c.title;
+        genreHead.textContent=c.genreHead;
+        fantasyHead.textContent=c.fantasyHead;
+        genreText.textContent=c.genre;
+        fantasyText.textContent=c.fantasy;
+
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+
+        if(heroImg.dataset.filename){
+          imgLabel.textContent=c.label(heroImg.dataset.filename);
+        }
+        textBlock.classList.remove("out");
+      },160);
     }
 
     btnEN.onclick=()=>setLang("en");
     btnTH.onclick=()=>setLang("th");
     setLang("th");
 
-    function isImage(name){return /\.(png|jpg|jpeg|webp|gif)$/i.test(name)}
+    function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
 
     async function gh(path){
       const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
@@ -358,28 +403,34 @@ focused on protection, responsibility, and emotional decision-making.`,
       return await res.json();
     }
 
-    async function loadAtmosphere(){
+    async function pickAtmosphereImage(){
+      // Prefer exploration map, then battle/arena; pick a random image inside.
       const assets=await gh("assets");
       const dirs=assets.filter(x=>x.type==="dir").map(x=>x.name);
 
-      // prefer exploration / battle / arena
-      const folder =
+      const pref =
         dirs.find(n=>/exploration/i.test(n)) ||
         dirs.find(n=>/battle|arena/i.test(n)) ||
+        dirs.find(n=>/map/i.test(n)) ||
         dirs[0];
 
-      const files=await gh(`assets/${folder}`);
+      if(!pref) throw new Error("No assets folders found.");
+
+      const files=await gh(`assets/${pref}`);
       const imgs=files.filter(x=>x.type==="file" && isImage(x.name));
-      if(!imgs.length) throw new Error("No images found");
+      if(!imgs.length) throw new Error(`No images found in assets/${pref}`);
 
       const pick=imgs[Math.floor(Math.random()*imgs.length)];
-      mainImg.onload=()=>mainImg.classList.add("ready");
-      mainImg.src=pick.download_url;
-      mainImg.dataset.filename=pick.name;
-      imgLabel.textContent=COPY.th.imgLabel(pick.name);
+      return { name: pick.name, url: pick.download_url, folder: pref };
     }
 
-    loadAtmosphere().catch(err=>{
+    (async ()=>{
+      const picked=await pickAtmosphereImage();
+      heroImg.onload=()=>heroImg.classList.add("ready");
+      heroImg.src=picked.url;
+      heroImg.dataset.filename=picked.name;
+      imgLabel.textContent=COPY.th.label(picked.name);
+    })().catch(err=>{
       imgLabel.textContent=err.message;
       console.error(err);
     });
