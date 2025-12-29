@@ -1,0 +1,930 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Guardian Tail — Slide 8</title>
+
+  <link rel="stylesheet" href="ui.css" />
+
+  <style>
+    :root{
+      --fg:#fff;
+      --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.18);
+      --glass:rgba(0,0,0,.40);
+      --btn:rgba(0,0,0,.35);
+      --btnHover:rgba(0,0,0,.55);
+      --accent:#e08a2e;
+      --accent2:#5bb7ff;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%;margin:0}
+    body{
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
+      color:var(--fg);
+      background:#000;
+      overflow:hidden;
+    }
+
+    /* Pocket Home ambience */
+    .bg{
+      position:fixed; inset:0; z-index:-4;
+      background:
+        radial-gradient(900px 520px at 18% 25%, rgba(91,183,255,.16), transparent 60%),
+        radial-gradient(900px 520px at 82% 28%, rgba(224,138,46,.14), transparent 60%),
+        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.88));
+    }
+
+    /* Language toggle */
+    .lang{
+      position:fixed; top:22px; right:22px;
+      display:flex; gap:8px; z-index:1000;
+    }
+    .lang button{
+      border:1px solid rgba(255,255,255,.25);
+      background:rgba(0,0,0,.35);
+      color:#fff; padding:6px 12px;
+      border-radius:8px; font-weight:900;
+      cursor:pointer; backdrop-filter:blur(10px);
+      opacity:.78;
+    }
+    .lang button.active{opacity:1;background:var(--accent);border-color:var(--accent)}
+
+    .wrap{
+      height:100%;
+      max-width:1240px;
+      margin:0 auto;
+      padding:70px 22px 22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      min-height:0;
+    }
+
+    .kicker{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:999px;
+      background:rgba(0,0,0,.25);
+      width:fit-content;
+      color:var(--muted);
+      font-size:12px;
+      backdrop-filter: blur(10px);
+    }
+    .kicker b{color:#fff}
+    .pill{
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      color:rgba(255,255,255,.86);
+      font-weight:800;
+      font-size:11px;
+      letter-spacing:.04em;
+      user-select:none;
+    }
+
+    /* Header */
+    .header{
+      border:1px solid var(--line);
+      background:var(--glass);
+      border-radius:18px;
+      backdrop-filter:blur(14px);
+      box-shadow:0 30px 80px rgba(0,0,0,.35);
+      overflow:hidden;
+      padding:16px 18px 14px;
+    }
+    .titleRow{
+      display:flex;
+      gap:14px;
+      align-items:flex-start;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    h1{
+      margin:0;
+      font-size: clamp(28px, 3.2vw, 44px);
+      line-height:1.08;
+      letter-spacing:.2px;
+    }
+    .sub{
+      margin:8px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+      max-width:78ch;
+    }
+
+    /* Main grid */
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      min-height:0;
+      flex:1;
+    }
+
+    .card{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.28);
+      border-radius:18px;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 18px 55px rgba(0,0,0,.22);
+      overflow:hidden;
+      min-height:0;
+    }
+
+    /* Left: Carousel / Flow */
+    .flow{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+    .flowTop{
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(255,255,255,.12);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .flowTop .label{
+      font-weight:900;
+      letter-spacing:.04em;
+      text-transform:uppercase;
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .dot{
+      width:10px;height:10px;border-radius:999px;
+      background:var(--accent2);
+      box-shadow:0 0 0 3px rgba(91,183,255,.18);
+      flex:0 0 auto;
+    }
+
+    .carousel{
+      position:relative;
+      flex:1;
+      min-height:0;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+    }
+
+    .stage{
+      position:relative;
+      flex:1;
+      min-height:0;
+      border-radius:16px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.22);
+    }
+    .stage img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      opacity:0;
+      transition:opacity .55s ease;
+    }
+    .stage img.ready{opacity:1}
+
+    .stageTag{
+      position:absolute;
+      left:12px; top:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.90);
+      backdrop-filter:blur(10px);
+      user-select:none;
+      max-width:calc(100% - 24px);
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .stageMeta{
+      position:absolute;
+      left:12px; bottom:12px;
+      padding:8px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.35);
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      backdrop-filter:blur(10px);
+      max-width:calc(100% - 24px);
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+
+    /* Horizontal flow strip */
+    .strip{
+      display:flex;
+      gap:10px;
+      overflow:auto;
+      padding-bottom:2px;
+    }
+    .node{
+      flex:0 0 auto;
+      width:210px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.22);
+      overflow:hidden;
+      cursor:pointer;
+      opacity:.92;
+      position:relative;
+    }
+    .node:hover{opacity:1}
+    .node.active{ outline:2px solid rgba(224,138,46,.9); }
+    .node img{
+      width:100%;
+      height:110px;
+      object-fit:cover;
+      display:block;
+    }
+    .node .cap{
+      padding:10px 10px 9px;
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      line-height:1.35;
+      border-top:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.22);
+      font-weight:800;
+    }
+    .node .small{
+      display:block;
+      margin-top:3px;
+      font-weight:600;
+      color:rgba(255,255,255,.70);
+      font-size:11px;
+    }
+
+    /* Right: Content panels */
+    .right{
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+      gap:12px;
+      padding:14px;
+    }
+    .panel{
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      border-radius:16px;
+      padding:14px 14px 12px;
+      min-height:0;
+      overflow:auto;
+    }
+    .panel h3{
+      margin:0 0 10px 0;
+      font-size:12px;
+      letter-spacing:.05em;
+      text-transform:uppercase;
+      opacity:.95;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .panel h3 .dot{ width:9px;height:9px; }
+    ul{
+      margin:0;
+      padding-left:18px;
+      color: rgba(255,255,255,.86);
+      font-size:14.5px;
+      line-height:1.65;
+    }
+    li{ margin: 7px 0; }
+
+    .fade{
+      transition: opacity .22s ease, transform .22s ease;
+      opacity:1;
+      transform: translateY(0);
+    }
+    .fade.out{
+      opacity:0;
+      transform: translateY(8px);
+    }
+
+    /* Navigation */
+    .nav{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      padding-top:4px;
+    }
+    .navHint{color:var(--muted);font-size:12px;user-select:none}
+    .btn{
+      border:1px solid rgba(255,255,255,.25);
+      background:var(--btn);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:10px;
+      font-weight:900;
+      cursor:pointer;
+      letter-spacing:.2px;
+      backdrop-filter:blur(10px);
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+    }
+    .btn:hover{background:var(--btnHover)}
+    .btn.primary{background:var(--accent);border-color:var(--accent)}
+
+    /* Music mini player (only this slide) */
+    .player{
+      position:fixed;
+      left:22px;
+      bottom:18px;
+      z-index:1500;
+      display:flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.40);
+      backdrop-filter: blur(12px);
+      box-shadow:0 18px 55px rgba(0,0,0,.28);
+      max-width:min(560px, calc(100vw - 44px));
+      flex-wrap:wrap;
+    }
+    .player .tag{
+      font-size:11px;
+      font-weight:900;
+      letter-spacing:.06em;
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.25);
+      color:rgba(255,255,255,.88);
+      user-select:none;
+    }
+    .player .pbtn{
+      border:1px solid rgba(255,255,255,.22);
+      background:rgba(0,0,0,.28);
+      color:#fff;
+      padding:7px 10px;
+      border-radius:10px;
+      cursor:pointer;
+      font-weight:900;
+      backdrop-filter: blur(10px);
+    }
+    .player .pbtn:hover{background:rgba(0,0,0,.45)}
+    .player .name{
+      color:rgba(255,255,255,.85);
+      font-size:12px;
+      max-width:220px;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+    }
+    .player input[type="range"]{
+      width:150px;
+      accent-color: var(--accent);
+      cursor:pointer;
+    }
+
+    @media (max-width: 980px){
+      .wrap{ padding-top:64px; }
+      .grid{ grid-template-columns:1fr; }
+      .node{ width:190px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg"></div>
+
+  <div class="lang">
+    <button id="btnEN" class="active" type="button">EN</button>
+    <button id="btnTH" type="button">TH</button>
+  </div>
+
+  <div class="wrap">
+    <div class="kicker">
+      <span id="kickerLeft"></span>
+      <span class="pill" id="kickerMid"></span>
+      <b id="kickerRight"></b>
+      <span style="opacity:.75">•</span>
+      <span id="totalHint" style="opacity:.75"></span>
+    </div>
+
+    <section class="header fade out" id="headerBlock">
+      <div class="titleRow">
+        <div>
+          <h1 id="title"></h1>
+          <p class="sub" id="subtitle"></p>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <!-- LEFT: Flow / Carousel -->
+      <section class="card flow">
+        <div class="flowTop">
+          <div class="label"><span class="dot"></span><span id="flowLabel"></span></div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn" id="prevRoom" type="button">←</button>
+            <button class="btn" id="nextRoom" type="button">→</button>
+          </div>
+        </div>
+
+        <div class="carousel">
+          <div class="stage">
+            <img id="stageImg" alt="Safe Room visual" />
+            <div class="stageTag" id="stageTag"></div>
+            <div class="stageMeta" id="stageMeta">Loading…</div>
+          </div>
+
+          <div class="strip" id="strip"></div>
+        </div>
+      </section>
+
+      <!-- RIGHT: Content -->
+      <section class="card right">
+        <div class="panel fade out" id="p1">
+          <h3><span class="dot"></span><span id="h1"></span></h3>
+          <ul id="u1"></ul>
+        </div>
+
+        <div class="panel fade out" id="p2">
+          <h3><span class="dot" style="background:var(--accent);box-shadow:0 0 0 3px rgba(224,138,46,.18)"></span><span id="h2"></span></h3>
+          <ul id="u2"></ul>
+        </div>
+
+        <div class="panel fade out" id="p3">
+          <h3><span class="dot" style="background:#ff6b6b;box-shadow:0 0 0 3px rgba(255,107,107,.16)"></span><span id="h3"></span></h3>
+          <ul id="u3"></ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="nav">
+      <div class="navHint" id="navHint"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" id="backBtn" type="button">⬅️ Back</button>
+        <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Music Player (Slide 8 only) -->
+  <div class="player" id="player">
+    <span class="tag">BGM</span>
+    <button class="pbtn" id="playBtn" type="button">▶️</button>
+    <button class="pbtn" id="muteBtn" type="button">🔈</button>
+    <span class="name" id="trackName">Safe Room (Loft Style)</span>
+    <input id="vol" type="range" min="0" max="1" step="0.01" value="0.55" aria-label="volume"/>
+    <button class="pbtn" id="volDown" type="button">−</button>
+    <button class="pbtn" id="volUp" type="button">+</button>
+  </div>
+
+  <audio id="bgm" preload="auto" loop></audio>
+
+  <script src="ui.js"></script>
+
+  <script>
+    /* ==========================================================
+      Slide 8 configuration
+      - Images: Use ASSETS.s8_rooms with RAW GitHub URLs
+      - If empty: it will try to auto-pick images from assets folders
+      - BGM: Provided MP3 (raw github)
+    ========================================================== */
+    const OWNER="sopwerdream";
+    const REPO="Pocket-Guardian-Tail";
+    const BRANCH="main";
+
+    const SLIDE_NO=8;
+    const TOTAL_SLIDES=10;
+
+    const BACK_PAGE="slide7.html";
+    const NEXT_PAGE="slide9.html"; // placeholder
+
+    const ASSETS = {
+      // Rooms flow order (RAW URLs recommended). If empty, autoLoad tries fallback.
+      // Put your visuals here in this exact order:
+      // 1) Character Customization & Setting
+      // 2) Craft Room & Equipment
+      // 3) Skill Upgrade Room
+      // 4) Key Visual – Safe Room
+      // 5) Map & Mission Event Room
+      // 6) Storage Room
+      s8_rooms: [],
+
+      // Optional: auto-rotate carousel
+      rotateMs: 4200,
+
+      // BGM (raw github)
+      bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3"
+    };
+
+    const COPY = {
+      th:{
+        kickerLeft:`Slide ${SLIDE_NO}`,
+        kickerMid:"SAFE ROOM / POCKET HOME",
+        kickerRight:"System",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
+        title:"A Strategic Hub Between Battles",
+        subtitle:"Safe Room (Pocket Home) คือ “ศูนย์กลางการตัดสินใจ” ไม่ใช่แค่ที่พัก แต่เชื่อมการเล่น / เศรษฐกิจ / การเติบโตของตัวละคร — ทุกการอัปเกรดและการใช้ทรัพยากรส่งผลต่อประสิทธิภาพในสนามรบโดยตรง",
+
+        flowLabel:"Safe Room Rooms (Horizontal Flow)",
+        stageTag:"SAFE ROOM • Multi-Room Hub",
+        navHint:"Back → Slide 7 • Next → Slide 9",
+
+        h1:"แนวคิดหลักของ Safe Room",
+        u1:[
+          "ศูนย์กลางการตัดสินใจของผู้เล่น (Decision Hub)",
+          "เชื่อม: Gameplay Loop + Economy + Character Growth",
+          "สิ่งที่ทำใน Safe Room → สะท้อนผลใน Battle โดยตรง"
+        ],
+
+        h2:"ระบบหลักภายใน Safe Room",
+        u2:[
+          "Trading & Shop: ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support",
+          "ราคาของ/ความหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World",
+          "Skill Upgrade Room: Skill Tree เฉพาะตัว เลือกสาย Damage / Support / Control และ “เปลี่ยนพฤติกรรมสกิล” ไม่ใช่แค่ตัวเลข",
+          "Equipment & Craft: Stat / Passive / Playstyle + Visual Customization"
+        ],
+
+        h3:"Why It Matters (Business)",
+        u3:[
+          "แกนสำหรับขยายคอนเทนต์ในอนาคต (Rooms/Systems เพิ่มได้เรื่อย ๆ)",
+          "รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content",
+          "(Future) รองรับ Live Update และ Monetization บนแพลตฟอร์มอื่น"
+        ],
+
+        rooms:[
+          {t:"Character Customization & Setting", s:"แต่งตัว/ตั้งค่าตัวละคร"},
+          {t:"Craft Room & Equipment", s:"คราฟต์/อุปกรณ์"},
+          {t:"Skill Upgrade Room", s:"อัปเกรดสกิล"},
+          {t:"Key Visual – Safe Room", s:"ภาพรวม Safe Room"},
+          {t:"Map & Mission Event Room", s:"แผนที่/ภารกิจ/อีเวนต์"},
+          {t:"Storage Room", s:"คลังเก็บของ"}
+        ]
+      },
+
+      en:{
+        kickerLeft:`Slide ${SLIDE_NO}`,
+        kickerMid:"SAFE ROOM / POCKET HOME",
+        kickerRight:"System",
+        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+
+        title:"A Strategic Hub Between Battles",
+        subtitle:"Safe Room (Pocket Home) is a decision hub—not just a resting place. It connects gameplay, economy, and character growth. Every upgrade and resource choice directly impacts battle performance.",
+
+        flowLabel:"Safe Room Rooms (Horizontal Flow)",
+        stageTag:"SAFE ROOM • Multi-Room Hub",
+        navHint:"Back → Slide 7 • Next → Slide 9",
+
+        h1:"Core Idea",
+        u1:[
+          "A true decision hub for the player.",
+          "Connects gameplay loop, economy, and character growth.",
+          "What you do here directly shapes battle outcomes."
+        ],
+
+        h2:"Core Systems",
+        u2:[
+          "Trading & Shop: uses earned resources; items include Equipment, Crafting Materials, and Support Items.",
+          "Prices and rarity shift with game progress and Pocket World events.",
+          "Skill Upgrade Room: unique skill trees with Damage/Support/Control paths; upgrades change behavior, not just numbers.",
+          "Equipment & Craft: stats/passives/playstyle + visual customization."
+        ],
+
+        h3:"Why It Matters (Business)",
+        u3:[
+          "A scalable backbone for future content expansion (more rooms/systems).",
+          "Supports items/skins/collectibles and event-based content.",
+          "Future-ready for live updates and monetization on other platforms."
+        ],
+
+        rooms:[
+          {t:"Character Customization & Setting", s:"Outfits & setup"},
+          {t:"Craft Room & Equipment", s:"Crafting & gear"},
+          {t:"Skill Upgrade Room", s:"Skill upgrades"},
+          {t:"Key Visual – Safe Room", s:"Hub overview"},
+          {t:"Map & Mission Event Room", s:"Map & events"},
+          {t:"Storage Room", s:"Storage"}
+        ]
+      }
+    };
+
+    // ---------- Refs
+    const btnEN=document.getElementById("btnEN");
+    const btnTH=document.getElementById("btnTH");
+
+    const kickerLeft=document.getElementById("kickerLeft");
+    const kickerMid=document.getElementById("kickerMid");
+    const kickerRight=document.getElementById("kickerRight");
+    const totalHint=document.getElementById("totalHint");
+
+    const headerBlock=document.getElementById("headerBlock");
+    const titleEl=document.getElementById("title");
+    const subtitleEl=document.getElementById("subtitle");
+
+    const flowLabel=document.getElementById("flowLabel");
+    const stageTag=document.getElementById("stageTag");
+    const stageMeta=document.getElementById("stageMeta");
+    const stageImg=document.getElementById("stageImg");
+    const strip=document.getElementById("strip");
+
+    const p1=document.getElementById("p1");
+    const p2=document.getElementById("p2");
+    const p3=document.getElementById("p3");
+    const h1=document.getElementById("h1");
+    const h2=document.getElementById("h2");
+    const h3=document.getElementById("h3");
+    const u1=document.getElementById("u1");
+    const u2=document.getElementById("u2");
+    const u3=document.getElementById("u3");
+
+    const navHint=document.getElementById("navHint");
+    document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
+    document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
+
+    window.addEventListener("keydown",(e)=>{
+      if(e.key==="ArrowLeft") location.href=BACK_PAGE;
+      if(e.key==="ArrowRight") location.href=NEXT_PAGE;
+    });
+
+    // ---------- Helpers
+    function renderList(el, items){
+      el.innerHTML = items.map(t=>`<li>${t}</li>`).join("");
+    }
+    function currentLang(){
+      return btnTH.classList.contains("active") ? "th" : "en";
+    }
+
+    // ---------- Language
+    function setLang(lang){
+      headerBlock.classList.add("out");
+      p1.classList.add("out"); p2.classList.add("out"); p3.classList.add("out");
+      setTimeout(()=>{
+        const c=COPY[lang];
+
+        kickerLeft.textContent=c.kickerLeft;
+        kickerMid.textContent=c.kickerMid;
+        kickerRight.textContent=c.kickerRight;
+        totalHint.textContent=c.total;
+
+        titleEl.textContent=c.title;
+        subtitleEl.textContent=c.subtitle;
+
+        flowLabel.textContent=c.flowLabel;
+        stageTag.textContent=c.stageTag;
+        navHint.textContent=c.navHint;
+
+        h1.textContent=c.h1; h2.textContent=c.h2; h3.textContent=c.h3;
+        renderList(u1,c.u1); renderList(u2,c.u2); renderList(u3,c.u3);
+
+        btnEN.classList.toggle("active", lang==="en");
+        btnTH.classList.toggle("active", lang==="th");
+
+        headerBlock.classList.remove("out");
+        p1.classList.remove("out"); p2.classList.remove("out"); p3.classList.remove("out");
+
+        // update room captions
+        updateStripCaptions();
+      }, 170);
+    }
+
+    btnEN.onclick=()=>setLang("en");
+    btnTH.onclick=()=>setLang("th");
+    setLang("th");
+
+    // ---------- Carousel / Flow
+    let rooms = []; // {url, title, sub}
+    let idx = 0;
+    let timer = null;
+
+    function highlightNode(){
+      [...strip.querySelectorAll(".node")].forEach(n=>{
+        n.classList.toggle("active", Number(n.dataset.idx)===idx);
+      });
+    }
+
+    function setStage(url, label){
+      stageImg.classList.remove("ready");
+      setTimeout(()=>{
+        stageImg.onload=()=>stageImg.classList.add("ready");
+        stageImg.src=url;
+        stageMeta.textContent = label || url.split("/").slice(-1)[0];
+      }, 60);
+    }
+
+    function buildStrip(){
+      strip.innerHTML="";
+      const c = COPY[currentLang()];
+      rooms.forEach((r,i)=>{
+        const node=document.createElement("div");
+        node.className="node";
+        node.dataset.idx=i;
+
+        const img=document.createElement("img");
+        img.src=r.url;
+
+        const cap=document.createElement("div");
+        cap.className="cap";
+        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || r.title}</span><span class="small">${c.rooms[i]?.s || r.sub}</span>`;
+
+        node.appendChild(img);
+        node.appendChild(cap);
+
+        node.onclick=()=>{
+          idx=i;
+          setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+          highlightNode();
+          restartAuto();
+        };
+
+        strip.appendChild(node);
+      });
+      highlightNode();
+    }
+
+    function updateStripCaptions(){
+      const c = COPY[currentLang()];
+      [...strip.querySelectorAll(".node")].forEach((node,i)=>{
+        const cap=node.querySelector(".cap");
+        if(!cap) return;
+        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || rooms[i]?.title || "Room"}</span><span class="small">${c.rooms[i]?.s || rooms[i]?.sub || ""}</span>`;
+      });
+      // update stage meta label too
+      if(rooms[idx]){
+        setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+      }
+    }
+
+    function restartAuto(){
+      if(timer) clearInterval(timer);
+      if(rooms.length<=1) return;
+      timer=setInterval(()=>{
+        idx=(idx+1)%rooms.length;
+        const c=COPY[currentLang()];
+        setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+        highlightNode();
+      }, ASSETS.rotateMs || 4200);
+    }
+
+    document.getElementById("prevRoom").onclick=()=>{
+      idx = (idx - 1 + rooms.length) % rooms.length;
+      const c=COPY[currentLang()];
+      setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+      highlightNode();
+      restartAuto();
+    };
+    document.getElementById("nextRoom").onclick=()=>{
+      idx = (idx + 1) % rooms.length;
+      const c=COPY[currentLang()];
+      setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+      highlightNode();
+      restartAuto();
+    };
+
+    // ---------- GitHub auto-load (fallback)
+    function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
+    async function gh(path){
+      const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
+      const res=await fetch(api,{headers:{Accept:"application/vnd.github+json"}});
+      if(!res.ok) throw new Error(`GitHub API failed (${res.status}) for ${path}`);
+      return await res.json();
+    }
+
+    // We do not know your exact folder for safe-room images yet,
+    // so we try a few likely folders. If not found, we still render
+    // with placeholders until you paste RAW URLs into ASSETS.s8_rooms.
+    const SAFE_FOLDERS = [
+      "assets/safe room",
+      "assets/Safe Room",
+      "assets/pocket home",
+      "assets/Pocket Home",
+      "assets/safe-room",
+      "assets/Pocket-Home",
+      "assets"
+    ];
+
+    async function firstExistingFolder(folders){
+      for(const f of folders){
+        try{
+          const data = await gh(f);
+          if(Array.isArray(data)) return {folder:f, data};
+        }catch(e){}
+      }
+      return null;
+    }
+
+    async function loadRooms(){
+      // Prefer explicit URLs
+      const c = COPY[currentLang()];
+      if(Array.isArray(ASSETS.s8_rooms) && ASSETS.s8_rooms.length){
+        rooms = ASSETS.s8_rooms.map((url,i)=>({
+          url,
+          title: c.rooms[i]?.t || `Room ${i+1}`,
+          sub: c.rooms[i]?.s || ""
+        }));
+        idx=0;
+        buildStrip();
+        setStage(rooms[0].url, c.rooms[0]?.t || rooms[0].title);
+        restartAuto();
+        return;
+      }
+
+      // Fallback: attempt to pull images from a likely folder (best-effort)
+      const found = await firstExistingFolder(SAFE_FOLDERS);
+      if(!found){
+        stageMeta.textContent = "No Safe Room images configured. Paste RAW URLs into ASSETS.s8_rooms.";
+        return;
+      }
+
+      const imgs = found.data
+        .filter(x=>x.type==="file" && isImage(x.name))
+        .map(x=>x.download_url);
+
+      if(!imgs.length){
+        stageMeta.textContent = "Safe Room folder found, but no images. Paste RAW URLs into ASSETS.s8_rooms.";
+        return;
+      }
+
+      // Take up to 6 images for rooms
+      const chosen = imgs.slice(0,6);
+      rooms = chosen.map((url,i)=>({
+        url,
+        title: c.rooms[i]?.t || `Room ${i+1}`,
+        sub: c.rooms[i]?.s || ""
+      }));
+
+      idx=0;
+      buildStrip();
+      setStage(rooms[0].url, c.rooms[0]?.t || rooms[0].title);
+      restartAuto();
+    }
+
+    loadRooms();
+
+    // ---------- Audio (Slide 8 only)
+    const bgm = document.getElementById("bgm");
+    const playBtn = document.getElementById("playBtn");
+    const muteBtn = document.getElementById("muteBtn");
+    const vol = document.getElementById("vol");
+    const volDown = document.getElementById("volDown");
+    const volUp = document.getElementById("volUp");
+
+    bgm.src = ASSETS.bgm;
+    bgm.volume = Number(vol.value);
+
+    function updatePlayUI(){
+      playBtn.textContent = bgm.paused ? "▶️" : "⏸️";
+    }
+    function updateMuteUI(){
+      muteBtn.textContent = bgm.muted ? "🔇" : "🔈";
+    }
+
+    playBtn.onclick = async ()=>{
+      try{
+        if(bgm.paused) await bgm.play();
+        else bgm.pause();
+        updatePlayUI();
+      }catch(e){
+        // autoplay policy: user interaction should allow play; if blocked, keep UI consistent
+        updatePlayUI();
+      }
+    };
+
+    muteBtn.onclick = ()=>{
+      bgm.muted = !bgm.muted;
+      updateMuteUI();
+    };
+
+    vol.oninput = ()=>{
+      bgm.volume = Number(vol.value);
+      if(bgm.volume === 0) bgm.muted = true;
+      else bgm.muted = false;
+      updateMuteUI();
+    };
+
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+    volDown.onclick = ()=>{
+      vol.value = String(clamp01(Number(vol.value) - 0.05));
+      vol.oninput();
+    };
+    volUp.onclick = ()=>{
+      vol.value = String(clamp01(Number(vol.value) + 0.05));
+      vol.oninput();
+    };
+
+    updatePlayUI();
+    updateMuteUI();
+  </script>
+</body>
+</html>
