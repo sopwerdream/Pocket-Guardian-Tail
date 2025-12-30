@@ -27,13 +27,25 @@
       overflow:hidden;
     }
 
-    /* Pocket Home ambience */
+    /* Key Visual blurred background image (base) */
+    .bgKey{
+      position:fixed; inset:-40px;
+      z-index:-6;
+      width:calc(100% + 80px);
+      height:calc(100% + 80px);
+      object-fit:cover;
+      filter: blur(18px) saturate(1.05) contrast(1.05);
+      opacity:.22;
+      transform: scale(1.06);
+    }
+
+    /* Pocket Home ambience overlay */
     .bg{
-      position:fixed; inset:0; z-index:-4;
+      position:fixed; inset:0; z-index:-5;
       background:
         radial-gradient(900px 520px at 18% 25%, rgba(91,183,255,.16), transparent 60%),
         radial-gradient(900px 520px at 82% 28%, rgba(224,138,46,.14), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.88));
+        linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.90));
     }
 
     /* Language toggle */
@@ -234,7 +246,7 @@
     }
     .node{
       flex:0 0 auto;
-      width:210px;
+      width:220px;
       border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.22);
@@ -295,6 +307,7 @@
       align-items:center;
     }
     .panel h3 .dot{ width:9px;height:9px; }
+
     ul{
       margin:0;
       padding-left:18px;
@@ -340,7 +353,7 @@
     .btn:hover{background:var(--btnHover)}
     .btn.primary{background:var(--accent);border-color:var(--accent)}
 
-    /* Music mini player (only this slide) */
+    /* Music mini player (Slide 8 only) */
     .player{
       position:fixed;
       left:22px;
@@ -355,7 +368,7 @@
       background:rgba(0,0,0,.40);
       backdrop-filter: blur(12px);
       box-shadow:0 18px 55px rgba(0,0,0,.28);
-      max-width:min(560px, calc(100vw - 44px));
+      max-width:min(640px, calc(100vw - 44px));
       flex-wrap:wrap;
     }
     .player .tag{
@@ -383,7 +396,7 @@
     .player .name{
       color:rgba(255,255,255,.85);
       font-size:12px;
-      max-width:220px;
+      max-width:260px;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
@@ -394,15 +407,48 @@
       cursor:pointer;
     }
 
+    /* Autoplay gate (only if browser blocks audio) */
+    .soundGate{
+      position:fixed; inset:0;
+      z-index:1800;
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      padding:18px;
+      background: radial-gradient(900px 520px at 50% 25%, rgba(255,255,255,.06), transparent 60%),
+                  rgba(0,0,0,.35);
+      backdrop-filter: blur(6px);
+    }
+    .soundGate .gateCard{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      width:min(760px, 92vw);
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.50);
+      box-shadow:0 18px 55px rgba(0,0,0,.28);
+    }
+    .soundGate .txt{
+      color:rgba(255,255,255,.86);
+      font-size:12px;
+      line-height:1.4;
+    }
+
     @media (max-width: 980px){
       .wrap{ padding-top:64px; }
       .grid{ grid-template-columns:1fr; }
-      .node{ width:190px; }
+      .node{ width:200px; }
+      .player .name{ max-width:180px; }
     }
   </style>
 </head>
 
 <body>
+  <!-- Base key visual background -->
+  <img id="bgKey" class="bgKey" alt="Safe Room key visual background" />
   <div class="bg"></div>
 
   <div class="lang">
@@ -489,43 +535,49 @@
     <button class="pbtn" id="volUp" type="button">+</button>
   </div>
 
+  <!-- Autoplay fallback gate -->
+  <div class="soundGate" id="soundGate">
+    <div class="gateCard">
+      <div class="txt">
+        <b>Enable Sound</b><br/>
+        Browser อาจบล็อกการเล่นเสียงอัตโนมัติ — กดปุ่มด้านขวา 1 ครั้งเพื่อเริ่มเพลง
+      </div>
+      <button class="btn primary" id="enableSoundBtn" type="button">🔊 Enable</button>
+    </div>
+  </div>
+
   <audio id="bgm" preload="auto" loop></audio>
 
   <script src="ui.js"></script>
 
   <script>
-    /* ==========================================================
-      Slide 8 configuration
-      - Images: Use ASSETS.s8_rooms with RAW GitHub URLs
-      - If empty: it will try to auto-pick images from assets folders
-      - BGM: Provided MP3 (raw github)
-    ========================================================== */
-    const OWNER="sopwerdream";
-    const REPO="Pocket-Guardian-Tail";
-    const BRANCH="main";
-
     const SLIDE_NO=8;
     const TOTAL_SLIDES=10;
 
     const BACK_PAGE="slide7.html";
     const NEXT_PAGE="slide9.html"; // placeholder
 
+    // ---- Assets (5 rooms + key visual as blurred background)
     const ASSETS = {
-      // Rooms flow order (RAW URLs recommended). If empty, autoLoad tries fallback.
-      // Put your visuals here in this exact order:
-      // 1) Character Customization & Setting
-      // 2) Craft Room & Equipment
-      // 3) Skill Upgrade Room
-      // 4) Key Visual – Safe Room
-      // 5) Map & Mission Event Room
-      // 6) Storage Room
-      s8_rooms: [],
+      keyVisualBg: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/key%20visual%20Safe%20Room.png",
 
-      // Optional: auto-rotate carousel
+      s8_rooms: [
+        "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Character%20customization%20and%20setting..png",
+        "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Craft%20room%20And%20wear%20the%20equipment..png",
+        "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Enter%20the%20skill%20upgrade%20room..png",
+        "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Map%20and%20Mission%20Event%20Room.png",
+        "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/storage%20room.png"
+      ],
+
       rotateMs: 4200,
 
-      // BGM (raw github)
-      bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3"
+      // BGM (Slide 8 only)
+      bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3",
+
+      // Autoplay + fade-in
+      autoplay: true,
+      fadeDurationMs: 1600,   // ปรับได้: ยิ่งมากยิ่งค่อยๆขึ้น
+      targetVolume: 0.55      // ปรับได้: ระดับเสียงปลายทาง
     };
 
     const COPY = {
@@ -568,7 +620,6 @@
           {t:"Character Customization & Setting", s:"แต่งตัว/ตั้งค่าตัวละคร"},
           {t:"Craft Room & Equipment", s:"คราฟต์/อุปกรณ์"},
           {t:"Skill Upgrade Room", s:"อัปเกรดสกิล"},
-          {t:"Key Visual – Safe Room", s:"ภาพรวม Safe Room"},
           {t:"Map & Mission Event Room", s:"แผนที่/ภารกิจ/อีเวนต์"},
           {t:"Storage Room", s:"คลังเก็บของ"}
         ]
@@ -613,7 +664,6 @@
           {t:"Character Customization & Setting", s:"Outfits & setup"},
           {t:"Craft Room & Equipment", s:"Crafting & gear"},
           {t:"Skill Upgrade Room", s:"Skill upgrades"},
-          {t:"Key Visual – Safe Room", s:"Hub overview"},
           {t:"Map & Mission Event Room", s:"Map & events"},
           {t:"Storage Room", s:"Storage"}
         ]
@@ -658,6 +708,9 @@
       if(e.key==="ArrowRight") location.href=NEXT_PAGE;
     });
 
+    // Set key visual background
+    document.getElementById("bgKey").src = ASSETS.keyVisualBg;
+
     // ---------- Helpers
     function renderList(el, items){
       el.innerHTML = items.map(t=>`<li>${t}</li>`).join("");
@@ -694,7 +747,6 @@
         headerBlock.classList.remove("out");
         p1.classList.remove("out"); p2.classList.remove("out"); p3.classList.remove("out");
 
-        // update room captions
         updateStripCaptions();
       }, 170);
     }
@@ -703,8 +755,8 @@
     btnTH.onclick=()=>setLang("th");
     setLang("th");
 
-    // ---------- Carousel / Flow
-    let rooms = []; // {url, title, sub}
+    // ---------- Carousel / Flow (5 rooms)
+    let rooms = []; // {url}
     let idx = 0;
     let timer = null;
 
@@ -736,14 +788,14 @@
 
         const cap=document.createElement("div");
         cap.className="cap";
-        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || r.title}</span><span class="small">${c.rooms[i]?.s || r.sub}</span>`;
+        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || "Room"}</span><span class="small">${c.rooms[i]?.s || ""}</span>`;
 
         node.appendChild(img);
         node.appendChild(cap);
 
         node.onclick=()=>{
           idx=i;
-          setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+          setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
           highlightNode();
           restartAuto();
         };
@@ -758,11 +810,10 @@
       [...strip.querySelectorAll(".node")].forEach((node,i)=>{
         const cap=node.querySelector(".cap");
         if(!cap) return;
-        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || rooms[i]?.title || "Room"}</span><span class="small">${c.rooms[i]?.s || rooms[i]?.sub || ""}</span>`;
+        cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || "Room"}</span><span class="small">${c.rooms[i]?.s || ""}</span>`;
       });
-      // update stage meta label too
       if(rooms[idx]){
-        setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+        setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
       }
     }
 
@@ -772,7 +823,7 @@
       timer=setInterval(()=>{
         idx=(idx+1)%rooms.length;
         const c=COPY[currentLang()];
-        setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+        setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
         highlightNode();
       }, ASSETS.rotateMs || 4200);
     }
@@ -780,99 +831,39 @@
     document.getElementById("prevRoom").onclick=()=>{
       idx = (idx - 1 + rooms.length) % rooms.length;
       const c=COPY[currentLang()];
-      setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+      setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
       highlightNode();
       restartAuto();
     };
     document.getElementById("nextRoom").onclick=()=>{
       idx = (idx + 1) % rooms.length;
       const c=COPY[currentLang()];
-      setStage(rooms[idx].url, `${c.rooms[idx]?.t || rooms[idx].title}`);
+      setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
       highlightNode();
       restartAuto();
     };
 
-    // ---------- GitHub auto-load (fallback)
-    function isImage(name){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(name); }
-    async function gh(path){
-      const api=`https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(BRANCH)}`;
-      const res=await fetch(api,{headers:{Accept:"application/vnd.github+json"}});
-      if(!res.ok) throw new Error(`GitHub API failed (${res.status}) for ${path}`);
-      return await res.json();
-    }
-
-    // We do not know your exact folder for safe-room images yet,
-    // so we try a few likely folders. If not found, we still render
-    // with placeholders until you paste RAW URLs into ASSETS.s8_rooms.
-    const SAFE_FOLDERS = [
-      "assets/safe room",
-      "assets/Safe Room",
-      "assets/pocket home",
-      "assets/Pocket Home",
-      "assets/safe-room",
-      "assets/Pocket-Home",
-      "assets"
-    ];
-
-    async function firstExistingFolder(folders){
-      for(const f of folders){
-        try{
-          const data = await gh(f);
-          if(Array.isArray(data)) return {folder:f, data};
-        }catch(e){}
-      }
-      return null;
-    }
-
-    async function loadRooms(){
-      // Prefer explicit URLs
-      const c = COPY[currentLang()];
-      if(Array.isArray(ASSETS.s8_rooms) && ASSETS.s8_rooms.length){
-        rooms = ASSETS.s8_rooms.map((url,i)=>({
-          url,
-          title: c.rooms[i]?.t || `Room ${i+1}`,
-          sub: c.rooms[i]?.s || ""
-        }));
-        idx=0;
-        buildStrip();
-        setStage(rooms[0].url, c.rooms[0]?.t || rooms[0].title);
-        restartAuto();
-        return;
-      }
-
-      // Fallback: attempt to pull images from a likely folder (best-effort)
-      const found = await firstExistingFolder(SAFE_FOLDERS);
-      if(!found){
-        stageMeta.textContent = "No Safe Room images configured. Paste RAW URLs into ASSETS.s8_rooms.";
-        return;
-      }
-
-      const imgs = found.data
-        .filter(x=>x.type==="file" && isImage(x.name))
-        .map(x=>x.download_url);
-
-      if(!imgs.length){
-        stageMeta.textContent = "Safe Room folder found, but no images. Paste RAW URLs into ASSETS.s8_rooms.";
-        return;
-      }
-
-      // Take up to 6 images for rooms
-      const chosen = imgs.slice(0,6);
-      rooms = chosen.map((url,i)=>({
-        url,
-        title: c.rooms[i]?.t || `Room ${i+1}`,
-        sub: c.rooms[i]?.s || ""
-      }));
-
+    function initRooms(){
+      rooms = ASSETS.s8_rooms.map(url=>({url}));
       idx=0;
       buildStrip();
-      setStage(rooms[0].url, c.rooms[0]?.t || rooms[0].title);
+      const c=COPY[currentLang()];
+      setStage(rooms[0].url, c.rooms[0]?.t || "Room");
       restartAuto();
+
+      // Reveal panels after first image is ready
+      stageImg.onload=()=>{
+        stageImg.classList.add("ready");
+        headerBlock.classList.remove("out");
+        p1.classList.remove("out");
+        p2.classList.remove("out");
+        p3.classList.remove("out");
+      };
     }
 
-    loadRooms();
+    initRooms();
 
-    // ---------- Audio (Slide 8 only)
+    // ---------- Audio (Slide 8 only) : autoplay + fade-in + fallback gate
     const bgm = document.getElementById("bgm");
     const playBtn = document.getElementById("playBtn");
     const muteBtn = document.getElementById("muteBtn");
@@ -880,25 +871,70 @@
     const volDown = document.getElementById("volDown");
     const volUp = document.getElementById("volUp");
 
-    bgm.src = ASSETS.bgm;
-    bgm.volume = Number(vol.value);
+    const soundGate = document.getElementById("soundGate");
+    const enableSoundBtn = document.getElementById("enableSoundBtn");
 
-    function updatePlayUI(){
-      playBtn.textContent = bgm.paused ? "▶️" : "⏸️";
+    bgm.src = ASSETS.bgm;
+
+    function updatePlayUI(){ playBtn.textContent = bgm.paused ? "▶️" : "⏸️"; }
+    function updateMuteUI(){ muteBtn.textContent = bgm.muted ? "🔇" : "🔈"; }
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
+
+    // Fade volume from 0 -> target over duration (ms)
+    function fadeTo(target, duration){
+      const start = bgm.volume;
+      const t0 = performance.now();
+      const delta = target - start;
+      function tick(t){
+        const p = Math.min(1, (t - t0) / duration);
+        bgm.volume = clamp01(start + delta * p);
+        vol.value = String(bgm.volume);
+        if(p < 1) requestAnimationFrame(tick);
+      }
+      requestAnimationFrame(tick);
     }
-    function updateMuteUI(){
-      muteBtn.textContent = bgm.muted ? "🔇" : "🔈";
+
+    async function tryAutoplay(){
+      if(!ASSETS.autoplay) return;
+
+      // start silent
+      bgm.muted = false;
+      bgm.volume = 0;
+      vol.value = "0";
+      updateMuteUI();
+
+      try{
+        await bgm.play();
+        updatePlayUI();
+        // fade up to target volume
+        const target = clamp01(ASSETS.targetVolume ?? 0.55);
+        fadeTo(target, ASSETS.fadeDurationMs ?? 1600);
+      }catch(e){
+        // autoplay blocked -> show gate
+        soundGate.style.display = "flex";
+        updatePlayUI();
+      }
     }
+
+    enableSoundBtn.onclick = async ()=>{
+      soundGate.style.display = "none";
+      bgm.muted = false;
+      bgm.volume = 0;
+      vol.value = "0";
+      try{
+        await bgm.play();
+      }catch(e){}
+      updatePlayUI();
+      const target = clamp01(ASSETS.targetVolume ?? 0.55);
+      fadeTo(target, ASSETS.fadeDurationMs ?? 1600);
+    };
 
     playBtn.onclick = async ()=>{
       try{
         if(bgm.paused) await bgm.play();
         else bgm.pause();
-        updatePlayUI();
-      }catch(e){
-        // autoplay policy: user interaction should allow play; if blocked, keep UI consistent
-        updatePlayUI();
-      }
+      }catch(e){}
+      updatePlayUI();
     };
 
     muteBtn.onclick = ()=>{
@@ -908,12 +944,10 @@
 
     vol.oninput = ()=>{
       bgm.volume = Number(vol.value);
-      if(bgm.volume === 0) bgm.muted = true;
-      else bgm.muted = false;
+      bgm.muted = (bgm.volume === 0);
       updateMuteUI();
     };
 
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
     volDown.onclick = ()=>{
       vol.value = String(clamp01(Number(vol.value) - 0.05));
       vol.oninput();
@@ -925,6 +959,7 @@
 
     updatePlayUI();
     updateMuteUI();
+    tryAutoplay();
   </script>
 </body>
 </html>
