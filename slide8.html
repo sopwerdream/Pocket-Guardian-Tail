@@ -359,6 +359,28 @@
     const bgm = document.getElementById("s8_bgm");
     bgm.src = S8_ASSETS.bgm;
     bgm.volume = 0.55;
+    // ===== AUTOPLAY + FADE IN =====
+const AUTO_PLAY_DELAY = 600;     // หน่วงก่อนเริ่ม (ms)
+const FADE_DURATION = 2000;      // ระยะเวลาเฟดเสียง (ms)
+const TARGET_VOL = 0.55;
+
+bgm.volume = 0;                 // เริ่มเงียบ
+setTimeout(async () => {
+  try {
+    await bgm.play();           // พยายามเล่นอัตโนมัติ
+    const start = performance.now();
+    function fade(t){
+      const p = Math.min((t - start) / FADE_DURATION, 1);
+      bgm.volume = TARGET_VOL * p;
+      if(p < 1) requestAnimationFrame(fade);
+    }
+    requestAnimationFrame(fade);
+  } catch (e) {
+    // ถ้า browser block autoplay จะไม่ error
+  }
+  upd(); // อัปเดตไอคอน play/mute
+}, AUTO_PLAY_DELAY);
+
 
     const playBtn = document.getElementById("s8_playBtn");
     const muteBtn = document.getElementById("s8_muteBtn");
