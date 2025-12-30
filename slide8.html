@@ -5,961 +5,384 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 8</title>
 
-  <!-- keep shared UI -->
   <link rel="stylesheet" href="ui.css" />
-  <script src="ui.js" defer></script>
 
   <style>
     :root{
-      --fg:#fff;
-      --muted:rgba(255,255,255,.78);
+      --fg:#fff; --muted:rgba(255,255,255,.78);
       --line:rgba(255,255,255,.18);
-      --glass:rgba(0,0,0,.40);
-      --btn:rgba(0,0,0,.35);
-      --btnHover:rgba(0,0,0,.55);
-      --accent:#e08a2e;
-      --accent2:#5bb7ff;
-      --danger:#ff6b6b;
+      --accent:#e08a2e; --accent2:#5bb7ff; --danger:#ff6b6b;
+      --btn:rgba(0,0,0,.35); --btnHover:rgba(0,0,0,.55);
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
-    body{
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;
-      color:var(--fg);
-      background:#000;
-      overflow:hidden;
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans Thai",sans-serif;color:var(--fg);background:#000;overflow:hidden}
+
+    .bgKey{position:fixed;inset:-40px;z-index:-6;width:calc(100% + 80px);height:calc(100% + 80px);object-fit:cover;filter:blur(18px) saturate(1.05) contrast(1.05);opacity:.22;transform:scale(1.06)}
+    .bg{position:fixed;inset:0;z-index:-5;background:
+      radial-gradient(900px 520px at 18% 25%, rgba(91,183,255,.16), transparent 60%),
+      radial-gradient(900px 520px at 82% 28%, rgba(224,138,46,.14), transparent 60%),
+      linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.90));
     }
 
-    /* Key Visual blurred background */
-    .bgKey{
-      position:fixed; inset:-40px;
-      z-index:-6;
-      width:calc(100% + 80px);
-      height:calc(100% + 80px);
-      object-fit:cover;
-      filter: blur(18px) saturate(1.05) contrast(1.05);
-      opacity:.22;
-      transform: scale(1.06);
-    }
-    .bg{
-      position:fixed; inset:0; z-index:-5;
-      background:
-        radial-gradient(900px 520px at 18% 25%, rgba(91,183,255,.16), transparent 60%),
-        radial-gradient(900px 520px at 82% 28%, rgba(224,138,46,.14), transparent 60%),
-        linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.90));
-    }
+    .wrap{height:100%;max-width:1280px;margin:0 auto;padding:70px 22px 22px;display:flex;flex-direction:column;gap:12px;min-height:0}
 
-    /* language toggle */
-    .lang{
-      position:fixed; top:22px; right:22px;
-      display:flex; gap:8px; z-index:1000;
-    }
-    .lang button{
-      border:1px solid rgba(255,255,255,.25);
-      background:rgba(0,0,0,.35);
-      color:#fff; padding:6px 12px;
-      border-radius:8px; font-weight:900;
-      cursor:pointer; backdrop-filter:blur(10px);
-      opacity:.78;
-    }
-    .lang button.active{
-      opacity:1;background:var(--accent);border-color:var(--accent)
-    }
+    /* top mini pills */
+    .kicker{display:inline-flex;gap:10px;align-items:center;padding:8px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;background:rgba(0,0,0,.25);color:var(--muted);font-size:12px;backdrop-filter:blur(10px);user-select:none;width:fit-content}
+    .pill{padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:rgba(255,255,255,.86);font-weight:900;font-size:11px;letter-spacing:.04em}
 
-    /* wrapper */
-    .wrap{
-      height:100%;
-      max-width:1280px;
-      margin:0 auto;
-      padding:70px 22px 22px;
-      display:flex;
-      flex-direction:column;
-      gap:12px;
-      min-height:0;
-    }
+    .kickerRow{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
-    .kickerRow{
-      display:flex;
-      align-items:flex-start;
-      justify-content:space-between;
-      gap:12px;
-      flex-wrap:wrap;
-    }
+    /* small header box right */
+    .topBox{border:1px solid var(--line);background:rgba(0,0,0,.34);border-radius:16px;backdrop-filter:blur(14px);box-shadow:0 20px 60px rgba(0,0,0,.30);overflow:hidden;padding:10px 12px;max-width:560px;margin-left:auto}
+    .topBox h1{margin:0;font-size:28px;line-height:1.12;letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .topBox .sub{margin:6px 0 0;color:var(--muted);font-size:12px;line-height:1.55;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 
-    .kicker{
-      display:inline-flex; gap:10px; align-items:center;
-      padding:8px 10px;
-      border:1px solid rgba(255,255,255,.18);
-      border-radius:999px;
-      background:rgba(0,0,0,.25);
-      width:fit-content;
-      color:var(--muted);
-      font-size:12px;
-      backdrop-filter: blur(10px);
-      user-select:none;
-    }
-    .pill{
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      color:rgba(255,255,255,.86);
-      font-weight:900;
-      font-size:11px;
-      letter-spacing:.04em;
-      user-select:none;
-    }
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:12px;min-height:0;flex:1}
+    .card{border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.28);border-radius:18px;backdrop-filter:blur(12px);box-shadow:0 18px 55px rgba(0,0,0,.22);overflow:hidden;min-height:0}
 
-    /* TOP TEXT BOX (small + right) */
-    .topBox{
-      border:1px solid var(--line);
-      background:rgba(0,0,0,.34);
-      border-radius:16px;
-      backdrop-filter:blur(14px);
-      box-shadow:0 20px 60px rgba(0,0,0,.30);
-      overflow:hidden;
-      padding:10px 12px;
-      max-width:560px;          /* << เล็กลง */
-      margin-left:auto;         /* << ชิดขวา */
-    }
-    .topBox h1{
-      margin:0;
-      font-size: 28px;          /* << เล็กลง */
-      line-height:1.12;
-      letter-spacing:.2px;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .topBox .sub{
-      margin:6px 0 0;
-      color:var(--muted);
-      font-size:12px;           /* << เล็กลง */
-      line-height:1.55;
-      display:-webkit-box;
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
-    }
-
-    /* main grid */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap:12px;
-      min-height:0;
-      flex:1;
-    }
-
-    .card{
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.28);
-      border-radius:18px;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 18px 55px rgba(0,0,0,.22);
-      overflow:hidden;
-      min-height:0;
-    }
-
-    /* LEFT: flow */
-    .flow{
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-    }
-    .flowTop{
-      padding:10px 12px;
-      border-bottom:1px solid rgba(255,255,255,.12);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-    }
-    .flowTop .label{
-      font-weight:900;
-      letter-spacing:.05em;
-      text-transform:uppercase;
-      font-size:12px;
-      color:rgba(255,255,255,.88);
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .dot{
-      width:10px;height:10px;border-radius:999px;
-      background:var(--accent2);
-      box-shadow:0 0 0 3px rgba(91,183,255,.18);
-      flex:0 0 auto;
-    }
-
-    /* Stage big image area */
-    .carousel{
-      flex:1;
-      min-height:0;
-      padding:12px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    .stage{
-      position:relative;
-      flex: 1 1 auto;
-      min-height: 420px;
-      border-radius:16px;
-      overflow:hidden;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.22);
-    }
-    .stage img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-      opacity:0;
-      transition:opacity .55s ease;
-    }
-    .stage img.ready{opacity:1}
-
-    .stageTag{
-      position:absolute;
-      left:12px; top:12px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.35);
-      font-size:12px;
-      color:rgba(255,255,255,.90);
-      backdrop-filter:blur(10px);
-      user-select:none;
-      max-width:calc(100% - 24px);
-      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    }
-    .stageMeta{
-      position:absolute;
-      left:12px; bottom:12px;
-      padding:8px 10px;
-      border-radius:12px;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(0,0,0,.35);
-      font-size:12px;
-      color:rgba(255,255,255,.88);
-      backdrop-filter:blur(10px);
-      max-width:calc(100% - 24px);
-      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
-    }
-    .stageEmpty{
-      position:absolute; inset:0;
-      display:flex; align-items:center; justify-content:center;
-      text-align:center;
-      padding:18px;
-      color:rgba(255,255,255,.80);
-      font-size:13px;
-      background:linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));
-      opacity:0;
-      pointer-events:none;
-      transition:opacity .2s ease;
-    }
-    .stageEmpty.show{opacity:1}
-
-    /* strip (short) */
-    .strip{
-      flex: 0 0 auto;
-      display:flex;
-      gap:10px;
-      overflow-x:auto;
-      overflow-y:hidden;
-      max-height:140px;
-      padding-bottom:4px;
-    }
-    .strip::-webkit-scrollbar{height:10px}
-    .strip::-webkit-scrollbar-thumb{
-      background:rgba(255,255,255,.22);
-      border-radius:999px;
-    }
-    .node{
-      flex:0 0 auto;
-      width:180px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.22);
-      overflow:hidden;
-      cursor:pointer;
-      opacity:.92;
-      position:relative;
-    }
-    .node:hover{opacity:1}
-    .node.active{ outline:2px solid rgba(224,138,46,.9); }
-    .node img{
-      width:100%;
-      height:78px;
-      object-fit:cover;
-      display:block;
-    }
-    .node .cap{
-      padding:8px 10px;
-      font-size:12px;
-      color:rgba(255,255,255,.88);
-      line-height:1.3;
-      border-top:1px solid rgba(255,255,255,.10);
-      background:rgba(0,0,0,.22);
-      font-weight:900;
-    }
-    .node .small{
-      display:block;
-      margin-top:3px;
-      font-weight:700;
-      color:rgba(255,255,255,.70);
-      font-size:10px;
-    }
-
-    /* RIGHT: single scroll */
-    .right{
-      display:flex;
-      flex-direction:column;
-      min-height:0;
-      gap:10px;
-      padding:12px;
-      overflow:auto;
-      padding-right:10px;
-    }
-    .panel{
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      border-radius:16px;
-      padding:14px 14px 12px;
-      overflow:visible;
-      max-height:none;
-    }
-    .panel h3{
-      margin:0 0 10px 0;
-      font-size:12px;
-      letter-spacing:.05em;
-      text-transform:uppercase;
-      opacity:.95;
-      display:flex;
-      gap:8px;
-      align-items:center;
-      user-select:none;
-    }
-    ul{
-      margin:0;
-      padding-left:18px;
-      color: rgba(255,255,255,.86);
-      font-size:14.5px;
-      line-height:1.65;
-    }
-    li{ margin: 7px 0; }
-
-    /* navigation */
-    .nav{
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-      gap:12px;
-      padding-top:2px;
-    }
-    .navHint{color:var(--muted);font-size:12px;user-select:none}
-    .btn{
-      border:1px solid rgba(255,255,255,.25);
-      background:var(--btn);
-      color:#fff;
-      padding:10px 14px;
-      border-radius:10px;
-      font-weight:900;
-      cursor:pointer;
-      letter-spacing:.2px;
-      backdrop-filter:blur(10px);
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      user-select:none;
-    }
+    /* left */
+    .flow{display:flex;flex-direction:column;min-height:0}
+    .flowTop{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+    .label{font-weight:900;letter-spacing:.05em;text-transform:uppercase;font-size:12px;color:rgba(255,255,255,.88);display:flex;gap:8px;align-items:center}
+    .dot{width:10px;height:10px;border-radius:999px;background:var(--accent2);box-shadow:0 0 0 3px rgba(91,183,255,.18)}
+    .btn{border:1px solid rgba(255,255,255,.25);background:var(--btn);color:#fff;padding:10px 14px;border-radius:10px;font-weight:900;cursor:pointer;backdrop-filter:blur(10px);display:inline-flex;align-items:center;gap:8px;user-select:none}
     .btn:hover{background:var(--btnHover)}
     .btn.primary{background:var(--accent);border-color:var(--accent)}
 
-    /* BGM player */
-    .player{
-      position:fixed;
-      left:22px;
-      bottom:18px;
-      z-index:1500;
-      display:flex;
-      gap:10px;
-      align-items:center;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(0,0,0,.40);
-      backdrop-filter: blur(12px);
-      box-shadow:0 18px 55px rgba(0,0,0,.28);
-      max-width:min(720px, calc(100vw - 44px));
-      flex-wrap:wrap;
-    }
-    .player .tag{
-      font-size:11px;
-      font-weight:900;
-      letter-spacing:.06em;
-      padding:4px 8px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:rgba(0,0,0,.25);
-      color:rgba(255,255,255,.88);
-      user-select:none;
-    }
-    .player .pbtn{
-      border:1px solid rgba(255,255,255,.22);
-      background:rgba(0,0,0,.28);
-      color:#fff;
-      padding:7px 10px;
-      border-radius:10px;
-      cursor:pointer;
-      font-weight:900;
-      backdrop-filter: blur(10px);
-      user-select:none;
-    }
-    .player .pbtn:hover{background:rgba(0,0,0,.45)}
-    .player .name{
-      color:rgba(255,255,255,.85);
-      font-size:12px;
-      max-width:300px;
-      overflow:hidden;
-      text-overflow:ellipsis;
-      white-space:nowrap;
-      user-select:none;
-    }
-    .player input[type="range"]{
-      width:150px;
-      accent-color: var(--accent);
-      cursor:pointer;
-    }
+    .carousel{flex:1;min-height:0;padding:12px;display:flex;flex-direction:column;gap:10px}
+    .stage{position:relative;flex:1 1 auto;min-height:420px;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22)}
+    .stage img{width:100%;height:100%;object-fit:cover;display:block;opacity:0;transition:opacity .55s ease}
+    .stage img.ready{opacity:1}
+    .stageTag,.stageMeta{position:absolute;left:12px;padding:8px 10px;border-radius:12px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.35);font-size:12px;color:rgba(255,255,255,.90);backdrop-filter:blur(10px);max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .stageTag{top:12px}
+    .stageMeta{bottom:12px;color:rgba(255,255,255,.86)}
+    .stageEmpty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:18px;color:rgba(255,255,255,.80);font-size:13px;background:linear-gradient(180deg, rgba(0,0,0,.20), rgba(0,0,0,.55));opacity:0;pointer-events:none;transition:opacity .2s ease}
+    .stageEmpty.show{opacity:1}
 
-    /* autoplay gate */
-    .soundGate{
-      position:fixed; inset:0;
-      z-index:1800;
+    .strip{flex:0 0 auto;display:flex;gap:10px;overflow-x:auto;max-height:140px;padding-bottom:4px}
+    .strip::-webkit-scrollbar{height:10px}
+    .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:999px}
+    .node{flex:0 0 auto;width:180px;border-radius:14px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.22);overflow:hidden;cursor:pointer;opacity:.92}
+    .node:hover{opacity:1}
+    .node.active{outline:2px solid rgba(224,138,46,.9)}
+    .node img{width:100%;height:78px;object-fit:cover;display:block}
+    .cap{padding:8px 10px;font-size:12px;color:rgba(255,255,255,.88);line-height:1.3;border-top:1px solid rgba(255,255,255,.10);background:rgba(0,0,0,.22);font-weight:900}
+    .small{display:block;margin-top:3px;font-weight:700;color:rgba(255,255,255,.70);font-size:10px}
+
+    /* right */
+    .right{display:flex;flex-direction:column;min-height:0;gap:10px;padding:12px;overflow:auto;padding-right:10px}
+    .panel{border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);border-radius:16px;padding:14px 14px 12px}
+    .panel h3{margin:0 0 10px 0;font-size:12px;letter-spacing:.05em;text-transform:uppercase;opacity:.95;display:flex;gap:8px;align-items:center}
+    ul{margin:0;padding-left:18px;color:rgba(255,255,255,.86);font-size:14.5px;line-height:1.65}
+    li{margin:7px 0}
+
+    .nav{display:flex;justify-content:space-between;align-items:center;gap:12px;padding-top:2px}
+    .navHint{color:var(--muted);font-size:12px;user-select:none}
+
+    /* player */
+    .player{position:fixed;left:22px;bottom:18px;z-index:1500;display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:14px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.40);backdrop-filter:blur(12px);box-shadow:0 18px 55px rgba(0,0,0,.28);max-width:min(720px, calc(100vw - 44px));flex-wrap:wrap}
+    .tag{font-size:11px;font-weight:900;letter-spacing:.06em;padding:4px 8px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(0,0,0,.25);color:rgba(255,255,255,.88);user-select:none}
+    .pbtn{border:1px solid rgba(255,255,255,.22);background:rgba(0,0,0,.28);color:#fff;padding:7px 10px;border-radius:10px;cursor:pointer;font-weight:900;backdrop-filter:blur(10px);user-select:none}
+    .pbtn:hover{background:rgba(0,0,0,.45)}
+    .name{color:rgba(255,255,255,.85);font-size:12px;max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;user-select:none}
+    input[type="range"]{width:150px;accent-color:var(--accent);cursor:pointer}
+
+    /* Debug overlay (shows JS errors on screen) */
+    .dbg{
+      position:fixed;left:18px;top:18px;z-index:9999;
+      max-width:min(720px, calc(100vw - 36px));
+      padding:10px 12px;border-radius:12px;
+      border:1px solid rgba(255,107,107,.35);
+      background:rgba(0,0,0,.65);
+      color:rgba(255,255,255,.92);
+      font-size:12px;line-height:1.35;
       display:none;
-      align-items:flex-end;
-      justify-content:center;
-      padding:18px;
-      background: radial-gradient(900px 520px at 50% 25%, rgba(255,255,255,.06), transparent 60%),
-                  rgba(0,0,0,.35);
-      backdrop-filter: blur(6px);
-    }
-    .soundGate .gateCard{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:12px;
-      width:min(760px, 92vw);
-      padding:12px 12px;
-      border-radius:16px;
-      border:1px solid rgba(255,255,255,.18);
-      background:rgba(0,0,0,.50);
-      box-shadow:0 18px 55px rgba(0,0,0,.28);
-    }
-    .soundGate .txt{
-      color:rgba(255,255,255,.86);
-      font-size:12px;
-      line-height:1.4;
+      backdrop-filter:blur(10px);
+      white-space:pre-wrap;
     }
 
-    @media (max-width: 980px){
+    @media (max-width:980px){
       body{overflow:auto}
-      .wrap{ padding-top:64px; height:auto; }
-      .grid{ grid-template-columns:1fr; }
-      .stage{ min-height: 340px; }
-      .node{ width:170px; }
-      .player .name{ max-width:180px; }
-      .topBox{ max-width: 100%; }
-      .topBox h1{ white-space:normal; }
+      .wrap{padding-top:64px;height:auto}
+      .grid{grid-template-columns:1fr}
+      .stage{min-height:340px}
+      .node{width:170px}
+      .name{max-width:180px}
+      .topBox{max-width:100%}
+      .topBox h1{white-space:normal}
     }
   </style>
 </head>
 
 <body>
-  <img id="bgKey" class="bgKey" alt="Safe Room key visual background" />
+  <div class="dbg" id="dbg"></div>
+
+  <img id="s8_bgKey" class="bgKey" alt="Safe Room key visual background" />
   <div class="bg"></div>
 
-  <div class="lang">
-    <button id="btnEN" type="button">EN</button>
-    <button id="btnTH" class="active" type="button">TH</button>
-  </div>
+  <!-- NOTE: ปุ่ม EN/TH/Zoom ของโปรเจกต์คุณยังอยู่จาก ui.js -->
+  <!-- หน้านี้จะไม่สร้างปุ่ม EN/TH ซ้ำ เพื่อไม่ชนกับ ui.js -->
 
   <div class="wrap">
-
     <div class="kickerRow">
-      <div class="kicker">
-        <span id="kickerLeft"></span>
-        <span class="pill" id="kickerMid"></span>
-        <b id="kickerRight"></b>
-        <span style="opacity:.75">•</span>
-        <span id="totalHint" style="opacity:.75"></span>
-      </div>
+      <div class="kicker" id="s8_kicker"></div>
 
-      <!-- small top text box on the right -->
       <div class="topBox">
-        <h1 id="title"></h1>
-        <div class="sub" id="subtitle"></div>
+        <h1 id="s8_title"></h1>
+        <div class="sub" id="s8_subtitle"></div>
       </div>
     </div>
 
     <div class="grid">
-      <!-- LEFT -->
       <section class="card flow">
         <div class="flowTop">
-          <div class="label"><span class="dot"></span><span id="flowLabel"></span></div>
+          <div class="label"><span class="dot"></span><span id="s8_flowLabel"></span></div>
           <div style="display:flex;gap:8px;flex-wrap:wrap;">
-            <button class="btn" id="prevRoom" type="button">←</button>
-            <button class="btn" id="nextRoom" type="button">→</button>
+            <button class="btn" id="s8_prevRoom" type="button">←</button>
+            <button class="btn" id="s8_nextRoom" type="button">→</button>
           </div>
         </div>
 
         <div class="carousel">
           <div class="stage">
-            <img id="stageImg" alt="Safe Room visual" />
-            <div class="stageEmpty" id="stageEmpty">
-              ไม่สามารถโหลดรูปได้ (ตรวจสอบลิงก์/ชื่อไฟล์)<br/>ลองกด Ctrl+F5 หลังอัปเดตบน GitHub
+            <img id="s8_stageImg" alt="Safe Room visual" />
+            <div class="stageEmpty" id="s8_stageEmpty">
+              Image failed to load (URL / filename)<br/>ลอง Ctrl+F5 หลังอัปเดตบน GitHub
             </div>
-            <div class="stageTag" id="stageTag"></div>
-            <div class="stageMeta" id="stageMeta">Loading…</div>
+            <div class="stageTag" id="s8_stageTag"></div>
+            <div class="stageMeta" id="s8_stageMeta">Loading…</div>
           </div>
 
-          <div class="strip" id="strip"></div>
+          <div class="strip" id="s8_strip"></div>
         </div>
       </section>
 
-      <!-- RIGHT -->
-      <section class="card right" id="rightScroll">
-        <div class="panel" id="p1">
-          <h3><span class="dot"></span><span id="h1"></span></h3>
-          <ul id="u1"></ul>
+      <section class="card right">
+        <div class="panel">
+          <h3><span class="dot"></span><span id="s8_h1"></span></h3>
+          <ul id="s8_u1"></ul>
         </div>
 
-        <div class="panel" id="p2">
-          <h3>
-            <span class="dot" style="background:var(--accent);box-shadow:0 0 0 3px rgba(224,138,46,.18)"></span>
-            <span id="h2"></span>
-          </h3>
-          <ul id="u2"></ul>
+        <div class="panel">
+          <h3><span class="dot" style="background:var(--accent);box-shadow:0 0 0 3px rgba(224,138,46,.18)"></span><span id="s8_h2"></span></h3>
+          <ul id="s8_u2"></ul>
         </div>
 
-        <div class="panel" id="p3">
-          <h3>
-            <span class="dot" style="background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,.16)"></span>
-            <span id="h3"></span>
-          </h3>
-          <ul id="u3"></ul>
+        <div class="panel">
+          <h3><span class="dot" style="background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,.16)"></span><span id="s8_h3"></span></h3>
+          <ul id="s8_u3"></ul>
         </div>
       </section>
     </div>
 
     <div class="nav">
-      <div class="navHint" id="navHint"></div>
+      <div class="navHint" id="s8_navHint"></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="btn" id="backBtn" type="button">⬅️ Back</button>
-        <button class="btn primary" id="nextBtn" type="button">Next ➜</button>
+        <button class="btn" id="s8_backBtn" type="button">⬅️ Back</button>
+        <button class="btn primary" id="s8_nextBtn" type="button">Next ➜</button>
       </div>
     </div>
   </div>
 
-  <!-- Music Player -->
-  <div class="player" id="player">
+  <div class="player" id="s8_player">
     <span class="tag">BGM</span>
-    <button class="pbtn" id="playBtn" type="button">▶️</button>
-    <button class="pbtn" id="muteBtn" type="button">🔈</button>
-    <span class="name" id="trackName">Safe Room (Loft Style)</span>
-    <input id="vol" type="range" min="0" max="1" step="0.01" value="0.55" aria-label="volume"/>
-    <button class="pbtn" id="volDown" type="button">−</button>
-    <button class="pbtn" id="volUp" type="button">+</button>
+    <button class="pbtn" id="s8_playBtn" type="button">▶️</button>
+    <button class="pbtn" id="s8_muteBtn" type="button">🔈</button>
+    <span class="name">Safe Room (Loft Style)</span>
+    <input id="s8_vol" type="range" min="0" max="1" step="0.01" value="0.55" />
+    <button class="pbtn" id="s8_volDown" type="button">−</button>
+    <button class="pbtn" id="s8_volUp" type="button">+</button>
   </div>
 
-  <!-- Autoplay gate -->
-  <div class="soundGate" id="soundGate">
-    <div class="gateCard">
-      <div class="txt">
-        <b>Enable Sound</b><br/>
-        Browser อาจบล็อกการเล่นเสียงอัตโนมัติ — กดปุ่มด้านขวา 1 ครั้งเพื่อเริ่มเพลง
-      </div>
-      <button class="btn primary" id="enableSoundBtn" type="button">🔊 Enable</button>
-    </div>
-  </div>
-
-  <audio id="bgm" preload="auto" loop></audio>
+  <audio id="s8_bgm" preload="auto" loop></audio>
 
   <script>
-    const SLIDE_NO = 8;
-    const TOTAL_SLIDES = 10;
+    // ====== Debug overlay: show JS error on screen ======
+    (function(){
+      const dbg = document.getElementById("dbg");
+      function show(msg){
+        dbg.style.display = "block";
+        dbg.textContent = "Slide8 JS Error:\\n" + msg;
+      }
+      window.addEventListener("error", (e)=>{
+        show((e.message || "Unknown error") + "\\n" + (e.filename||"") + ":" + (e.lineno||"") );
+      });
+      window.addEventListener("unhandledrejection", (e)=>{
+        show("Unhandled Promise Rejection:\\n" + (e.reason?.message || e.reason || "unknown"));
+      });
+    })();
 
-    const BACK_PAGE = "slide7.html";
-    const NEXT_PAGE = "slide9.html"; // placeholder
-
-    /* ✅ IMPORTANT: use /main/ raw URLs (NOT /refs/heads/) */
-    const ASSETS = {
+    // ====== IMPORTANT: RAW main URLs only ======
+    const S8_ASSETS = {
       keyVisualBg: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/key%20visual%20Safe%20Room.png",
-
-      s8_rooms: [
+      rooms: [
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/Character%20customization%20and%20setting..png",
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/Craft%20room%20And%20wear%20the%20equipment..png",
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/Enter%20the%20skill%20upgrade%20room..png",
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/Map%20and%20Mission%20Event%20Room.png",
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/key%20visual%20Safe%20Room/storage%20room.png"
       ],
-      rotateMs: 4200,
-
       bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3",
-      autoplay: true,
-      fadeDurationMs: 1600,
-      targetVolume: 0.55
+      rotateMs: 4200
     };
 
-    const COPY = {
-      th:{
-        kickerLeft:`Slide ${SLIDE_NO}`,
-        kickerMid:"SAFE ROOM / POCKET HOME",
-        kickerRight:"System",
-        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
+    const BACK_PAGE = "slide7.html";
+    const NEXT_PAGE = "slide9.html";
 
-        title:"A Strategic Hub Between Battles",
-        subtitle:"Safe Room (Pocket Home) คือ “ศูนย์กลางการตัดสินใจ” ไม่ใช่แค่ที่พัก แต่เชื่อมการเล่น / เศรษฐกิจ / การเติบโตของตัวละคร — ทุกการอัปเกรดและการใช้ทรัพยากรส่งผลต่อประสิทธิภาพในสนามรบโดยตรง",
+    const TH = {
+      kicker: "Slide 8  •  SAFE ROOM / POCKET HOME  •  System  •  8/10",
+      title: "A Strategic Hub Between Battles",
+      subtitle: "Safe Room (Pocket Home) คือ “ศูนย์กลางการตัดสินใจ” ไม่ใช่แค่ที่พัก แต่เชื่อมการเล่น / เศรษฐกิจ / การเติบโตของตัวละคร — ทุกการอัปเกรดและการใช้ทรัพยากรส่งผลต่อประสิทธิภาพในสนามรบโดยตรง",
+      flowLabel: "SAFE ROOM ROOMS (HORIZONTAL FLOW)",
+      stageTag: "SAFE ROOM • Multi-Room Hub",
+      navHint: "Back → Slide 7 • Next → Slide 9",
 
-        flowLabel:"SAFE ROOM ROOMS (HORIZONTAL FLOW)",
-        stageTag:"SAFE ROOM • Multi-Room Hub",
-        navHint:"Back → Slide 7 • Next → Slide 9",
-
-        h1:"แนวคิดหลักของ SAFE ROOM",
-        u1:[
-          "ศูนย์กลางการตัดสินใจของผู้เล่น (Decision Hub)",
-          "เชื่อม: Gameplay Loop + Economy + Character Growth",
-          "สิ่งที่ทำใน Safe Room → สะท้อนผลใน Battle โดยตรง"
-        ],
-
-        h2:"ระบบหลักภายใน SAFE ROOM",
-        u2:[
-          "Trading & Shop: ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support",
-          "ราคาของ/ความหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World",
-          "Skill Upgrade Room: Skill Tree เฉพาะตัว เลือกสาย Damage / Support / Control และ “เปลี่ยนพฤติกรรมสกิล” ไม่ใช่แค่ตัวเลข",
-          "Equipment & Craft: Stat / Passive / Playstyle + Visual Customization"
-        ],
-
-        h3:"WHY IT MATTERS (BUSINESS)",
-        u3:[
-          "แกนสำหรับขยายคอนเทนต์ในอนาคต (Rooms/Systems เพิ่มได้เรื่อย ๆ)",
-          "รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content",
-          "(Future) รองรับ Live Update และ Monetization บนแพลตฟอร์มอื่น"
-        ],
-
-        rooms:[
-          {t:"Character Customization & Setting", s:"แต่งตัว/ตั้งค่าตัวละคร"},
-          {t:"Craft Room & Equipment", s:"คราฟต์/อุปกรณ์"},
-          {t:"Skill Upgrade Room", s:"อัปเกรดสกิล"},
-          {t:"Map & Mission Event Room", s:"แผนที่/ภารกิจ/อีเวนต์"},
-          {t:"Storage Room", s:"คลังเก็บของ"}
-        ]
-      },
-
-      en:{
-        kickerLeft:`Slide ${SLIDE_NO}`,
-        kickerMid:"SAFE ROOM / POCKET HOME",
-        kickerRight:"System",
-        total:`${SLIDE_NO}/${TOTAL_SLIDES}`,
-
-        title:"A Strategic Hub Between Battles",
-        subtitle:"Safe Room (Pocket Home) is a decision hub—not just a resting place. It connects gameplay, economy, and character growth. Every upgrade and resource choice directly impacts battle performance.",
-
-        flowLabel:"SAFE ROOM ROOMS (HORIZONTAL FLOW)",
-        stageTag:"SAFE ROOM • Multi-Room Hub",
-        navHint:"Back → Slide 7 • Next → Slide 9",
-
-        h1:"Core Idea",
-        u1:[
-          "A true decision hub for the player.",
-          "Connects gameplay loop, economy, and character growth.",
-          "What you do here directly shapes battle outcomes."
-        ],
-
-        h2:"Core Systems",
-        u2:[
-          "Trading & Shop: uses earned resources; items include Equipment, Crafting Materials, and Support Items.",
-          "Prices and rarity shift with game progress and Pocket World events.",
-          "Skill Upgrade Room: unique skill trees with Damage/Support/Control paths; upgrades change behavior, not just numbers.",
-          "Equipment & Craft: stats/passives/playstyle + visual customization."
-        ],
-
-        h3:"Why It Matters (Business)",
-        u3:[
-          "A scalable backbone for future content expansion (more rooms/systems).",
-          "Supports items/skins/collectibles and event-based content.",
-          "Future-ready for live updates and monetization on other platforms."
-        ],
-
-        rooms:[
-          {t:"Character Customization & Setting", s:"Outfits & setup"},
-          {t:"Craft Room & Equipment", s:"Crafting & gear"},
-          {t:"Skill Upgrade Room", s:"Skill upgrades"},
-          {t:"Map & Mission Event Room", s:"Map & events"},
-          {t:"Storage Room", s:"Storage"}
-        ]
-      }
+      h1: "แนวคิดหลักของ SAFE ROOM",
+      u1: [
+        "ศูนย์กลางการตัดสินใจของผู้เล่น (Decision Hub)",
+        "เชื่อม: Gameplay Loop + Economy + Character Growth",
+        "สิ่งที่ทำใน Safe Room → สะท้อนผลใน Battle โดยตรง"
+      ],
+      h2: "ระบบหลักภายใน SAFE ROOM",
+      u2: [
+        "Trading & Shop: ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support",
+        "ราคาของ/ความหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World",
+        "Skill Upgrade Room: Skill Tree เฉพาะตัว เลือกสาย Damage / Support / Control และ “เปลี่ยนพฤติกรรมสกิล” ไม่ใช่แค่ตัวเลข",
+        "Equipment & Craft: Stat / Passive / Playstyle + Visual Customization"
+      ],
+      h3: "WHY IT MATTERS (BUSINESS)",
+      u3: [
+        "แกนสำหรับขยายคอนเทนต์ในอนาคต (Rooms/Systems เพิ่มได้เรื่อย ๆ)",
+        "รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content",
+        "(Future) รองรับ Live Update และ Monetization บนแพลตฟอร์มอื่น"
+      ],
+      rooms: [
+        {t:"Character Customization & Setting", s:"แต่งตัว/ตั้งค่าตัวละคร"},
+        {t:"Craft Room & Equipment", s:"คราฟต์/อุปกรณ์"},
+        {t:"Skill Upgrade Room", s:"อัปเกรดสกิล"},
+        {t:"Map & Mission Event Room", s:"แผนที่/ภารกิจ/อีเวนต์"},
+        {t:"Storage Room", s:"คลังเก็บของ"}
+      ]
     };
 
-    // refs
-    const btnEN = document.getElementById("btnEN");
-    const btnTH = document.getElementById("btnTH");
+    // ---- init DOM
+    document.getElementById("s8_bgKey").src = S8_ASSETS.keyVisualBg;
+    document.getElementById("s8_kicker").textContent = TH.kicker;
+    document.getElementById("s8_title").textContent = TH.title;
+    document.getElementById("s8_subtitle").textContent = TH.subtitle;
+    document.getElementById("s8_flowLabel").textContent = TH.flowLabel;
+    document.getElementById("s8_stageTag").textContent = TH.stageTag;
+    document.getElementById("s8_navHint").textContent = TH.navHint;
 
-    const kickerLeft = document.getElementById("kickerLeft");
-    const kickerMid  = document.getElementById("kickerMid");
-    const kickerRight= document.getElementById("kickerRight");
-    const totalHint  = document.getElementById("totalHint");
+    function renderList(id, arr){
+      document.getElementById(id).innerHTML = arr.map(x=>`<li>${x}</li>`).join("");
+    }
+    document.getElementById("s8_h1").textContent = TH.h1; renderList("s8_u1", TH.u1);
+    document.getElementById("s8_h2").textContent = TH.h2; renderList("s8_u2", TH.u2);
+    document.getElementById("s8_h3").textContent = TH.h3; renderList("s8_u3", TH.u3);
 
-    const titleEl    = document.getElementById("title");
-    const subtitleEl = document.getElementById("subtitle");
-
-    const flowLabel  = document.getElementById("flowLabel");
-    const stageTag   = document.getElementById("stageTag");
-    const stageMeta  = document.getElementById("stageMeta");
-    const stageImg   = document.getElementById("stageImg");
-    const stageEmpty = document.getElementById("stageEmpty");
-    const strip      = document.getElementById("strip");
-
-    const h1 = document.getElementById("h1");
-    const h2 = document.getElementById("h2");
-    const h3 = document.getElementById("h3");
-    const u1 = document.getElementById("u1");
-    const u2 = document.getElementById("u2");
-    const u3 = document.getElementById("u3");
-
-    const navHint = document.getElementById("navHint");
-    document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
-    document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
-
+    document.getElementById("s8_backBtn").onclick = ()=> location.href = BACK_PAGE;
+    document.getElementById("s8_nextBtn").onclick = ()=> location.href = NEXT_PAGE;
     window.addEventListener("keydown",(e)=>{
-      if(e.key==="ArrowLeft") location.href=BACK_PAGE;
-      if(e.key==="ArrowRight") location.href=NEXT_PAGE;
+      if(e.key==="ArrowLeft") location.href = BACK_PAGE;
+      if(e.key==="ArrowRight") location.href = NEXT_PAGE;
     });
 
-    // set blurred bg
-    const bgKey = document.getElementById("bgKey");
-    bgKey.src = ASSETS.keyVisualBg;
-
-    function renderList(el, items){
-      el.innerHTML = items.map(t=>`<li>${t}</li>`).join("");
-    }
-    function currentLang(){
-      return btnTH.classList.contains("active") ? "th" : "en";
-    }
-
-    function setLang(lang){
-      const c = COPY[lang];
-      kickerLeft.textContent = c.kickerLeft;
-      kickerMid.textContent  = c.kickerMid;
-      kickerRight.textContent= c.kickerRight;
-      totalHint.textContent  = c.total;
-
-      titleEl.textContent    = c.title;
-      subtitleEl.textContent = c.subtitle;
-
-      flowLabel.textContent  = c.flowLabel;
-      stageTag.textContent   = c.stageTag;
-      navHint.textContent    = c.navHint;
-
-      h1.textContent = c.h1; renderList(u1,c.u1);
-      h2.textContent = c.h2; renderList(u2,c.u2);
-      h3.textContent = c.h3; renderList(u3,c.u3);
-
-      btnEN.classList.toggle("active", lang==="en");
-      btnTH.classList.toggle("active", lang==="th");
-
-      updateStripCaptions();
-      if(rooms[idx]) setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-    }
-
-    btnEN.onclick=()=>setLang("en");
-    btnTH.onclick=()=>setLang("th");
-    setLang("th");
-
-    // carousel
-    let rooms = ASSETS.s8_rooms.map(url=>({url}));
+    // ---- carousel
+    const strip = document.getElementById("s8_strip");
+    const stageImg = document.getElementById("s8_stageImg");
+    const stageMeta = document.getElementById("s8_stageMeta");
+    const stageEmpty = document.getElementById("s8_stageEmpty");
     let idx = 0;
     let timer = null;
 
-    function highlightNode(){
-      [...strip.querySelectorAll(".node")].forEach(n=>{
-        n.classList.toggle("active", Number(n.dataset.idx)===idx);
-      });
-    }
-
-    function setStage(url, label){
+    function setStage(i){
+      idx = i;
       stageEmpty.classList.remove("show");
       stageImg.classList.remove("ready");
       stageMeta.textContent = "Loading…";
 
       stageImg.onload = ()=>{
         stageImg.classList.add("ready");
-        stageMeta.textContent = label || url.split("/").slice(-1)[0];
+        stageMeta.textContent = TH.rooms[idx].t;
       };
       stageImg.onerror = ()=>{
         stageMeta.textContent = "Image failed to load";
         stageEmpty.classList.add("show");
       };
 
-      stageImg.src = url + (url.includes("?") ? "&" : "?") + "v=" + Date.now();
+      const url = S8_ASSETS.rooms[idx];
+      stageImg.src = url + "?v=" + Date.now();
+      [...strip.querySelectorAll(".node")].forEach(n=>{
+        n.classList.toggle("active", Number(n.dataset.idx) === idx);
+      });
     }
 
     function buildStrip(){
-      strip.innerHTML="";
-      const c = COPY[currentLang()];
-      rooms.forEach((r,i)=>{
-        const node=document.createElement("div");
-        node.className="node";
-        node.dataset.idx=i;
+      strip.innerHTML = "";
+      S8_ASSETS.rooms.forEach((url,i)=>{
+        const node = document.createElement("div");
+        node.className = "node";
+        node.dataset.idx = i;
 
-        const img=document.createElement("img");
-        img.src=r.url;
+        const img = document.createElement("img");
+        img.src = url;
 
-        const cap=document.createElement("div");
-        cap.className="cap";
-        cap.innerHTML = `<span>${c.rooms[i]?.t || "Room"}</span><span class="small">${c.rooms[i]?.s || ""}</span>`;
+        const cap = document.createElement("div");
+        cap.className = "cap";
+        cap.innerHTML = `<span>${TH.rooms[i].t}</span><span class="small">${TH.rooms[i].s}</span>`;
 
         node.appendChild(img);
         node.appendChild(cap);
-
-        node.onclick=()=>{
-          idx=i;
-          setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-          highlightNode();
-          restartAuto();
-        };
+        node.onclick = ()=> { setStage(i); restart(); };
 
         strip.appendChild(node);
       });
-      highlightNode();
     }
 
-    function updateStripCaptions(){
-      const c = COPY[currentLang()];
-      [...strip.querySelectorAll(".node")].forEach((node,i)=>{
-        const cap=node.querySelector(".cap");
-        if(!cap) return;
-        cap.innerHTML = `<span>${c.rooms[i]?.t || "Room"}</span><span class="small">${c.rooms[i]?.s || ""}</span>`;
-      });
-    }
-
-    function restartAuto(){
+    function restart(){
       if(timer) clearInterval(timer);
-      if(rooms.length<=1) return;
-      timer=setInterval(()=>{
-        idx=(idx+1)%rooms.length;
-        const c=COPY[currentLang()];
-        setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-        highlightNode();
-      }, ASSETS.rotateMs || 4200);
+      timer = setInterval(()=>{
+        setStage((idx + 1) % S8_ASSETS.rooms.length);
+      }, S8_ASSETS.rotateMs);
     }
 
-    document.getElementById("prevRoom").onclick=()=>{
-      idx = (idx - 1 + rooms.length) % rooms.length;
-      const c=COPY[currentLang()];
-      setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-      highlightNode();
-      restartAuto();
-    };
-    document.getElementById("nextRoom").onclick=()=>{
-      idx = (idx + 1) % rooms.length;
-      const c=COPY[currentLang()];
-      setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-      highlightNode();
-      restartAuto();
-    };
+    document.getElementById("s8_prevRoom").onclick = ()=>{ setStage((idx - 1 + S8_ASSETS.rooms.length) % S8_ASSETS.rooms.length); restart(); };
+    document.getElementById("s8_nextRoom").onclick = ()=>{ setStage((idx + 1) % S8_ASSETS.rooms.length); restart(); };
 
     buildStrip();
-    setStage(rooms[0].url, COPY[currentLang()].rooms[0]?.t || "Room");
-    restartAuto();
+    setStage(0);
+    restart();
 
-    // ---- Audio autoplay + fade
-    const bgm = document.getElementById("bgm");
-    const playBtn = document.getElementById("playBtn");
-    const muteBtn = document.getElementById("muteBtn");
-    const vol = document.getElementById("vol");
-    const volDown = document.getElementById("volDown");
-    const volUp = document.getElementById("volUp");
-    const soundGate = document.getElementById("soundGate");
-    const enableSoundBtn = document.getElementById("enableSoundBtn");
+    // ---- audio (manual play; autoplay may be blocked)
+    const bgm = document.getElementById("s8_bgm");
+    bgm.src = S8_ASSETS.bgm;
+    bgm.volume = 0.55;
 
-    bgm.src = ASSETS.bgm;
+    const playBtn = document.getElementById("s8_playBtn");
+    const muteBtn = document.getElementById("s8_muteBtn");
+    const vol = document.getElementById("s8_vol");
+    const vd = document.getElementById("s8_volDown");
+    const vu = document.getElementById("s8_volUp");
 
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
-    function updatePlayUI(){ playBtn.textContent = bgm.paused ? "▶️" : "⏸️"; }
-    function updateMuteUI(){ muteBtn.textContent = bgm.muted ? "🔇" : "🔈"; }
-
-    function fadeTo(target, duration){
-      const start = bgm.volume;
-      const t0 = performance.now();
-      const delta = target - start;
-      function tick(t){
-        const p = Math.min(1, (t - t0) / duration);
-        bgm.volume = clamp01(start + delta * p);
-        vol.value = String(bgm.volume);
-        if(p < 1) requestAnimationFrame(tick);
-      }
-      requestAnimationFrame(tick);
-    }
-
-    async function tryAutoplay(){
-      if(!ASSETS.autoplay) return;
-
-      bgm.muted = false;
-      bgm.volume = 0;
-      vol.value = "0";
-      updateMuteUI();
-
-      try{
-        await bgm.play();
-        updatePlayUI();
-        fadeTo(clamp01(ASSETS.targetVolume ?? 0.55), ASSETS.fadeDurationMs ?? 1600);
-      }catch(e){
-        soundGate.style.display = "flex";
-        updatePlayUI();
-      }
-    }
-
-    enableSoundBtn.onclick = async ()=>{
-      soundGate.style.display = "none";
-      bgm.muted = false;
-      bgm.volume = 0;
-      vol.value = "0";
-      try{ await bgm.play(); }catch(e){}
-      updatePlayUI();
-      fadeTo(clamp01(ASSETS.targetVolume ?? 0.55), ASSETS.fadeDurationMs ?? 1600);
-    };
+    function upd(){ playBtn.textContent = bgm.paused ? "▶️" : "⏸️"; muteBtn.textContent = bgm.muted ? "🔇" : "🔈"; }
+    upd();
 
     playBtn.onclick = async ()=>{
       try{
         if(bgm.paused) await bgm.play();
         else bgm.pause();
       }catch(e){}
-      updatePlayUI();
+      upd();
     };
-    muteBtn.onclick = ()=>{
-      bgm.muted = !bgm.muted;
-      updateMuteUI();
-    };
-    vol.oninput = ()=>{
-      bgm.volume = Number(vol.value);
-      bgm.muted = (bgm.volume === 0);
-      updateMuteUI();
-    };
-    volDown.onclick = ()=>{
-      vol.value = String(clamp01(Number(vol.value) - 0.05));
-      vol.oninput();
-    };
-    volUp.onclick = ()=>{
-      vol.value = String(clamp01(Number(vol.value) + 0.05));
-      vol.oninput();
-    };
-
-    updatePlayUI();
-    updateMuteUI();
-    tryAutoplay();
+    muteBtn.onclick = ()=>{ bgm.muted = !bgm.muted; upd(); };
+    vol.oninput = ()=>{ bgm.volume = Number(vol.value); bgm.muted = (bgm.volume===0); upd(); };
+    vd.onclick = ()=>{ vol.value = String(Math.max(0, Number(vol.value)-0.05)); vol.oninput(); };
+    vu.onclick = ()=>{ vol.value = String(Math.min(1, Number(vol.value)+0.05)); vol.oninput(); };
   </script>
+
+  <!-- ✅ ui.js โหลดท้ายสุด เพื่อไม่ให้ชน/ทำให้สคริปต์สไลด์ 8 หยุด -->
+  <script src="ui.js"></script>
 </body>
 </html>
