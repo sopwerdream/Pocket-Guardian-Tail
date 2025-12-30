@@ -1,0 +1,21 @@
+Monster Design Overview – Pocket Guardian
+
+1. Pocket World Monsters
+- Friendly-looking native creatures
+- Used for early combat, EXP farming, onboarding
+- Low to medium difficulty
+
+2. Corrupted Monsters (Alien-Influenced)
+- Monsters controlled by alien force
+- Aggressive, stronger, distorted visuals
+- Used as Elite and Boss enemies
+
+Monster Roles:
+- Small Monsters: EXP farming
+- Elite Monsters: stronger variants
+- Boss Monsters: story climax
+
+Design Goals:
+- Scalable content
+- Reusable assets
+- Supports seasonal events
