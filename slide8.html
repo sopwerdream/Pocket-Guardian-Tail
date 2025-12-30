@@ -1,11 +1,13 @@
 <!doctype html>
-<html lang="en">
+<html lang="th">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 8</title>
 
+  <!-- keep your shared UI -->
   <link rel="stylesheet" href="ui.css" />
+  <script src="ui.js" defer></script>
 
   <style>
     :root{
@@ -17,6 +19,7 @@
       --btnHover:rgba(0,0,0,.55);
       --accent:#e08a2e;
       --accent2:#5bb7ff;
+      --danger:#ff6b6b;
     }
     *{box-sizing:border-box}
     html,body{height:100%;margin:0}
@@ -27,7 +30,7 @@
       overflow:hidden;
     }
 
-    /* Key Visual blurred background image (base) */
+    /* Key Visual blurred background */
     .bgKey{
       position:fixed; inset:-40px;
       z-index:-6;
@@ -38,8 +41,6 @@
       opacity:.22;
       transform: scale(1.06);
     }
-
-    /* Pocket Home ambience overlay */
     .bg{
       position:fixed; inset:0; z-index:-5;
       background:
@@ -48,7 +49,7 @@
         linear-gradient(180deg, rgba(0,0,0,.58), rgba(0,0,0,.90));
     }
 
-    /* Language toggle */
+    /* language toggle */
     .lang{
       position:fixed; top:22px; right:22px;
       display:flex; gap:8px; z-index:1000;
@@ -61,16 +62,19 @@
       cursor:pointer; backdrop-filter:blur(10px);
       opacity:.78;
     }
-    .lang button.active{opacity:1;background:var(--accent);border-color:var(--accent)}
+    .lang button.active{
+      opacity:1;background:var(--accent);border-color:var(--accent)
+    }
 
+    /* wrapper */
     .wrap{
       height:100%;
-      max-width:1240px;
+      max-width:1280px;
       margin:0 auto;
       padding:70px 22px 22px;
       display:flex;
       flex-direction:column;
-      gap:14px;
+      gap:12px;
       min-height:0;
     }
 
@@ -84,21 +88,21 @@
       color:var(--muted);
       font-size:12px;
       backdrop-filter: blur(10px);
+      user-select:none;
     }
-    .kicker b{color:#fff}
     .pill{
       padding:4px 8px;
       border-radius:999px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.25);
       color:rgba(255,255,255,.86);
-      font-weight:800;
+      font-weight:900;
       font-size:11px;
       letter-spacing:.04em;
       user-select:none;
     }
 
-    /* Header */
+    /* header — ลดพื้นที่ให้เนื้อหาหลักมากขึ้น */
     .header{
       border:1px solid var(--line);
       background:var(--glass);
@@ -106,7 +110,7 @@
       backdrop-filter:blur(14px);
       box-shadow:0 30px 80px rgba(0,0,0,.35);
       overflow:hidden;
-      padding:16px 18px 14px;
+      padding:14px 16px 12px;
     }
     .titleRow{
       display:flex;
@@ -117,23 +121,23 @@
     }
     h1{
       margin:0;
-      font-size: clamp(28px, 3.2vw, 44px);
+      font-size: clamp(28px, 3.0vw, 44px);
       line-height:1.08;
       letter-spacing:.2px;
     }
     .sub{
-      margin:8px 0 0;
+      margin:6px 0 0;
       color:var(--muted);
       font-size:13px;
       line-height:1.6;
-      max-width:78ch;
+      max-width:92ch;
     }
 
-    /* Main grid */
+    /* main grid */
     .grid{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
+      grid-template-columns: 1.15fr .85fr;
+      gap:12px;
       min-height:0;
       flex:1;
     }
@@ -148,14 +152,14 @@
       min-height:0;
     }
 
-    /* Left: Carousel / Flow */
+    /* LEFT: flow */
     .flow{
       display:flex;
       flex-direction:column;
       min-height:0;
     }
     .flowTop{
-      padding:14px 14px 10px;
+      padding:10px 12px;
       border-bottom:1px solid rgba(255,255,255,.12);
       display:flex;
       align-items:center;
@@ -165,7 +169,7 @@
     }
     .flowTop .label{
       font-weight:900;
-      letter-spacing:.04em;
+      letter-spacing:.05em;
       text-transform:uppercase;
       font-size:12px;
       color:rgba(255,255,255,.88);
@@ -180,20 +184,19 @@
       flex:0 0 auto;
     }
 
+    /* สำคัญ: ให้ภาพใหญ่เด่น */
     .carousel{
-      position:relative;
       flex:1;
       min-height:0;
-      padding:14px;
+      padding:12px;
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:10px;
     }
-
     .stage{
       position:relative;
-      flex:1;
-      min-height:0;
+      flex: 1 1 auto;
+      min-height: 420px;  /* << เพิ่มให้เห็นภาพใหญ่ชัด */
       border-radius:16px;
       overflow:hidden;
       border:1px solid rgba(255,255,255,.14);
@@ -237,16 +240,25 @@
       overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
     }
 
-    /* Horizontal flow strip */
+    /* strip — ทำให้เตี้ยลง */
     .strip{
+      flex: 0 0 auto;
       display:flex;
       gap:10px;
-      overflow:auto;
-      padding-bottom:2px;
+      overflow-x:auto;
+      overflow-y:hidden;
+      max-height:140px;        /* << ไม่แย่งพื้นที่ */
+      padding-bottom:4px;
     }
+    .strip::-webkit-scrollbar{height:10px}
+    .strip::-webkit-scrollbar-thumb{
+      background:rgba(255,255,255,.22);
+      border-radius:999px;
+    }
+
     .node{
       flex:0 0 auto;
-      width:220px;
+      width:180px;             /* << เห็นหลายใบขึ้น */
       border-radius:14px;
       border:1px solid rgba(255,255,255,.14);
       background:rgba(0,0,0,.22);
@@ -259,42 +271,44 @@
     .node.active{ outline:2px solid rgba(224,138,46,.9); }
     .node img{
       width:100%;
-      height:110px;
+      height:78px;             /* << การ์ดเตี้ยลง */
       object-fit:cover;
       display:block;
     }
     .node .cap{
-      padding:10px 10px 9px;
+      padding:8px 10px;
       font-size:12px;
       color:rgba(255,255,255,.88);
-      line-height:1.35;
+      line-height:1.3;
       border-top:1px solid rgba(255,255,255,.10);
       background:rgba(0,0,0,.22);
-      font-weight:800;
+      font-weight:900;
     }
     .node .small{
       display:block;
       margin-top:3px;
-      font-weight:600;
+      font-weight:700;
       color:rgba(255,255,255,.70);
-      font-size:11px;
+      font-size:10px;
     }
 
-    /* Right: Content panels */
+    /* RIGHT: ทำให้เลื่อนครั้งเดียว */
     .right{
       display:flex;
       flex-direction:column;
       min-height:0;
-      gap:12px;
-      padding:14px;
+      gap:10px;
+      padding:12px;
+      overflow:auto;          /* << เลื่อนทีเดียว */
+      padding-right:10px;
     }
     .panel{
       border:1px solid rgba(255,255,255,.14);
       background: rgba(255,255,255,.06);
       border-radius:16px;
       padding:14px 14px 12px;
-      min-height:0;
-      overflow:auto;
+      overflow:visible;       /* << ปิด scroll ซ้อน */
+      max-height:none;
     }
     .panel h3{
       margin:0 0 10px 0;
@@ -305,9 +319,8 @@
       display:flex;
       gap:8px;
       align-items:center;
+      user-select:none;
     }
-    .panel h3 .dot{ width:9px;height:9px; }
-
     ul{
       margin:0;
       padding-left:18px;
@@ -317,6 +330,7 @@
     }
     li{ margin: 7px 0; }
 
+    /* transitions */
     .fade{
       transition: opacity .22s ease, transform .22s ease;
       opacity:1;
@@ -327,13 +341,13 @@
       transform: translateY(8px);
     }
 
-    /* Navigation */
+    /* navigation */
     .nav{
       display:flex;
       justify-content:space-between;
       align-items:center;
       gap:12px;
-      padding-top:4px;
+      padding-top:2px;
     }
     .navHint{color:var(--muted);font-size:12px;user-select:none}
     .btn{
@@ -349,11 +363,12 @@
       display:inline-flex;
       align-items:center;
       gap:8px;
+      user-select:none;
     }
     .btn:hover{background:var(--btnHover)}
     .btn.primary{background:var(--accent);border-color:var(--accent)}
 
-    /* Music mini player (Slide 8 only) */
+    /* BGM player (Slide 8 only) */
     .player{
       position:fixed;
       left:22px;
@@ -368,7 +383,7 @@
       background:rgba(0,0,0,.40);
       backdrop-filter: blur(12px);
       box-shadow:0 18px 55px rgba(0,0,0,.28);
-      max-width:min(640px, calc(100vw - 44px));
+      max-width:min(720px, calc(100vw - 44px));
       flex-wrap:wrap;
     }
     .player .tag{
@@ -391,15 +406,17 @@
       cursor:pointer;
       font-weight:900;
       backdrop-filter: blur(10px);
+      user-select:none;
     }
     .player .pbtn:hover{background:rgba(0,0,0,.45)}
     .player .name{
       color:rgba(255,255,255,.85);
       font-size:12px;
-      max-width:260px;
+      max-width:300px;
       overflow:hidden;
       text-overflow:ellipsis;
       white-space:nowrap;
+      user-select:none;
     }
     .player input[type="range"]{
       width:150px;
@@ -407,7 +424,7 @@
       cursor:pointer;
     }
 
-    /* Autoplay gate (only if browser blocks audio) */
+    /* autoplay fallback */
     .soundGate{
       position:fixed; inset:0;
       z-index:1800;
@@ -438,22 +455,23 @@
     }
 
     @media (max-width: 980px){
-      .wrap{ padding-top:64px; }
+      body{overflow:auto} /* ให้มือถือเลื่อนได้สบาย */
+      .wrap{ padding-top:64px; height:auto; }
       .grid{ grid-template-columns:1fr; }
-      .node{ width:200px; }
+      .stage{ min-height: 340px; }
+      .node{ width:170px; }
       .player .name{ max-width:180px; }
     }
   </style>
 </head>
 
 <body>
-  <!-- Base key visual background -->
   <img id="bgKey" class="bgKey" alt="Safe Room key visual background" />
   <div class="bg"></div>
 
   <div class="lang">
-    <button id="btnEN" class="active" type="button">EN</button>
-    <button id="btnTH" type="button">TH</button>
+    <button id="btnEN" type="button">EN</button>
+    <button id="btnTH" class="active" type="button">TH</button>
   </div>
 
   <div class="wrap">
@@ -465,7 +483,7 @@
       <span id="totalHint" style="opacity:.75"></span>
     </div>
 
-    <section class="header fade out" id="headerBlock">
+    <section class="header fade" id="headerBlock">
       <div class="titleRow">
         <div>
           <h1 id="title"></h1>
@@ -475,7 +493,7 @@
     </section>
 
     <div class="grid">
-      <!-- LEFT: Flow / Carousel -->
+      <!-- LEFT -->
       <section class="card flow">
         <div class="flowTop">
           <div class="label"><span class="dot"></span><span id="flowLabel"></span></div>
@@ -496,20 +514,26 @@
         </div>
       </section>
 
-      <!-- RIGHT: Content -->
-      <section class="card right">
-        <div class="panel fade out" id="p1">
+      <!-- RIGHT -->
+      <section class="card right" id="rightScroll">
+        <div class="panel fade" id="p1">
           <h3><span class="dot"></span><span id="h1"></span></h3>
           <ul id="u1"></ul>
         </div>
 
-        <div class="panel fade out" id="p2">
-          <h3><span class="dot" style="background:var(--accent);box-shadow:0 0 0 3px rgba(224,138,46,.18)"></span><span id="h2"></span></h3>
+        <div class="panel fade" id="p2">
+          <h3>
+            <span class="dot" style="background:var(--accent);box-shadow:0 0 0 3px rgba(224,138,46,.18)"></span>
+            <span id="h2"></span>
+          </h3>
           <ul id="u2"></ul>
         </div>
 
-        <div class="panel fade out" id="p3">
-          <h3><span class="dot" style="background:#ff6b6b;box-shadow:0 0 0 3px rgba(255,107,107,.16)"></span><span id="h3"></span></h3>
+        <div class="panel fade" id="p3">
+          <h3>
+            <span class="dot" style="background:var(--danger);box-shadow:0 0 0 3px rgba(255,107,107,.16)"></span>
+            <span id="h3"></span>
+          </h3>
           <ul id="u3"></ul>
         </div>
       </section>
@@ -524,7 +548,7 @@
     </div>
   </div>
 
-  <!-- Music Player (Slide 8 only) -->
+  <!-- Music Player -->
   <div class="player" id="player">
     <span class="tag">BGM</span>
     <button class="pbtn" id="playBtn" type="button">▶️</button>
@@ -535,7 +559,7 @@
     <button class="pbtn" id="volUp" type="button">+</button>
   </div>
 
-  <!-- Autoplay fallback gate -->
+  <!-- Autoplay gate -->
   <div class="soundGate" id="soundGate">
     <div class="gateCard">
       <div class="txt">
@@ -548,16 +572,13 @@
 
   <audio id="bgm" preload="auto" loop></audio>
 
-  <script src="ui.js"></script>
-
   <script>
-    const SLIDE_NO=8;
-    const TOTAL_SLIDES=10;
+    const SLIDE_NO = 8;
+    const TOTAL_SLIDES = 10;
 
-    const BACK_PAGE="slide7.html";
-    const NEXT_PAGE="slide9.html"; // placeholder
+    const BACK_PAGE = "slide7.html";
+    const NEXT_PAGE = "slide9.html"; // placeholder
 
-    // ---- Assets (5 rooms + key visual as blurred background)
     const ASSETS = {
       keyVisualBg: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/key%20visual%20Safe%20Room.png",
 
@@ -568,16 +589,12 @@
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Map%20and%20Mission%20Event%20Room.png",
         "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/storage%20room.png"
       ],
-
       rotateMs: 4200,
 
-      // BGM (Slide 8 only)
       bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3",
-
-      // Autoplay + fade-in
       autoplay: true,
-      fadeDurationMs: 1600,   // ปรับได้: ยิ่งมากยิ่งค่อยๆขึ้น
-      targetVolume: 0.55      // ปรับได้: ระดับเสียงปลายทาง
+      fadeDurationMs: 1600,
+      targetVolume: 0.55
     };
 
     const COPY = {
@@ -590,18 +607,18 @@
         title:"A Strategic Hub Between Battles",
         subtitle:"Safe Room (Pocket Home) คือ “ศูนย์กลางการตัดสินใจ” ไม่ใช่แค่ที่พัก แต่เชื่อมการเล่น / เศรษฐกิจ / การเติบโตของตัวละคร — ทุกการอัปเกรดและการใช้ทรัพยากรส่งผลต่อประสิทธิภาพในสนามรบโดยตรง",
 
-        flowLabel:"Safe Room Rooms (Horizontal Flow)",
+        flowLabel:"SAFE ROOM ROOMS (HORIZONTAL FLOW)",
         stageTag:"SAFE ROOM • Multi-Room Hub",
         navHint:"Back → Slide 7 • Next → Slide 9",
 
-        h1:"แนวคิดหลักของ Safe Room",
+        h1:"แนวคิดหลักของ SAFE ROOM",
         u1:[
           "ศูนย์กลางการตัดสินใจของผู้เล่น (Decision Hub)",
           "เชื่อม: Gameplay Loop + Economy + Character Growth",
           "สิ่งที่ทำใน Safe Room → สะท้อนผลใน Battle โดยตรง"
         ],
 
-        h2:"ระบบหลักภายใน Safe Room",
+        h2:"ระบบหลักภายใน SAFE ROOM",
         u2:[
           "Trading & Shop: ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support",
           "ราคาของ/ความหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World",
@@ -609,7 +626,7 @@
           "Equipment & Craft: Stat / Passive / Playstyle + Visual Customization"
         ],
 
-        h3:"Why It Matters (Business)",
+        h3:"WHY IT MATTERS (BUSINESS)",
         u3:[
           "แกนสำหรับขยายคอนเทนต์ในอนาคต (Rooms/Systems เพิ่มได้เรื่อย ๆ)",
           "รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content",
@@ -634,7 +651,7 @@
         title:"A Strategic Hub Between Battles",
         subtitle:"Safe Room (Pocket Home) is a decision hub—not just a resting place. It connects gameplay, economy, and character growth. Every upgrade and resource choice directly impacts battle performance.",
 
-        flowLabel:"Safe Room Rooms (Horizontal Flow)",
+        flowLabel:"SAFE ROOM ROOMS (HORIZONTAL FLOW)",
         stageTag:"SAFE ROOM • Multi-Room Hub",
         navHint:"Back → Slide 7 • Next → Slide 9",
 
@@ -670,36 +687,32 @@
       }
     };
 
-    // ---------- Refs
-    const btnEN=document.getElementById("btnEN");
-    const btnTH=document.getElementById("btnTH");
+    // refs
+    const btnEN = document.getElementById("btnEN");
+    const btnTH = document.getElementById("btnTH");
 
-    const kickerLeft=document.getElementById("kickerLeft");
-    const kickerMid=document.getElementById("kickerMid");
-    const kickerRight=document.getElementById("kickerRight");
-    const totalHint=document.getElementById("totalHint");
+    const kickerLeft = document.getElementById("kickerLeft");
+    const kickerMid  = document.getElementById("kickerMid");
+    const kickerRight= document.getElementById("kickerRight");
+    const totalHint  = document.getElementById("totalHint");
 
-    const headerBlock=document.getElementById("headerBlock");
-    const titleEl=document.getElementById("title");
-    const subtitleEl=document.getElementById("subtitle");
+    const titleEl    = document.getElementById("title");
+    const subtitleEl = document.getElementById("subtitle");
 
-    const flowLabel=document.getElementById("flowLabel");
-    const stageTag=document.getElementById("stageTag");
-    const stageMeta=document.getElementById("stageMeta");
-    const stageImg=document.getElementById("stageImg");
-    const strip=document.getElementById("strip");
+    const flowLabel  = document.getElementById("flowLabel");
+    const stageTag   = document.getElementById("stageTag");
+    const stageMeta  = document.getElementById("stageMeta");
+    const stageImg   = document.getElementById("stageImg");
+    const strip      = document.getElementById("strip");
 
-    const p1=document.getElementById("p1");
-    const p2=document.getElementById("p2");
-    const p3=document.getElementById("p3");
-    const h1=document.getElementById("h1");
-    const h2=document.getElementById("h2");
-    const h3=document.getElementById("h3");
-    const u1=document.getElementById("u1");
-    const u2=document.getElementById("u2");
-    const u3=document.getElementById("u3");
+    const h1 = document.getElementById("h1");
+    const h2 = document.getElementById("h2");
+    const h3 = document.getElementById("h3");
+    const u1 = document.getElementById("u1");
+    const u2 = document.getElementById("u2");
+    const u3 = document.getElementById("u3");
 
-    const navHint=document.getElementById("navHint");
+    const navHint = document.getElementById("navHint");
     document.getElementById("backBtn").onclick=()=>location.href=BACK_PAGE;
     document.getElementById("nextBtn").onclick=()=>location.href=NEXT_PAGE;
 
@@ -708,10 +721,9 @@
       if(e.key==="ArrowRight") location.href=NEXT_PAGE;
     });
 
-    // Set key visual background
+    // set blurred bg
     document.getElementById("bgKey").src = ASSETS.keyVisualBg;
 
-    // ---------- Helpers
     function renderList(el, items){
       el.innerHTML = items.map(t=>`<li>${t}</li>`).join("");
     }
@@ -719,44 +731,37 @@
       return btnTH.classList.contains("active") ? "th" : "en";
     }
 
-    // ---------- Language
     function setLang(lang){
-      headerBlock.classList.add("out");
-      p1.classList.add("out"); p2.classList.add("out"); p3.classList.add("out");
-      setTimeout(()=>{
-        const c=COPY[lang];
+      const c = COPY[lang];
+      kickerLeft.textContent = c.kickerLeft;
+      kickerMid.textContent  = c.kickerMid;
+      kickerRight.textContent= c.kickerRight;
+      totalHint.textContent  = c.total;
 
-        kickerLeft.textContent=c.kickerLeft;
-        kickerMid.textContent=c.kickerMid;
-        kickerRight.textContent=c.kickerRight;
-        totalHint.textContent=c.total;
+      titleEl.textContent    = c.title;
+      subtitleEl.textContent = c.subtitle;
 
-        titleEl.textContent=c.title;
-        subtitleEl.textContent=c.subtitle;
+      flowLabel.textContent  = c.flowLabel;
+      stageTag.textContent   = c.stageTag;
+      navHint.textContent    = c.navHint;
 
-        flowLabel.textContent=c.flowLabel;
-        stageTag.textContent=c.stageTag;
-        navHint.textContent=c.navHint;
+      h1.textContent = c.h1; renderList(u1,c.u1);
+      h2.textContent = c.h2; renderList(u2,c.u2);
+      h3.textContent = c.h3; renderList(u3,c.u3);
 
-        h1.textContent=c.h1; h2.textContent=c.h2; h3.textContent=c.h3;
-        renderList(u1,c.u1); renderList(u2,c.u2); renderList(u3,c.u3);
+      btnEN.classList.toggle("active", lang==="en");
+      btnTH.classList.toggle("active", lang==="th");
 
-        btnEN.classList.toggle("active", lang==="en");
-        btnTH.classList.toggle("active", lang==="th");
-
-        headerBlock.classList.remove("out");
-        p1.classList.remove("out"); p2.classList.remove("out"); p3.classList.remove("out");
-
-        updateStripCaptions();
-      }, 170);
+      updateStripCaptions();
+      if(rooms[idx]) setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
     }
 
     btnEN.onclick=()=>setLang("en");
     btnTH.onclick=()=>setLang("th");
     setLang("th");
 
-    // ---------- Carousel / Flow (5 rooms)
-    let rooms = []; // {url}
+    // carousel
+    let rooms = ASSETS.s8_rooms.map(url=>({url}));
     let idx = 0;
     let timer = null;
 
@@ -768,11 +773,14 @@
 
     function setStage(url, label){
       stageImg.classList.remove("ready");
+      stageMeta.textContent = "Loading…";
       setTimeout(()=>{
-        stageImg.onload=()=>stageImg.classList.add("ready");
-        stageImg.src=url;
-        stageMeta.textContent = label || url.split("/").slice(-1)[0];
-      }, 60);
+        stageImg.onload = ()=>{
+          stageImg.classList.add("ready");
+          stageMeta.textContent = label || url.split("/").slice(-1)[0];
+        };
+        stageImg.src = url;
+      }, 30);
     }
 
     function buildStrip(){
@@ -812,9 +820,6 @@
         if(!cap) return;
         cap.innerHTML = `<span class="capMain">${c.rooms[i]?.t || "Room"}</span><span class="small">${c.rooms[i]?.s || ""}</span>`;
       });
-      if(rooms[idx]){
-        setStage(rooms[idx].url, c.rooms[idx]?.t || "Room");
-      }
     }
 
     function restartAuto(){
@@ -843,44 +848,26 @@
       restartAuto();
     };
 
-    function initRooms(){
-      rooms = ASSETS.s8_rooms.map(url=>({url}));
-      idx=0;
-      buildStrip();
-      const c=COPY[currentLang()];
-      setStage(rooms[0].url, c.rooms[0]?.t || "Room");
-      restartAuto();
+    buildStrip();
+    setStage(rooms[0].url, COPY[currentLang()].rooms[0]?.t || "Room");
+    restartAuto();
 
-      // Reveal panels after first image is ready
-      stageImg.onload=()=>{
-        stageImg.classList.add("ready");
-        headerBlock.classList.remove("out");
-        p1.classList.remove("out");
-        p2.classList.remove("out");
-        p3.classList.remove("out");
-      };
-    }
-
-    initRooms();
-
-    // ---------- Audio (Slide 8 only) : autoplay + fade-in + fallback gate
+    // ---- Audio autoplay + fade
     const bgm = document.getElementById("bgm");
     const playBtn = document.getElementById("playBtn");
     const muteBtn = document.getElementById("muteBtn");
     const vol = document.getElementById("vol");
     const volDown = document.getElementById("volDown");
     const volUp = document.getElementById("volUp");
-
     const soundGate = document.getElementById("soundGate");
     const enableSoundBtn = document.getElementById("enableSoundBtn");
 
     bgm.src = ASSETS.bgm;
 
+    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
     function updatePlayUI(){ playBtn.textContent = bgm.paused ? "▶️" : "⏸️"; }
     function updateMuteUI(){ muteBtn.textContent = bgm.muted ? "🔇" : "🔈"; }
-    function clamp01(x){ return Math.max(0, Math.min(1, x)); }
 
-    // Fade volume from 0 -> target over duration (ms)
     function fadeTo(target, duration){
       const start = bgm.volume;
       const t0 = performance.now();
@@ -897,7 +884,6 @@
     async function tryAutoplay(){
       if(!ASSETS.autoplay) return;
 
-      // start silent
       bgm.muted = false;
       bgm.volume = 0;
       vol.value = "0";
@@ -906,11 +892,8 @@
       try{
         await bgm.play();
         updatePlayUI();
-        // fade up to target volume
-        const target = clamp01(ASSETS.targetVolume ?? 0.55);
-        fadeTo(target, ASSETS.fadeDurationMs ?? 1600);
+        fadeTo(clamp01(ASSETS.targetVolume ?? 0.55), ASSETS.fadeDurationMs ?? 1600);
       }catch(e){
-        // autoplay blocked -> show gate
         soundGate.style.display = "flex";
         updatePlayUI();
       }
@@ -921,12 +904,9 @@
       bgm.muted = false;
       bgm.volume = 0;
       vol.value = "0";
-      try{
-        await bgm.play();
-      }catch(e){}
+      try{ await bgm.play(); }catch(e){}
       updatePlayUI();
-      const target = clamp01(ASSETS.targetVolume ?? 0.55);
-      fadeTo(target, ASSETS.fadeDurationMs ?? 1600);
+      fadeTo(clamp01(ASSETS.targetVolume ?? 0.55), ASSETS.fadeDurationMs ?? 1600);
     };
 
     playBtn.onclick = async ()=>{
@@ -936,18 +916,15 @@
       }catch(e){}
       updatePlayUI();
     };
-
     muteBtn.onclick = ()=>{
       bgm.muted = !bgm.muted;
       updateMuteUI();
     };
-
     vol.oninput = ()=>{
       bgm.volume = Number(vol.value);
       bgm.muted = (bgm.volume === 0);
       updateMuteUI();
     };
-
     volDown.onclick = ()=>{
       vol.value = String(clamp01(Number(vol.value) - 0.05));
       vol.oninput();
