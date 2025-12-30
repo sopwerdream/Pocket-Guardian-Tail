@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pocket Guardian Tail — Slide 9 (Monster Ecosystem)</title>
+
+  <!-- Global UI -->
+  <link rel="stylesheet" href="ui.css" />
+  <!-- Slide-specific -->
+  <link rel="stylesheet" href="slide9.css" />
+</head>
+
+<body>
+  <div id="pageRoot" class="s9-root">
+    <header class="s9-top">
+      <div class="s9-pills">
+        <span class="pill">Slide 9</span>
+        <span class="pill strong" data-th="Monster Ecosystem" data-en="Monster Ecosystem"></span>
+        <span class="pill ghost">9/10</span>
+      </div>
+
+      <div class="s9-titleWrap">
+        <div class="s9-kicker"
+             data-th="สองชั้นของศัตรู • ระบบเดียวที่ขยายได้"
+             data-en="Two layers of enemies • One scalable system"></div>
+        <h1 class="s9-title" data-th="Monster Ecosystem" data-en="Monster Ecosystem"></h1>
+        <p class="s9-sub"
+           data-th="เริ่มจาก Native Monsters เพื่อสอนระบบและสร้างความสบายใจ ก่อนยกระดับเป็น Alien Corrupted Monsters เพื่อเพิ่ม Stakes และความลึกเชิงกลยุทธ์"
+           data-en="Start with Native Monsters to teach tactics gently, then escalate into Alien Corrupted Monsters to raise stakes and strategic depth."></p>
+      </div>
+    </header>
+
+    <main class="s9-grid">
+      <!-- LEFT: Visual carousel -->
+      <section class="card s9-visual" aria-label="Monster visuals">
+        <div class="s9-visualHeader">
+          <div class="s9-visualLabel">
+            <span class="dot"></span>
+            <span data-th="CONCEPT ART MONSTER" data-en="CONCEPT ART MONSTER"></span>
+          </div>
+          <div class="s9-visualTools">
+            <button class="iconBtn" id="s9Prev" type="button" title="Prev">←</button>
+            <button class="iconBtn" id="s9Next" type="button" title="Next">→</button>
+          </div>
+        </div>
+
+        <div class="s9-stage" id="s9Stage" role="button" tabindex="0" aria-label="Open image popup">
+          <img id="s9MainImg" alt="Monster" />
+          <div class="s9-stageOverlay">
+            <div class="s9-badges">
+              <span class="badge" id="s9BadgeA"></span>
+              <span class="badge ghost" id="s9BadgeB"></span>
+            </div>
+          </div>
+          <div class="s9-stageFooter" id="s9Caption"></div>
+        </div>
+
+        <div class="s9-dots" id="s9Dots"></div>
+      </section>
+
+      <!-- RIGHT: Content -->
+      <section class="card s9-content" aria-label="Monster ecosystem content">
+        <div class="s9-section s9-native" id="secNative">
+          <div class="s9-secHead">
+            <span class="chip c1"></span>
+            <h2 data-th="1) Native Monsters" data-en="1) Native Monsters"></h2>
+          </div>
+
+          <div class="s9-block">
+            <h3 data-th="บทบาทในเกม" data-en="Role in the game"></h3>
+            <ul>
+              <li data-th="สนามฝึกช่วงต้น–กลางเกม: เก็บเลเวล + เรียนรู้ Tactical" data-en="Early–mid training ground: level up + learn tactics."></li>
+              <li data-th="สอน Team Synergy แบบไม่กดดัน" data-en="Teaches team synergy with low pressure."></li>
+              <li data-th="สร้างบรรยากาศโลกที่มีชีวิต ไม่ใช่แค่ศัตรู" data-en="Makes the world feel alive, not just enemies."></li>
+            </ul>
+          </div>
+
+          <div class="s9-block">
+            <h3 data-th="ลักษณะเด่น" data-en="Key traits"></h3>
+            <ul>
+              <li data-th="ดีไซน์อ่านง่าย น่ารัก/เป็นมิตร/กึ่งดุร้าย" data-en="Readable silhouettes; cute/friendly/semi-feral."></li>
+              <li data-th="พฤติกรรมคาดเดาได้ ไม่ลงโทษผู้เล่นรุนแรง" data-en="Predictable behavior; low frustration."></li>
+              <li data-th="เหมาะกับการทดลองสกิลและการยืนตำแหน่ง" data-en="Encourages experimentation and positioning."></li>
+            </ul>
+          </div>
+
+          <div class="s9-callout" id="nativeMsg"
+               data-th="Native Monsters คือ “สนามฝึก” ที่ทำให้ผู้เล่นอยากเล่นต่อ ไม่รู้สึกกดดัน"
+               data-en="Native monsters are the ‘training ground’ that keeps players engaged without pressure."></div>
+        </div>
+
+        <div class="s9-section s9-corrupt" id="secCorrupt">
+          <div class="s9-secHead">
+            <span class="chip c2"></span>
+            <h2 data-th="2) Alien Corrupted Monsters" data-en="2) Alien Corrupted Monsters"></h2>
+          </div>
+
+          <div class="s9-block">
+            <h3 data-th="บทบาทในเกม" data-en="Role in the game"></h3>
+            <ul>
+              <li data-th="เพิ่มความท้าทายและ Stakes ของการต่อสู้" data-en="Raises difficulty and combat stakes."></li>
+              <li data-th="เชื่อมโยงเนื้อเรื่องหลัก (ภัยจากต่างมิติ)" data-en="Ties directly to the alien threat narrative."></li>
+              <li data-th="เปลี่ยนโทนจาก Cozy → Serious Tactical" data-en="Shifts tone from cozy to serious tactical."></li>
+            </ul>
+          </div>
+
+          <div class="s9-block">
+            <h3 data-th="ลักษณะเด่น" data-en="Key traits"></h3>
+            <ul>
+              <li data-th="รูปลักษณ์บิดเบี้ยว + พลังผิดธรรมชาติ" data-en="Distorted visuals + unnatural power."></li>
+              <li data-th="Ability พิเศษ + พฤติกรรมคาดเดายาก" data-en="Special abilities + less predictable patterns."></li>
+              <li data-th="บังคับให้ผู้เล่นวางแผนและปรับทีมจริง" data-en="Forces real planning and team adaptation."></li>
+            </ul>
+          </div>
+
+          <div class="s9-callout" id="corruptMsg"
+               data-th="Alien Corrupted Monsters คือ “บททดสอบ” ที่ทำให้เกมมีความลึกและคุณค่าเชิงกลยุทธ์"
+               data-en="Alien corrupted monsters are the ‘strategic test’ that adds depth and value."></div>
+        </div>
+
+        <div class="s9-bottom">
+          <div class="s9-prog">
+            <div class="s9-secHead">
+              <span class="chip c3"></span>
+              <h2 data-th="Monster Progression Concept" data-en="Monster Progression Concept"></h2>
+            </div>
+            <div class="s9-flow" id="s9Flow">
+              <div class="node" data-th="Native" data-en="Native"></div>
+              <div class="arrow">→</div>
+              <div class="node" data-th="Zone Corruption" data-en="Zone Corruption"></div>
+              <div class="arrow">→</div>
+              <div class="node" data-th="Alien Corrupted" data-en="Alien Corrupted"></div>
+            </div>
+            <p class="s9-small"
+               data-th="มอนสเตอร์ “ตัวเดิม แต่คนละความรู้สึกในการเล่น” ช่วยเพิ่มความหลากหลายโดยไม่เพิ่มต้นทุนแบบเส้นตรง"
+               data-en="“Same enemy set, different gameplay feeling” increases variety without linear cost growth."></p>
+          </div>
+
+          <div class="s9-invest">
+            <div class="pill strong" data-th="Investor Summary" data-en="Investor Summary"></div>
+            <p class="s9-investText"
+               data-th="ระบบมอนสเตอร์ของเกมออกแบบให้ใช้ศัตรูชุดเดียว สร้างประสบการณ์ได้สองระดับ ทั้งเพื่อความสนุกระยะยาวและการควบคุมต้นทุนการพัฒนา"
+               data-en="One enemy set delivers two layers of experience—engagement and depth—while keeping production scalable."></p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="s9-nav">
+      <div class="s9-navHint" data-th="Back → Slide 8 • Next → Slide 10" data-en="Back → Slide 8 • Next → Slide 10"></div>
+      <div class="s9-navBtns">
+        <a class="navBtn" href="slide8.html"><span class="navIcon">⬅</span><span data-th="Back" data-en="Back"></span></a>
+        <a class="navBtn primary" href="slide10.html"><span data-th="Next" data-en="Next"></span><span class="navIcon">➡</span></a>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="s9Lightbox" id="s9Lightbox" aria-hidden="true">
+    <div class="s9LightboxInner" role="dialog" aria-modal="true" aria-label="Monster image popup">
+      <button class="s9Close" id="s9Close" type="button" aria-label="Close">✕</button>
+      <img id="s9LightboxImg" alt="Monster Large" />
+      <div class="s9LightboxCap" id="s9LightboxCap"></div>
+    </div>
+  </div>
+
+  <script src="slide9.js"></script>
+  <script src="ui.js"></script>
+</body>
+</html>
