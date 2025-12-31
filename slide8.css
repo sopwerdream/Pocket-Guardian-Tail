@@ -681,8 +681,15 @@
    - Force 1 line (ellipsis if too long)
    ================================================= */
 
+/* ===== Header safe-area: กันโดน Zoom/Language ทับ ===== */
+.s8-top{
+  padding-top: 64px;  /* ดันหัวข้อให้ต่ำลงจากแถวปุ่ม */
+}
+
+/* ===== Center จริง ๆ ===== */
 .s8-titleWrap{
-  width: 100%;
+  max-width: 980px;
+  margin: 0 auto;
   text-align: center;
   display: flex;
   flex-direction: column;
@@ -690,21 +697,11 @@
   gap: 6px;
 }
 
-.s8-kicker,
-.s8-title,
-.s8-sub{
-  white-space: nowrap;      /* บังคับ 1 บรรทัด */
+/* ให้เป็น 1 บรรทัด และไม่แตก 3 บรรทัดแบบมั่ว */
+.s8-kicker, .s8-title, .s8-sub{
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;  /* ถ้ายาวเกินให้ ... */
+  text-overflow: ellipsis;
+  max-width: min(980px, 92vw);
 }
 
-/* จำกัดความกว้างให้ดูพอดีและไม่ชนขอบ */
-.s8-kicker{ max-width: min(960px, 92vw); }
-.s8-title { max-width: min(960px, 92vw); }
-.s8-sub   { max-width: min(960px, 92vw); }
-
-/* (เสริม) ลดขนาด subtitle นิดให้ไม่แตกบรรทัดง่าย */
-.s8-sub{
-  line-height: 1.25;
-  font-size: 13px;
-}
