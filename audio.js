@@ -1,44 +1,31 @@
 /* =====================================================
    audio.js — Global Audio Module (Reusable)
-   FEATURES:
-   - Slider animates 0 -> target without "mute at 0" lock
-   - Autoplay + Unlock + Fade-in works reliably
-   - Play button responsive (locked only during fade)
-   - ✅ Playlist (multi tracks) + Next/Prev + continuous play
-   - ✅ Loop modes: off / one / all (button)
-   - ✅ Track name display
-   - ✅ Optional Equalizer (WebAudio) via ui.eqRoot
-   Backward compatible:
-     - You can still call init({ src, audio, ui, options })
-     - Or new: init({ playlist:[{src,titleTH,titleEN,title}], ... })
+   Version: 1.0.0 (FULL / FIXED)
+   FIXED:
+   - ✅ No "Maximum call stack size exceeded" (no dispatch input recursion)
+   - ✅ Smooth slider animation 0 -> target (fade-in) without locking mute
+   - ✅ Autoplay + Unlock Gate (tap to enable) + Fade-in
+   - ✅ Playlist (prev/next) + Loop modes: one / all / off
+   - ✅ Auto track name from filename (URL)
+   - ✅ Buttons auto-disable when playlist missing/only 1 track
    ===================================================== */
 
 window.AudioModule = (function () {
-  // ---------- core state ----------
   let audio = null;
   let ui = {};
   let opt = {};
 
-  let isFading = false;
+  // state
   let isInit = false;
+  let isFading = false;
+  let abortFade = false;
 
-  // สำคัญ: กัน event slider ตอนเราอัปเดตด้วยโค้ด (ไม่ให้ handler ไป mute)
-  let isProgrammatic = false;
+  // playlist
+  let playlist = [];
+  let trackIndex = 0;
+  let loopMode = "one"; // "one" | "all" | "off"
 
-  // ---------- playlist state ----------
-  let playlist = [];     // [{src, titleTH, titleEN, title}]
-  let trackIndex = 0;    // current index
-  let loopMode = "all";  // "off" | "one" | "all"
-  let endedBound = false;
-
-  // ---------- equalizer state (optional) ----------
-  let ctx = null;
-  let mediaSrc = null;
-  let eqConnected = false;
-  let eqFilters = []; // biquad filters
-  let eqUIBound = false;
-
-  // ---------- utils ----------
+  // helpers
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const clamp01 = (v) => clamp(v, 0, 1);
   const num = (v, fb) => {
@@ -46,25 +33,13 @@ window.AudioModule = (function () {
     return Number.isFinite(n) ? n : fb;
   };
 
-  function updateUI() {
-    if (!audio) return;
-    if (ui.playBtn) ui.playBtn.textContent = audio.paused ? "▶" : "⏸";
-    if (ui.muteBtn) ui.muteBtn.textContent = (audio.muted || audio.volume === 0) ? "🔇" : "🔊";
-    updateLoopUI();
-    updateTrackUI();
-  }
-
-  async function tryPlay() {
-    // ถ้ามี EQ และ ctx ถูก suspend ต้อง resume ก่อน
-    if (ctx && ctx.state === "suspended") {
-      try { await ctx.resume(); } catch {}
-    }
-
+  function decodeTrackName(src) {
     try {
-      await audio.play();
-      return true;
+      const file = (src || "").split("?")[0].split("#")[0].split("/").pop() || "BGM";
+      const decoded = decodeURIComponent(file);
+      return decoded.replace(/\.[^/.]+$/, "");
     } catch {
-      return false;
+      return "BGM";
     }
   }
 
@@ -73,41 +48,67 @@ window.AudioModule = (function () {
     const p = opt.storagePrefix || "pgt_audio";
     return `${p}_${name}`;
   }
-
   function loadPersisted() {
     if (!opt.persist) return null;
     const v = clamp01(num(localStorage.getItem(k("vol")), opt.targetVol));
     const m = localStorage.getItem(k("muted")) === "1";
-    const lm = localStorage.getItem(k("loopMode")) || null;
-    const ti = localStorage.getItem(k("trackIndex"));
-    const savedIndex = (ti !== null) ? Number(ti) : null;
-    return {
-      vol: v,
-      muted: m,
-      loopMode: (lm === "off" || lm === "one" || lm === "all") ? lm : null,
-      trackIndex: Number.isFinite(savedIndex) ? savedIndex : null
-    };
+    const lm = localStorage.getItem(k("loop")) || "";
+    return { vol: v, muted: m, loop: lm };
   }
-
   function savePersisted(volVal, mutedVal) {
     if (!opt.persist) return;
     localStorage.setItem(k("vol"), String(clamp01(volVal)));
     localStorage.setItem(k("muted"), mutedVal ? "1" : "0");
-    localStorage.setItem(k("loopMode"), loopMode);
-    localStorage.setItem(k("trackIndex"), String(trackIndex));
+    localStorage.setItem(k("loop"), loopMode);
   }
 
-  // ---------- slider helpers ----------
-  function setSliderValue(v, { emit = true } = {}) {
+  // ---------- UI ----------
+  function setSliderValue(v) {
     if (!ui.vol) return;
-    const vv = clamp01(v);
-    ui.vol.value = String(vv);
+    ui.vol.value = String(clamp01(v)); // ✅ IMPORTANT: no dispatchEvent -> no recursion
+  }
 
-    if (emit) {
-      // emit เพื่อให้ UI (CSS/logic ที่ฟัง input) อัปเดต แต่ไม่เข้าฝั่ง handler
-      isProgrammatic = true;
-      ui.vol.dispatchEvent(new Event("input", { bubbles: true }));
-      isProgrammatic = false;
+  function updateTrackLabel() {
+    if (!ui.trackName) return;
+    const src = playlist[trackIndex] || audio?.src || "";
+    ui.trackName.textContent = decodeTrackName(src);
+  }
+
+  function updateLoopButton() {
+    if (!ui.loopBtn) return;
+    // You can change icons/text as you like
+    ui.loopBtn.textContent = (loopMode === "one") ? "🔁" : (loopMode === "all") ? "🔂" : "➡";
+    ui.loopBtn.title = (loopMode === "one") ? "Loop: One" : (loopMode === "all") ? "Loop: All" : "Loop: Off";
+  }
+
+  function syncTrackButtons() {
+    const hasMany = playlist.length > 1;
+    if (ui.prevTrack) ui.prevTrack.disabled = !hasMany;
+    if (ui.nextTrack) ui.nextTrack.disabled = !hasMany;
+    if (ui.loopBtn) ui.loopBtn.disabled = playlist.length === 0;
+
+    // Optional: add a "disabled" class for styling if you want
+    [ui.prevTrack, ui.nextTrack, ui.loopBtn].forEach((b) => {
+      if (!b) return;
+      b.classList.toggle("is-disabled", b.disabled);
+    });
+  }
+
+  function updateUI() {
+    if (!audio) return;
+    if (ui.playBtn) ui.playBtn.textContent = audio.paused ? "▶" : "⏸";
+    if (ui.muteBtn) ui.muteBtn.textContent = (audio.muted || audio.volume === 0) ? "🔇" : "🔊";
+    setSliderValue(audio.volume);
+    updateTrackLabel();
+    updateLoopButton();
+  }
+
+  async function tryPlay() {
+    try {
+      await audio.play();
+      return true;
+    } catch {
+      return false;
     }
   }
 
@@ -147,28 +148,30 @@ window.AudioModule = (function () {
     if (g) g.remove();
   }
 
-  // ---------- fade engine (ทำให้ slider วิ่งเนียน) ----------
+  // ---------- fade engine ----------
   function fadeInTo(target, durMs) {
     if (!audio) return;
-
+    abortFade = false;
     isFading = true;
 
     const tv = clamp01(target);
     const dur = clamp(num(durMs, 2000), 200, 12000);
     const start = performance.now();
 
-    // smoothstep: เนียนกว่า linear
-    const ease = (p) => p * p * (3 - 2 * p);
+    const ease = (p) => p * p * (3 - 2 * p); // smoothstep
 
     function tick(t) {
+      if (abortFade) {
+        isFading = false;
+        return;
+      }
+
       const raw = (t - start) / dur;
       const p = Math.min(1, Math.max(0, raw));
       const v = tv * ease(p);
 
       audio.volume = clamp01(v);
-
-      // อัปเดต slider ให้ “วิ่ง” โดยไม่ไป mute ตัวเอง
-      setSliderValue(audio.volume, { emit: true });
+      setSliderValue(audio.volume); // ✅ no event dispatch
 
       if (p < 1) {
         requestAnimationFrame(tick);
@@ -182,208 +185,49 @@ window.AudioModule = (function () {
     requestAnimationFrame(tick);
   }
 
-  // ---------- playlist helpers ----------
-  function normalizePlaylist(config) {
-    // New: playlist array
-    if (Array.isArray(config.playlist) && config.playlist.length > 0) {
-      return config.playlist
-        .map((t) => {
-          if (!t) return null;
-          if (typeof t === "string") return { src: t };
-          return {
-            src: t.src,
-            titleTH: t.titleTH ?? t.th ?? t.title,
-            titleEN: t.titleEN ?? t.en ?? t.title,
-            title: t.title
-          };
-        })
-        .filter((t) => t && t.src);
-    }
-
-    // Backward: single src
-    if (config.src) return [{ src: config.src }];
-    return [];
-  }
-
-  function getTrackTitle(track) {
-    if (!track) return "";
-    // ถ้ามี lang system ในโปรเจกต์คุณ ให้ส่ง "getLang" มาใน options ได้
-    // options.getLang() -> "TH"/"EN"
-    const lang = (typeof opt.getLang === "function") ? String(opt.getLang()).toUpperCase() : null;
-    if (lang === "EN") return track.titleEN || track.title || "BGM";
-    if (lang === "TH") return track.titleTH || track.title || "BGM";
-    return track.title || track.titleTH || track.titleEN || "BGM";
-  }
-
-  function updateTrackUI() {
-    if (!ui.trackName) return;
-    const track = playlist[trackIndex];
-    ui.trackName.textContent = getTrackTitle(track);
-  }
-
-  function updateLoopUI() {
-    if (!ui.loopBtn) return;
-    // 🔁 all, 🔂 one, ⏹ off
-    ui.loopBtn.textContent = (loopMode === "one") ? "🔂" : (loopMode === "all" ? "🔁" : "⏹");
-  }
-
-  function setLoopMode(mode) {
-    loopMode = (mode === "off" || mode === "one" || mode === "all") ? mode : "all";
-    if (audio) audio.loop = (loopMode === "one");
-    savePersisted(audio?.volume ?? 0, audio?.muted ?? false);
-    updateLoopUI();
-  }
-
-  async function setTrack(i, { autoplay = true, doFade = false } = {}) {
-    if (!audio || playlist.length === 0) return;
-
-    trackIndex = (i + playlist.length) % playlist.length;
-    const track = playlist[trackIndex];
-
-    // เปลี่ยนเพลง
-    audio.src = track.src;
-    audio.preload = "auto";
-    audio.crossOrigin = "anonymous";
-
-    // loop one ใช้ native loop ได้
+  // ---------- playlist / track ----------
+  function applyLoopToAudio() {
+    if (!audio) return;
+    // HTMLAudioElement.loop only supports "one track loop"
     audio.loop = (loopMode === "one");
-
-    updateTrackUI();
-
-    if (!autoplay) {
-      updateUI();
-      savePersisted(audio.volume, audio.muted);
-      return;
-    }
-
-    // พยายามเล่น (ถ้าโดนบล็อคจะไป gate)
-    const ok = await tryPlay();
-    if (ok) {
-      if (doFade && !audio.muted) {
-        // วิ่ง 0 -> target อีกรอบ (เหมือนเข้า slide ครั้งแรก)
-        audio.volume = 0;
-        setSliderValue(0, { emit: true });
-        fadeInTo(opt.targetVol, opt.fadeMs);
-      }
-    } else {
-      if (opt.showGate) ensureGate();
-    }
-
-    updateUI();
+    updateLoopButton();
     savePersisted(audio.volume, audio.muted);
   }
 
-  function nextTrack({ autoplay = true } = {}) {
-    return setTrack(trackIndex + 1, { autoplay, doFade: false });
-  }
+  function setTrack(i, { autoplay = true } = {}) {
+    if (!audio) return;
+    if (!playlist.length) return;
 
-  function prevTrack({ autoplay = true } = {}) {
-    return setTrack(trackIndex - 1, { autoplay, doFade: false });
-  }
+    // stop fade
+    abortFade = true;
+    isFading = false;
 
-  function bindEndedOnce() {
-    if (endedBound || !audio) return;
-    endedBound = true;
+    trackIndex = (i + playlist.length) % playlist.length;
+    const src = playlist[trackIndex];
 
-    audio.addEventListener("ended", () => {
-      // ถ้า loop one จะไม่เข้ามา (เพราะ audio.loop = true)
-      if (loopMode === "off") return;
+    audio.src = src;
+    audio.preload = "auto";
+    audio.crossOrigin = "anonymous";
+    audio.load();
 
-      if (loopMode === "all") {
-        // ไปเพลงถัดไป (วน)
-        setTrack(trackIndex + 1, { autoplay: true, doFade: false });
-      }
-    });
-  }
+    updateTrackLabel();
+    syncTrackButtons();
 
-  // ---------- Equalizer (optional) ----------
-  function setupEQIfNeeded() {
-    // ถ้าไม่มี ui.eqRoot หรือไม่ต้องการ EQ ก็ข้าม
-    if (!ui.eqRoot) return;
-
-    // Browser ไม่รองรับ WebAudio
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-
-    // init audio context once
-    if (!ctx) ctx = new AC();
-
-    // IMPORTANT: createMediaElementSource ได้ครั้งเดียวต่อ audio element
-    if (!mediaSrc) {
-      try {
-        mediaSrc = ctx.createMediaElementSource(audio);
-      } catch (e) {
-        // ถ้าถูกสร้างไปแล้วจากที่อื่น เราจะไม่ทำให้พังระบบเพลง
-        return;
-      }
-    }
-
-    // สร้าง filters ครั้งเดียว
-    if (!eqFilters || eqFilters.length === 0) {
-      const bands = [
-        { id: "eq60",  f: 60,    type: "lowshelf" },
-        { id: "eq170", f: 170,   type: "peaking", q: 1.0 },
-        { id: "eq350", f: 350,   type: "peaking", q: 1.0 },
-        { id: "eq1k",  f: 1000,  type: "peaking", q: 1.0 },
-        { id: "eq3k",  f: 3500,  type: "peaking", q: 1.0 },
-        { id: "eq10k", f: 10000, type: "highshelf" },
-      ];
-
-      eqFilters = bands.map(b => {
-        const f = ctx.createBiquadFilter();
-        f.type = b.type;
-        f.frequency.value = b.f;
-        f.gain.value = 0;
-        if (b.type === "peaking") f.Q.value = b.q ?? 1.0;
-        return { ...b, node: f };
-      });
-    }
-
-    // connect chain once
-    if (!eqConnected) {
-      try {
-        let node = mediaSrc;
-        eqFilters.forEach(b => {
-          node.connect(b.node);
-          node = b.node;
-        });
-        node.connect(ctx.destination);
-        eqConnected = true;
-      } catch (e) {
-        // ถ้าต่อซ้ำจะ error บาง browser → ignore
-      }
-    }
-
-    // bind UI once
-    if (!eqUIBound) {
-      eqUIBound = true;
-      eqFilters.forEach((b, idx) => {
-        const el = document.getElementById(b.id);
-        if (!el) return;
-        el.addEventListener("input", () => {
-          const gain = num(el.value, 0);
-          eqFilters[idx].node.gain.value = gain;
-        });
-      });
-
-      const resetBtn = document.getElementById("eqReset");
-      resetBtn?.addEventListener("click", () => {
-        eqFilters.forEach((b) => {
-          const el = document.getElementById(b.id);
-          if (el) el.value = "0";
-          b.node.gain.value = 0;
-        });
-      });
+    if (autoplay) {
+      softAutoplay(); // includes fade-in
+    } else {
+      updateUI();
     }
   }
 
   // ---------- core autoplay ----------
   async function softAutoplay() {
     if (!audio) return;
+    if (!playlist.length && !audio.src) return;
 
-    // เริ่มจาก 0 เพื่อให้เห็นวิ่งทุกครั้ง แต่ "ห้าม" ทำให้ mute ค้าง
+    // Always start from 0 for "slider runs up" effect, but DO NOT force mute
     audio.volume = 0;
-    setSliderValue(0, { emit: true });
+    setSliderValue(0);
 
     updateUI();
 
@@ -399,11 +243,6 @@ window.AudioModule = (function () {
       window.removeEventListener("pointerdown", unlock, true);
       window.removeEventListener("keydown", unlock, true);
       if (gate) removeGate();
-
-      // unlock = user gesture → resume EQ context ได้ด้วย
-      if (ctx && ctx.state === "suspended") {
-        try { await ctx.resume(); } catch {}
-      }
 
       ok = await tryPlay();
       if (ok) {
@@ -421,10 +260,14 @@ window.AudioModule = (function () {
     if (!audio) return;
     const vv = clamp01(v);
 
-    audio.volume = vv;
-    setSliderValue(vv, { emit: true });
+    abortFade = true;
+    isFading = false;
 
-    audio.muted = vv === 0;
+    audio.volume = vv;
+    setSliderValue(vv);
+
+    // user intent: set 0 => mute
+    audio.muted = (vv === 0);
     savePersisted(audio.volume, audio.muted);
     updateUI();
   }
@@ -434,12 +277,19 @@ window.AudioModule = (function () {
     // Play
     ui.playBtn?.addEventListener("click", async () => {
       if (!audio) return;
-      if (isFading) return;
+
+      // allow user to interrupt fade by pressing play/pause
+      abortFade = true;
+      isFading = false;
 
       try {
         if (audio.paused) {
           const ok = await tryPlay();
           if (!ok && opt.showGate) ensureGate();
+          else {
+            // if resumed, optionally fade from current slider value
+            if (!audio.muted && audio.volume === 0) fadeInTo(opt.targetVol, opt.fadeMs);
+          }
         } else {
           audio.pause();
         }
@@ -455,12 +305,13 @@ window.AudioModule = (function () {
       updateUI();
     });
 
-    // Slider (user input only)
+    // Slider (user input)
     ui.vol?.addEventListener("input", () => {
       if (!audio) return;
-      if (isProgrammatic) return;
 
-      if (isFading) isFading = false;
+      // user drags => cancel fade
+      abortFade = true;
+      isFading = false;
 
       const vv = clamp01(num(ui.vol.value, audio.volume));
       audio.volume = vv;
@@ -469,36 +320,49 @@ window.AudioModule = (function () {
       updateUI();
     });
 
-    // Vol down/up
     ui.volDown?.addEventListener("click", () => {
       if (!audio) return;
-      if (isFading) return;
       setVolume(audio.volume - 0.05);
     });
 
     ui.volUp?.addEventListener("click", () => {
       if (!audio) return;
-      if (isFading) return;
       setVolume(audio.volume + 0.05);
     });
 
-    // Playlist controls (optional)
-    ui.prevTrackBtn?.addEventListener("click", () => {
-      const autoplay = !audio?.paused;
-      prevTrack({ autoplay });
+    // Prev/Next track
+    ui.prevTrack?.addEventListener("click", () => {
+      if (playlist.length <= 1) return; // ✅ no freeze
+      setTrack(trackIndex - 1);
     });
 
-    ui.nextTrackBtn?.addEventListener("click", () => {
-      const autoplay = !audio?.paused;
-      nextTrack({ autoplay });
+    ui.nextTrack?.addEventListener("click", () => {
+      if (playlist.length <= 1) return; // ✅ no freeze
+      setTrack(trackIndex + 1);
     });
 
+    // Loop mode
     ui.loopBtn?.addEventListener("click", () => {
-      // all -> one -> off -> all
-      const next = (loopMode === "all") ? "one" : (loopMode === "one" ? "off" : "all");
-      setLoopMode(next);
+      if (!playlist.length) return;
+      loopMode = (loopMode === "one") ? "all" : (loopMode === "all") ? "off" : "one";
+      applyLoopToAudio();
       updateUI();
     });
+
+    // When track ends (for loopMode=all/off)
+    audio.addEventListener("ended", () => {
+      // If one-track loop is enabled, HTML will loop automatically.
+      if (loopMode === "all" && playlist.length > 1) {
+        setTrack(trackIndex + 1, { autoplay: true });
+      } else if (loopMode === "off") {
+        // do nothing (stops)
+        updateUI();
+      }
+    });
+
+    // On play/pause update UI
+    audio.addEventListener("play", updateUI);
+    audio.addEventListener("pause", updateUI);
   }
 
   // ---------- public API ----------
@@ -506,6 +370,7 @@ window.AudioModule = (function () {
     if (isInit) {
       try { audio?.pause(); } catch {}
       removeGate();
+      abortFade = true;
       isFading = false;
     }
     isInit = true;
@@ -514,61 +379,79 @@ window.AudioModule = (function () {
     ui = config.ui || {};
     opt = config.options || {};
 
-    // playlist normalize
-    playlist = normalizePlaylist(config);
-    if (playlist.length === 0) {
-      // ไม่มี src/playlist ก็ไม่ทำอะไร
-      return;
-    }
-
     // defaults
     opt.targetVol = clamp01(num(opt.targetVol, num(ui.vol?.value, 0.55)));
-    opt.fadeMs = clamp(num(opt.fadeMs, num(ui.fadeMsInput?.value, 2000)), 200, 12000);
+    opt.fadeMs = clamp(num(opt.fadeMs, 2000), 200, 12000);
     opt.persist = opt.persist !== false;               // default true
-    opt.storagePrefix = opt.storagePrefix || "s8_bgm"; // default
+    opt.storagePrefix = opt.storagePrefix || "pgt_bgm"; // default
     opt.showGate = opt.showGate !== false;             // default true
 
-    // loop mode default
-    loopMode = (opt.loopMode === "off" || opt.loopMode === "one" || opt.loopMode === "all") ? opt.loopMode : "all";
+    // playlist
+    playlist = Array.isArray(config.playlist)
+      ? config.playlist.filter(Boolean)
+      : (config.src ? [config.src] : []);
 
-    // restore persisted (vol/muted/loop/index)
+    // fallback: config.src only
+    if (!playlist.length && config.src) playlist = [config.src];
+
+    // restore persisted state
     const persisted = loadPersisted();
     if (persisted) {
-      audio.muted = persisted.muted;
+      audio.muted = !!persisted.muted;
       opt.targetVol = clamp01(persisted.vol);
 
-      if (persisted.loopMode) loopMode = persisted.loopMode;
-      if (Number.isFinite(persisted.trackIndex) && persisted.trackIndex !== null) {
-        trackIndex = clamp(Math.floor(persisted.trackIndex), 0, playlist.length - 1);
+      if (persisted.loop === "one" || persisted.loop === "all" || persisted.loop === "off") {
+        loopMode = persisted.loop;
       }
-
-      if (ui.vol) ui.vol.value = String(opt.targetVol);
     } else {
       audio.muted = false;
+      loopMode = "one";
     }
 
-    // attach initial track (no autoplay yet)
-    audio.src = playlist[trackIndex].src;
+    // Attach first track
+    trackIndex = clamp(trackIndex, 0, Math.max(0, playlist.length - 1));
+    if (playlist.length) {
+      audio.src = playlist[trackIndex];
+    } else if (config.src) {
+      audio.src = config.src;
+    }
+
     audio.preload = "auto";
     audio.crossOrigin = "anonymous";
-    audio.loop = (loopMode === "one");
 
-    // optional EQ setup (does nothing if no ui.eqRoot)
-    setupEQIfNeeded();
+    // set slider to target (visual) before fade starts
+    if (ui.vol) ui.vol.value = String(opt.targetVol);
 
-    bindEndedOnce();
+    // apply loop setting
+    applyLoopToAudio();
+    syncTrackButtons();
+
+    // bind UI once per init
     bindUI();
+    updateTrackLabel();
     updateUI();
 
-    // start autoplay
+    // start autoplay + fade
     softAutoplay();
   }
 
   return {
     init,
-    // optional helpers if you ever want from slide code
-    next: () => nextTrack({ autoplay: true }),
-    prev: () => prevTrack({ autoplay: true }),
-    setLoop: (m) => setLoopMode(m),
+    // optional helpers if you want to control externally:
+    setTrack: (i) => setTrack(i, { autoplay: true }),
+    setPlaylist: (list, startIndex = 0) => {
+      playlist = Array.isArray(list) ? list.filter(Boolean) : [];
+      trackIndex = clamp(startIndex, 0, Math.max(0, playlist.length - 1));
+      syncTrackButtons();
+      if (playlist.length) setTrack(trackIndex, { autoplay: true });
+    },
+    getState: () => ({
+      trackIndex,
+      playlist: [...playlist],
+      loopMode,
+      volume: audio?.volume ?? 0,
+      muted: audio?.muted ?? false,
+      paused: audio?.paused ?? true,
+    }),
   };
 })();
