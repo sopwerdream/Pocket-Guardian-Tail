@@ -530,8 +530,8 @@
 .s8-stage{
   height: auto;
   flex: 1;
-  min-height: 240px;
-  max-height: 50%;
+  min-height: 180px;
+  max-height: 30%;
 }
 
 /* right panel: scroll ONLY inside accordion */
