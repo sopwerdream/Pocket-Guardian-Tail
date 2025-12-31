@@ -559,48 +559,7 @@
 .s8-thumbs{
   max-height: 80px;
 }
-/* ===== Slide 8: Fit viewport + remove empty space (append at END) ===== */
 
-/* 1) ทำให้ทั้งสไลด์ล็อกสูงเท่าจอ และไม่ให้หน้า scroll */
-.s8-root{
-  height: 100dvh;
-  min-height: 0;
-  overflow: hidden;
-
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-
-  padding: 12px 12px 12px; /* ลด padding */
-}
-
-/* 2) ให้กริดกิน “พื้นที่ที่เหลือ” และหยุดยืดการ์ดซ้ายให้สูงเท่าขวา */
-.s8-grid{
-  flex: 1;
-  min-height: 0;
-  align-items: start; /* สำคัญ: ตัดพื้นที่โล่งจาก stretch */
-  gap: 12px;
-}
-
-/* 3) ตัด min-height ที่ดันให้ล้นจอ */
-.s8-visual{ min-height: 0; }
-.s8-content{ min-height: 0; overflow: hidden; }
-
-
-
-/* 5) แถวการ์ด 5 ห้อง จำกัดความสูงไม่ให้กินพื้นที่ */
-.s8-thumbs{
-  max-height: 120px;     /* ลดพื้นที่รวม */
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-/* 6) ให้เลื่อนเฉพาะฝั่งขวา */
-.s8-accordion{
-  height: 100%;
-  min-height: 0;
-  overflow: auto;
-}
 
 /* 7) ลดระยะห่างแถบล่าง */
 .s8-audio, .s8-nav{
