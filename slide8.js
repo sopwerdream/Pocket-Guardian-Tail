@@ -253,7 +253,26 @@
     document.body.appendChild(g);
     return g;
   }
-
+AudioModule.init({
+  src: ASSETS.bgm,
+  audio: document.getElementById("s8_bgm"),
+  ui: {
+    playBtn: document.getElementById("s8_playBtn"),
+    muteBtn: document.getElementById("s8_muteBtn"),
+    vol: document.getElementById("s8_vol"),
+    volDown: document.getElementById("s8_volDown"),
+    volUp: document.getElementById("s8_volUp"),
+    fadeMsInput: document.getElementById("s8_fadeMs"),
+  },
+  options: {
+    // ให้จำค่าเสียงของหน้า 8 แยกจากหน้าอื่นด้วย prefix นี้
+    storagePrefix: "s8_bgm",
+    // ถ้าอยากให้วิ่งไป 0.55 เสมอ ให้ปิด persist หรือ set targetVol ตายตัว
+    // persist: false,
+    // targetVol: 0.55,
+    showGate: true,
+  }
+});
   function fadeInTo(target, dur){
     isFading = true;
     const tv = clamp01(target);
