@@ -99,14 +99,14 @@
 }
 .s8-title{
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
 .s8-sub{
   margin: 8px 0 0;
   color: rgba(255,255,255,.78);
-  font-size: 14px;
+  font-size: 12px;
   line-height: 1.45;
 }
 
@@ -519,7 +519,7 @@
   .s8-stage{ max-height: 40vh; min-height: 220px; }
   .s8-visual{ max-height: 65vh; }
   .s8-content{ max-height: 65vh; }
-  .s8-title{ font-size: clamp(22px, 3vw, 36px); }
+  .s8-title{ font-size: 14px;; }
 }
 
 @media (max-height: 700px){
