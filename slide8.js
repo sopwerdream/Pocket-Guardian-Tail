@@ -1,98 +1,94 @@
 /* Slide 8 — Safe Room System (slide8.js)
-   - Bilingual text (TH/EN) compatible with global UI
+   - Bilingual text (TH/EN) compatible with global Language Module (lang.js)
    - Click image popup (modal)
-   - Slide 8 only BGM with autoplay + fade-in
+   - Slide 8 only BGM with soft-autoplay + fade-in + "tap to enable" unlock
 */
-(function(){
-  // ---------- Language sync ----------
-  const POSSIBLE_LANG_KEYS = ["lang", "PGT_LANG", "deckLang"];
-  function detectLangKey(){
-    for(const k of POSSIBLE_LANG_KEYS){
-      if(localStorage.getItem(k)) return k;
-    }
-    return "lang";
-  }
-  const LANG_KEY = detectLangKey();
+(function () {
+  // =========================
+  // Language sync (Global)
+  // =========================
+  const LANG_KEY = "deckLang"; // align with global lang.js
+  let _lang = (localStorage.getItem(LANG_KEY) || "th").toLowerCase(); // "th" | "en"
 
-  function getLang(){
-    const v = (localStorage.getItem(LANG_KEY) || "TH").toUpperCase();
-    return (v === "EN") ? "EN" : "TH";
+  function getLang() {
+    const v = (localStorage.getItem(LANG_KEY) || "th").toLowerCase();
+    return v === "en" ? "en" : "th";
   }
-  function applyLang(lang){
-    document.querySelectorAll("[data-th][data-en]").forEach(el=>{
-      el.textContent = (lang === "EN") ? el.dataset.en : el.dataset.th;
+
+  function applyLang(lang) {
+    const attr = lang === "en" ? "data-en" : "data-th";
+    document.querySelectorAll(`[${attr}]`).forEach((el) => {
+      const v = el.getAttribute(attr);
+      if (v != null) el.textContent = v;
     });
   }
 
-  // ถ้า ui.js ยิงอีเวนต์นี้มา ก็จับได้ทันที
-  window.addEventListener("langchange", (e)=>{
-    const lang = String(e.detail || "TH").toUpperCase();
+  // global module emits: window.dispatchEvent(new CustomEvent("langchange",{detail:{lang}}))
+  window.addEventListener("langchange", (e) => {
+    const lang = String(e?.detail?.lang || getLang()).toLowerCase();
     localStorage.setItem(LANG_KEY, lang);
-    applyLang(lang);
+    _lang = lang;
+    applyLang(_lang);
     renderThumbs();
     renderStageMeta();
   });
 
-  // กันกรณี ui.js เปลี่ยนภาษาแบบไม่ยิง event → เราเช็คเป็นระยะ
-  let _lang = getLang();
-  setInterval(()=>{
-    const now = getLang();
-    if(now !== _lang){
-      _lang = now;
-      applyLang(now);
-      renderThumbs();
-      renderStageMeta();
-    }
-  }, 300);
-
-  // ---------- Assets ----------
+  // =========================
+  // Assets
+  // =========================
   const ASSETS = {
-    keyVisual: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/key%20visual%20Safe%20Room.png",
+    keyVisual:
+      "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/key%20visual%20Safe%20Room.png",
     rooms: [
       {
-        id:"custom",
-        th:"Character Customization & Setting",
-        en:"Character Customization & Setting",
-        src:"https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Character%20customization%20and%20setting..png",
-        footer:"Character customization and setting."
+        id: "custom",
+        th: "Character Customization & Setting",
+        en: "Character Customization & Setting",
+        src: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Character%20customization%20and%20setting..png",
+        footer: "Character customization and setting.",
       },
       {
-        id:"craft",
-        th:"Craft Room & Equipment",
-        en:"Craft Room & Equipment",
-        src:"https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Craft%20room%20And%20wear%20the%20equipment..png",
-        footer:"Craft room and wear the equipment."
+        id: "craft",
+        th: "Craft Room & Equipment",
+        en: "Craft Room & Equipment",
+        src: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Craft%20room%20And%20wear%20the%20equipment..png",
+        footer: "Craft room and wear the equipment.",
       },
       {
-        id:"skill",
-        th:"Skill Upgrade Room",
-        en:"Skill Upgrade Room",
-        src:"https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Enter%20the%20skill%20upgrade%20room..png",
-        footer:"Enter the skill upgrade room."
+        id: "skill",
+        th: "Skill Upgrade Room",
+        en: "Skill Upgrade Room",
+        src: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Enter%20the%20skill%20upgrade%20room..png",
+        footer: "Enter the skill upgrade room.",
       },
       {
-        id:"map",
-        th:"Map & Mission Event Room",
-        en:"Map & Mission Event Room",
-        src:"https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Map%20and%20Mission%20Event%20Room.png",
-        footer:"Map and mission event room."
+        id: "map",
+        th: "Map & Mission Event Room",
+        en: "Map & Mission Event Room",
+        src: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/Map%20and%20Mission%20Event%20Room.png",
+        footer: "Map and mission event room.",
       },
       {
-        id:"storage",
-        th:"Storage Room",
-        en:"Storage Room",
-        src:"https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/storage%20room.png",
-        footer:"Storage room."
-      }
+        id: "storage",
+        th: "Storage Room",
+        en: "Storage Room",
+        src: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/key%20visual%20Safe%20Room/storage%20room.png",
+        footer: "Storage room.",
+      },
     ],
-    // (สำคัญ) ใช้ raw github สำหรับ mp3
-    bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3"
+    // raw github mp3
+    bgm: "https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/main/assets/song/Safe%20Room%20(Loft%20Style).mp3",
   };
 
-  // apply background key visual
-  document.documentElement.style.setProperty("--s8-keyvisual", `url("${ASSETS.keyVisual}")`);
+  // background key visual
+  document.documentElement.style.setProperty(
+    "--s8-keyvisual",
+    `url("${ASSETS.keyVisual}")`
+  );
 
-  // ---------- Refs ----------
+  // =========================
+  // Refs
+  // =========================
   const stage = document.getElementById("s8_stage");
   const stageImg = document.getElementById("s8_stageImg");
   const stageTag = document.getElementById("s8_stageTag");
@@ -104,11 +100,11 @@
 
   let idx = 0;
 
-  function roomTitle(r){
-    return (getLang() === "EN") ? r.en : r.th;
+  function roomTitle(r) {
+    return _lang === "en" ? r.en : r.th;
   }
 
-  function setRoom(i){
+  function setRoom(i) {
     idx = (i + ASSETS.rooms.length) % ASSETS.rooms.length;
     const r = ASSETS.rooms[idx];
 
@@ -116,79 +112,89 @@
     stageImg.alt = roomTitle(r);
     renderStageMeta();
 
-    [...thumbs.querySelectorAll(".thumb")].forEach((t, ti)=>{
+    [...thumbs.querySelectorAll(".thumb")].forEach((t, ti) => {
       t.classList.toggle("active", ti === idx);
     });
   }
 
-  function renderStageMeta(){
+  function renderStageMeta() {
     const r = ASSETS.rooms[idx];
     stageTag.textContent = roomTitle(r);
     stageFooter.textContent = r.footer || "";
   }
 
-  function renderThumbs(){
+  function renderThumbs() {
     thumbs.innerHTML = "";
-    ASSETS.rooms.forEach((r, i)=>{
+    ASSETS.rooms.forEach((r, i) => {
       const el = document.createElement("div");
       el.className = "thumb" + (i === idx ? " active" : "");
       el.innerHTML = `
         <img src="${r.src}" alt="${roomTitle(r)}">
         <div class="cap">${roomTitle(r)}</div>
       `;
-      el.addEventListener("click", ()=>setRoom(i));
+      el.addEventListener("click", () => setRoom(i));
       thumbs.appendChild(el);
     });
   }
 
-  // ---------- Accordion ----------
-  function mountAccordion(){
-    document.querySelectorAll(".acc .acc-h").forEach(btn=>{
-      btn.addEventListener("click", ()=>{
+  // =========================
+  // Accordion
+  // =========================
+  function mountAccordion() {
+    document.querySelectorAll(".acc .acc-h").forEach((btn) => {
+      btn.addEventListener("click", () => {
         btn.closest(".acc").classList.toggle("open");
       });
     });
   }
 
-  // ---------- Image popup ----------
+  // =========================
+  // Image popup
+  // =========================
   const modal = document.getElementById("imgModal");
   const modalImg = document.getElementById("imgModalImg");
   const modalCap = document.getElementById("imgModalCap");
   const modalBackdrop = document.getElementById("imgModalBackdrop");
   const modalClose = document.getElementById("imgModalClose");
 
-  function openImg(src, cap){
+  function openImg(src, cap) {
     modalImg.src = src;
     modalCap.textContent = cap || "";
     modal.classList.add("open");
-    modal.setAttribute("aria-hidden","false");
+    modal.setAttribute("aria-hidden", "false");
   }
-  function closeImg(){
+
+  function closeImg() {
     modal.classList.remove("open");
-    modal.setAttribute("aria-hidden","true");
+    modal.setAttribute("aria-hidden", "true");
     modalImg.src = "";
   }
 
-  modalBackdrop.addEventListener("click", closeImg);
-  modalClose.addEventListener("click", closeImg);
-  window.addEventListener("keydown", (e)=>{ if(e.key === "Escape") closeImg(); });
+  modalBackdrop?.addEventListener("click", closeImg);
+  modalClose?.addEventListener("click", closeImg);
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeImg();
+  });
 
-  stage.addEventListener("click", ()=>{
+  stage?.addEventListener("click", () => {
     const r = ASSETS.rooms[idx];
     openImg(r.src, roomTitle(r));
   });
-  stage.addEventListener("keydown", (e)=>{
-    if(e.key === "Enter" || e.key === " "){
+
+  stage?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
       const r = ASSETS.rooms[idx];
       openImg(r.src, roomTitle(r));
     }
   });
 
-  prevBtn.addEventListener("click", ()=>setRoom(idx-1));
-  nextBtn.addEventListener("click", ()=>setRoom(idx+1));
+  prevBtn?.addEventListener("click", () => setRoom(idx - 1));
+  nextBtn?.addEventListener("click", () => setRoom(idx + 1));
 
-  // ---------- Audio ----------
+  // =========================
+  // Audio (Soft Autoplay)
+  // =========================
   const bgm = document.getElementById("s8_bgm");
   const playBtn = document.getElementById("s8_playBtn");
   const muteBtn = document.getElementById("s8_muteBtn");
@@ -200,83 +206,167 @@
   const VOL_KEY = "s8_bgm_vol";
   const MUTED_KEY = "s8_bgm_muted";
 
-  function updAudioUI(){
-    playBtn.textContent = bgm.paused ? "▶" : "⏸";
-    muteBtn.textContent = bgm.muted || bgm.volume === 0 ? "🔇" : "🔊";
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const clamp01 = (v) => clamp(v, 0, 1);
+  const num = (v, fb) => {
+    const n = Number(v);
+    return Number.isFinite(n) ? n : fb;
+  };
+
+  function updAudioUI() {
+    if (playBtn) playBtn.textContent = bgm.paused ? "▶" : "⏸";
+    if (muteBtn) muteBtn.textContent = bgm.muted || bgm.volume === 0 ? "🔇" : "🔊";
   }
 
-  const clamp = (v,a,b)=>Math.max(a, Math.min(b, v));
-  const num = (v,fb)=>{ const n=Number(v); return Number.isFinite(n)?n:fb; };
+  function dispatchSliderEvents() {
+    // ให้ UI “เหมือนวิ่งเอง”
+    vol?.dispatchEvent(new Event("input", { bubbles: true }));
+    vol?.dispatchEvent(new Event("change", { bubbles: true }));
+  }
 
-  function setVol(v){
-    const vv = clamp(v, 0, 1);
+  function setVol(v) {
+    const vv = clamp01(v);
     bgm.volume = vv;
-    vol.value = String(vv);
+
+    if (vol) vol.value = String(vv);
     localStorage.setItem(VOL_KEY, String(vv));
 
-    // UX: ถ้า 0 ให้ mute อัตโนมัติ
-    bgm.muted = (vv === 0);
+    // UX: 0 => mute
+    bgm.muted = vv === 0;
     localStorage.setItem(MUTED_KEY, bgm.muted ? "1" : "0");
+
+    dispatchSliderEvents();
     updAudioUI();
   }
 
-  playBtn.addEventListener("click", async ()=>{
-    try{
-      if(bgm.paused) await bgm.play();
+  playBtn?.addEventListener("click", async () => {
+    try {
+      if (bgm.paused) await bgm.play();
       else bgm.pause();
-    }catch(e){}
+    } catch (e) {}
     updAudioUI();
   });
 
-  muteBtn.addEventListener("click", ()=>{
+  muteBtn?.addEventListener("click", () => {
     bgm.muted = !bgm.muted;
     localStorage.setItem(MUTED_KEY, bgm.muted ? "1" : "0");
     updAudioUI();
   });
 
-  vol.addEventListener("input", ()=>setVol(num(vol.value, 0.55)));
-  vd.addEventListener("click", ()=>setVol(num(vol.value, 0.55) - 0.05));
-  vu.addEventListener("click", ()=>setVol(num(vol.value, 0.55) + 0.05));
+  vol?.addEventListener("input", () => setVol(num(vol.value, 0.55)));
+  vd?.addEventListener("click", () => setVol(num(vol.value, 0.55) - 0.05));
+  vu?.addEventListener("click", () => setVol(num(vol.value, 0.55) + 0.05));
 
-  function autoplayWithFade(){
-    const target = clamp(num(localStorage.getItem(VOL_KEY), 0.55), 0, 1);
-    const muted = (localStorage.getItem(MUTED_KEY) === "1");
+  async function tryPlay(audio) {
+    try {
+      await audio.play();
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function showAudioGate() {
+    let overlay = document.getElementById("s8_audioGate");
+    if (overlay) return overlay;
+
+    overlay = document.createElement("div");
+    overlay.id = "s8_audioGate";
+    overlay.style.position = "fixed";
+    overlay.style.inset = "0";
+    overlay.style.zIndex = "200000";
+    overlay.style.display = "grid";
+    overlay.style.placeItems = "center";
+    overlay.style.background = "rgba(0,0,0,.25)";
+    overlay.style.backdropFilter = "blur(6px)";
+    overlay.innerHTML = `
+      <div style="
+        max-width:520px;margin:0 16px;padding:14px 16px;
+        border-radius:16px;border:1px solid rgba(255,255,255,.18);
+        background:rgba(0,0,0,.45);color:rgba(255,255,255,.92);
+        font:600 14px system-ui,-apple-system,Segoe UI,Roboto,'Noto Sans Thai',sans-serif;
+        text-align:center;">
+        <div style="font-size:16px;font-weight:900;margin-bottom:6px;">Tap to enable BGM</div>
+        <div style="opacity:.9">เบราว์เซอร์บล็อกเสียงอัตโนมัติ — คลิก/แตะ 1 ครั้งเพื่อเปิดเพลง</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+    return overlay;
+  }
+
+  function fadeInTo(audio, target, durMs) {
+    const tv = clamp01(target);
+    const dur = clamp(num(durMs, 2000), 200, 12000);
+    const start = performance.now();
+
+    function tick(t) {
+      const p = Math.min(1, (t - start) / dur);
+      const v = tv * p;
+      audio.volume = clamp01(v);
+
+      if (vol) {
+        vol.value = String(audio.volume);
+        dispatchSliderEvents(); // <<< “แถบวิ่ง”
+      }
+
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }
+
+  async function autoplayWithFade() {
+    const target = clamp01(num(localStorage.getItem(VOL_KEY), num(vol?.value, 0.55)));
+    const muted = localStorage.getItem(MUTED_KEY) === "1";
 
     bgm.src = ASSETS.bgm;
     bgm.muted = muted;
 
-    // เริ่มจาก 0 แล้วค่อยเฟสขึ้น
+    // start silent (helps autoplay in some cases)
     bgm.volume = 0;
-    vol.value = String(target);
+    if (vol) vol.value = "0";
+    dispatchSliderEvents();
 
-    setTimeout(async ()=>{
-      try{
-        await bgm.play();
-        if(!bgm.muted){
-          const dur = clamp(num(fadeMs.value, 2000), 200, 12000);
-          const start = performance.now();
-          const tick = (t)=>{
-            const p = Math.min((t-start)/dur, 1);
-            bgm.volume = target * p;
-            if(p < 1) requestAnimationFrame(tick);
-            else updAudioUI();
-          };
-          requestAnimationFrame(tick);
-        }else{
-          bgm.volume = 0;
-        }
-      }catch(e){
-        // autoplay อาจโดนบล็อค → ให้ user กด Play เอง
-        bgm.volume = target;
+    // try immediate autoplay
+    let ok = await tryPlay(bgm);
+    if (ok) {
+      if (!bgm.muted) fadeInTo(bgm, target, fadeMs?.value || 2000);
+      updAudioUI();
+      return;
+    }
+
+    // blocked => unlock on first interaction (click anywhere)
+    const gate = showAudioGate();
+
+    const unlock = async () => {
+      window.removeEventListener("pointerdown", unlock, true);
+      window.removeEventListener("keydown", unlock, true);
+      gate?.remove();
+
+      ok = await tryPlay(bgm);
+      if (ok) {
+        if (!bgm.muted) fadeInTo(bgm, target, fadeMs?.value || 2000);
+      } else {
+        // still blocked -> user can press play button
+        bgm.pause();
       }
       updAudioUI();
-    }, 250);
+    };
+
+    window.addEventListener("pointerdown", unlock, true);
+    window.addEventListener("keydown", unlock, true);
+
+    updAudioUI();
   }
 
-  // ---------- Init ----------
-  document.addEventListener("DOMContentLoaded", ()=>{
+  // =========================
+  // Init
+  // =========================
+  document.addEventListener("DOMContentLoaded", () => {
     // preload images
-    ASSETS.rooms.forEach(r=>{ const im = new Image(); im.src = r.src; });
+    ASSETS.rooms.forEach((r) => {
+      const im = new Image();
+      im.src = r.src;
+    });
 
     _lang = getLang();
     applyLang(_lang);
@@ -285,7 +375,14 @@
     setRoom(0);
     mountAccordion();
 
-    autoplayWithFade();
+    // init persisted volume/mute
+    const savedVol = clamp01(num(localStorage.getItem(VOL_KEY), num(vol?.value, 0.55)));
+    const savedMuted = localStorage.getItem(MUTED_KEY) === "1";
+    bgm.muted = savedMuted;
+    if (vol) vol.value = String(savedVol);
     updAudioUI();
+
+    // autoplay (soft)
+    autoplayWithFade();
   });
 })();
