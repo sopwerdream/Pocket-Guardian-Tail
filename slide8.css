@@ -416,14 +416,28 @@
   max-width: 35%; /* จำกัดความกว้าง */
   margin-left: auto; /* ดันไปขวาสุด */
 }
+.s8-delay{
+  display:flex;
+  align-items:center;
+  gap: 6px;
+  flex-wrap: nowrap; /* เพิ่มบรรทัดนี้ - ห้าม wrap */
+}
+
 #s8_fadeMs{
-  width: 80px;
+  width: 70px; /* ลดจาก 80px */
   padding: 6px 8px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(0,0,0,.25);
   color: rgba(255,255,255,.92);
   font-size: 12px;
+  flex-shrink: 0; /* เพิ่มบรรทัดนี้ - ห้ามหด */
+}
+
+/* ปรับ pill ใน delay ให้ไม่ขยาย */
+.s8-delay .pill{
+  flex-shrink: 0; /* ห้ามหด */
+  white-space: nowrap; /* ห้ามตัดบรรทัด */
 }
 
 /* Nav */
