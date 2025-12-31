@@ -473,3 +473,89 @@
   font-size: 12px;
   color: rgba(255,255,255,.80);
 }
+/* =========================================================
+   Slide 8 Compact Fit — Fix overflow (append at END of file)
+   Goal:
+   - No page overflow / no overall scroll
+   - Grid fills remaining viewport
+   - Scroll ONLY inside right content (.s8-accordion)
+   ========================================================= */
+
+.s8-root{
+  /* lock slide to viewport */
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+
+  /* turn root into vertical layout */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+
+  /* slightly tighter padding for fit */
+  padding: 12px 12px 14px;
+}
+
+/* keep header compact */
+.s8-top{
+  margin-bottom: 0; /* gap handled by flex */
+}
+.s8-title{
+  font-size: clamp(22px, 2.6vw, 34px);
+}
+.s8-sub{
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+/* let main grid consume remaining height */
+.s8-grid{
+  flex: 1;
+  min-height: 0; /* CRITICAL for flex child */
+}
+
+/* remove min-heights that force overflow */
+.s8-visual,
+.s8-content{
+  min-height: 0;
+}
+
+/* visual panel should stretch nicely */
+.s8-visual{
+  /* already flex column; allow inner to shrink */
+  min-height: 0;
+}
+
+/* stage: stop hard height, let it flex */
+.s8-stage{
+  height: auto;
+  flex: 1;
+  min-height: 240px;
+  max-height: 100%;
+}
+
+/* right panel: scroll ONLY inside accordion */
+.s8-content{
+  overflow: hidden;
+  min-height: 0;
+}
+.s8-accordion{
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+}
+
+/* bottom bars should not force extra height */
+.s8-audio{
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+.s8-nav{
+  margin-top: 0;
+  flex: 0 0 auto;
+}
+
+/* optional: if thumbs row is too tall, cap it */
+.s8-thumbs{
+  max-height: 160px;
+}
