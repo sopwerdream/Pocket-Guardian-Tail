@@ -262,15 +262,13 @@ AudioModule.init({
     vol: document.getElementById("s8_vol"),
     volDown: document.getElementById("s8_volDown"),
     volUp: document.getElementById("s8_volUp"),
-    fadeMsInput: document.getElementById("s8_fadeMs"),
   },
   options: {
-    // ให้จำค่าเสียงของหน้า 8 แยกจากหน้าอื่นด้วย prefix นี้
-    storagePrefix: "s8_bgm",
-    // ถ้าอยากให้วิ่งไป 0.55 เสมอ ให้ปิด persist หรือ set targetVol ตายตัว
-    // persist: false,
-    // targetVol: 0.55,
+    persist: false,
+    targetVol: 0.55,
+    fadeMs: 2000,
     showGate: true,
+    storagePrefix: "s8_bgm",
   }
 });
   function fadeInTo(target, dur){
