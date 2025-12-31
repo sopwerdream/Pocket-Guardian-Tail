@@ -358,14 +358,15 @@
   align-items:center;
   justify-content: space-between;
   gap: 12px;
-  flex-wrap: wrap;
+ flex-wrap: nowrap; /* เปลี่ยนจาก wrap เป็น nowrap */
+  max-width: 60%; /* จำกัดความกว้างไม่เกิน 60% */
 }
 .s8-audioLeft{
   display:flex;
   align-items:center;
   gap: 10px;
-  min-width: 280px;
-  flex: 1;
+  min-width: 200px; /* ลดจาก 280px */
+  flex: 0 1 auto; /* ไม่ให้ขยายเต็มที่ */
 }
 .s8-track{
   display:flex;
@@ -386,7 +387,8 @@
   align-items:center;
   justify-content:flex-end;
   gap: 10px;
-  flex-wrap: wrap;
+    flex-wrap: nowrap; /* ไม่ให้ wrap */
+  flex: 0 1 auto;
 }
 .btn{
   border: 1px solid var(--s8-stroke);
@@ -401,12 +403,18 @@
   border-color: rgba(255,255,255,.22);
   background: rgba(0,0,0,.35);
 }
-#s8_vol{ width: 150px; }
-.s8-volLabel{ font-size: 12px; color: rgba(255,255,255,.72); }
-.s8-delay{
+#s8_vol{ width: 120px; } /* ลดจาก 150px */
+
+/* Nav - FIXED: ย้ายมาอยู่แถวเดียวกับ audio */
+.s8-nav{
+  margin-top: 14px;
   display:flex;
   align-items:center;
-  gap: 6px;
+  justify-content: flex-end; /* ชิดขวา */
+  gap: 12px;
+  flex-wrap: nowrap;
+  max-width: 35%; /* จำกัดความกว้าง */
+  margin-left: auto; /* ดันไปขวาสุด */
 }
 #s8_fadeMs{
   width: 80px;
@@ -426,6 +434,54 @@
   justify-content: space-between;
   gap: 12px;
   flex-wrap: wrap;
+}
+/* Wrapper ใหม่สำหรับจัด audio + nav ในแถวเดียวกัน */
+.s8-bottomBar {
+  display: flex;
+  gap: 14px;
+  align-items: stretch;
+  margin-top: 14px;
+}
+
+.s8-bottomBar .s8-audio {
+  margin-top: 0;
+  flex: 1;
+}
+
+.s8-bottomBar .s8-nav {
+  margin-top: 0;
+  margin-left: 0;
+  flex: 0 0 auto;
+}
+
+.s8-navHint{
+  display: none; /* ซ่อนข้อความ "Back → Slide 7" เพื่อประหยัดพื้นที่ */
+}
+
+/* Responsive */
+@media (max-width: 1200px){
+  .s8-bottomBar {
+    flex-direction: column;
+  }
+  
+  .s8-audio {
+    max-width: 100%;
+  }
+  
+  .s8-nav {
+    max-width: 100%;
+    justify-content: space-between;
+  }
+  
+  .s8-navHint {
+    display: block;
+  }
+}
+
+@media (max-width: 768px){
+  .s8-audioLeft{ min-width: auto; flex-wrap: wrap; }
+  .s8-audioRight{ flex-wrap: wrap; }
+  #s8_vol{ width: 100%; max-width: 200px; }
 }
 .s8-navHint{
   color: rgba(255,255,255,.62);
