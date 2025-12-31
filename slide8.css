@@ -439,7 +439,15 @@
   flex-shrink: 0; /* ห้ามหด */
   white-space: nowrap; /* ห้ามตัดบรรทัด */
 }
-
+.s8-audioRight{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap: 10px;
+  flex-wrap: nowrap; /* เปลี่ยนเป็น nowrap */
+  flex: 0 1 auto;
+  min-width: fit-content; /* เพิ่มบรรทัดนี้ */
+}
 /* Nav */
 .s8-nav{
   margin-top: 14px;
