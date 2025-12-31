@@ -557,5 +557,5 @@
 
 /* optional: if thumbs row is too tall, cap it */
 .s8-thumbs{
-  max-height: 160px;
+  max-height: 80px;
 }
