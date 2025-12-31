@@ -171,7 +171,8 @@
   overflow: hidden;
   border: 1px solid var(--s8-stroke2);
   background: rgba(0,0,0,.35);
-  height: 380px;
+  max-height: 50vh; /* ใช้ viewport height แทน */
+  height: auto;
   cursor: zoom-in;
 }
 .s8-stage img{
@@ -262,11 +263,11 @@
 /* Content panel */
 .s8-content{
   padding: 14px;
-  min-height: 540px;
+  min-height: 600px;
   overflow: hidden;
 }
 .s8-accordion{
-  height: 100%;
+  height: 550px;
   overflow: auto;
   padding-right: 8px;
 }
