@@ -1,5 +1,6 @@
-/* Slide 8 — Safe Room System (slide8.css)
+/* Slide 8 – Safe Room System (slide8.css)
    Slide-specific styles. Keep global UI styles in ui.css.
+   FIXED: Adjusted sizes to prevent overflow
 */
 :root{
   --s8-stroke: rgba(255,255,255,.14);
@@ -98,7 +99,7 @@
 }
 .s8-title{
   margin: 0;
-  font-size: clamp(28px, 3.6vw, 48px);
+  font-size: clamp(24px, 3.6vw, 42px);
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
@@ -121,13 +122,14 @@
   .s8-titleWrap{ text-align: left; }
 }
 
-/* Visual panel */
+/* Visual panel - FIXED: ลด min-height */
 .s8-visual{
   padding: 14px;
   display:flex;
   flex-direction: column;
   gap: 12px;
   min-height: auto;
+  max-height: 70vh;
 }
 .s8-visualHeader{
   display:flex;
@@ -161,19 +163,24 @@
   border-radius: 12px;
   padding: 8px 12px;
   cursor:pointer;
+  transition: all 0.2s ease;
 }
-.iconBtn:hover{ border-color: rgba(255,255,255,.22); }
+.iconBtn:hover{ 
+  border-color: rgba(255,255,255,.22);
+  background: rgba(0,0,0,.45);
+}
 
-/* Stage image */
+/* Stage image - FIXED: ใช้ max-height แทน height คงที่ */
 .s8-stage{
   position: relative;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--s8-stroke2);
   background: rgba(0,0,0,.35);
-  max-height: 50vh; /* ใช้ viewport height แทน */
-  height: auto;
+  max-height: 45vh;
+  min-height: 250px;
   cursor: zoom-in;
+  flex: 1;
 }
 .s8-stage img{
   width: 100%;
@@ -221,10 +228,11 @@
   backdrop-filter: blur(8px);
 }
 
-/* Thumbs */
+/* Thumbs - FIXED: ลดความสูงของ thumbnail */
 .s8-thumbsWrap{
   border-top: 1px solid rgba(255,255,255,.10);
   padding-top: 10px;
+  flex-shrink: 0;
 }
 .s8-thumbs{
   display:flex;
@@ -234,40 +242,48 @@
   scrollbar-color: rgba(255,255,255,.22) rgba(0,0,0,.2);
 }
 .thumb{
-  min-width: 190px;
-  max-width: 190px;
+  min-width: 160px;
+  max-width: 160px;
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,.12);
   overflow:hidden;
   background: rgba(0,0,0,.32);
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+.thumb:hover{
+  border-color: rgba(255,255,255,.22);
+  transform: translateY(-2px);
 }
 .thumb img{
   width:100%;
-  height: 104px;
+  height: 80px;
   object-fit: cover;
   display:block;
 }
 .thumb .cap{
-  padding: 9px 10px 10px;
-  font-size: 12px;
+  padding: 8px 10px 9px;
+  font-size: 11px;
   color: rgba(255,255,255,.86);
   font-weight: 800;
   letter-spacing: .01em;
+  line-height: 1.2;
 }
 .thumb.active{
   border-color: rgba(244,162,58,.55);
   box-shadow: 0 0 0 3px rgba(244,162,58,.15);
 }
 
-/* Content panel */
+/* Content panel - FIXED: เพิ่ม max-height */
 .s8-content{
   padding: 14px;
-  min-height: 600px;
+  max-height: 70vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 .s8-accordion{
-  height: 550px;
+  flex: 1;
   overflow: auto;
   padding-right: 8px;
 }
@@ -275,6 +291,9 @@
 .s8-accordion::-webkit-scrollbar-thumb{
   background: rgba(255,255,255,.16);
   border-radius: 999px;
+}
+.s8-accordion::-webkit-scrollbar-track{
+  background: rgba(0,0,0,.15);
 }
 .acc{
   border: 1px solid rgba(255,255,255,.10);
@@ -295,6 +314,7 @@
   cursor:pointer;
   font-weight: 900;
   text-align:left;
+  transition: background 0.2s ease;
 }
 .acc-h:hover{ background: rgba(255,255,255,.04); }
 .acc-i{
@@ -321,6 +341,7 @@
   width: 10px; height: 10px;
   border-radius: 999px;
   box-shadow: 0 0 0 3px rgba(255,255,255,.12);
+  flex-shrink: 0;
 }
 .chip.c1{ background:#3db4ff; box-shadow:0 0 0 3px rgba(61,180,255,.18); }
 .chip.c2{ background:#f4a23a; box-shadow:0 0 0 3px rgba(244,162,58,.16); }
@@ -337,12 +358,14 @@
   align-items:center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .s8-audioLeft{
   display:flex;
   align-items:center;
   gap: 10px;
-  min-width: 340px;
+  min-width: 280px;
+  flex: 1;
 }
 .s8-track{
   display:flex;
@@ -354,8 +377,9 @@
   font-size: 13px;
 }
 .s8-trackHint{
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(255,255,255,.65);
+  line-height: 1.3;
 }
 .s8-audioRight{
   display:flex;
@@ -371,9 +395,13 @@
   border-radius: 12px;
   padding: 8px 12px;
   cursor:pointer;
+  transition: all 0.2s ease;
 }
-.btn:hover{ border-color: rgba(255,255,255,.22); }
-#s8_vol{ width: 180px; }
+.btn:hover{ 
+  border-color: rgba(255,255,255,.22);
+  background: rgba(0,0,0,.35);
+}
+#s8_vol{ width: 150px; }
 .s8-volLabel{ font-size: 12px; color: rgba(255,255,255,.72); }
 .s8-delay{
   display:flex;
@@ -381,12 +409,13 @@
   gap: 6px;
 }
 #s8_fadeMs{
-  width: 90px;
+  width: 80px;
   padding: 6px 8px;
   border-radius: 10px;
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(0,0,0,.25);
   color: rgba(255,255,255,.92);
+  font-size: 12px;
 }
 
 /* Nav */
@@ -396,6 +425,7 @@
   align-items:center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
 }
 .s8-navHint{
   color: rgba(255,255,255,.62);
@@ -416,12 +446,16 @@
   color: rgba(255,255,255,.92);
   text-decoration:none;
   font-weight: 900;
+  transition: all 0.2s ease;
 }
 .navBtn.primary{
   border-color: rgba(244,162,58,.55);
   background: rgba(244,162,58,.18);
 }
-.navBtn:hover{ border-color: rgba(255,255,255,.22); }
+.navBtn:hover{ 
+  border-color: rgba(255,255,255,.22);
+  transform: translateY(-2px);
+}
 .navIcon{ opacity: .9; }
 
 /* Image Modal */
@@ -460,6 +494,11 @@
   padding: 8px 10px;
   cursor:pointer;
   z-index: 2;
+  transition: all 0.2s ease;
+}
+.imgModal__close:hover{
+  background: rgba(255,0,0,.45);
+  border-color: rgba(255,255,255,.35);
 }
 .imgModal__img{
   width:100%;
@@ -474,95 +513,35 @@
   font-size: 12px;
   color: rgba(255,255,255,.80);
 }
-/* =========================================================
-   Slide 8 Compact Fit — Fix overflow (append at END of file)
-   Goal:
-   - No page overflow / no overall scroll
-   - Grid fills remaining viewport
-   - Scroll ONLY inside right content (.s8-accordion)
-   ========================================================= */
 
-.s8-root{
-  /* lock slide to viewport */
-  height: 100dvh;
-  min-height: 0;
-  overflow: hidden;
-
-  /* turn root into vertical layout */
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-
-  /* slightly tighter padding for fit */
-  padding: 12px 12px 14px;
+/* Responsive adjustments */
+@media (max-height: 900px){
+  .s8-stage{ max-height: 40vh; min-height: 220px; }
+  .s8-visual{ max-height: 65vh; }
+  .s8-content{ max-height: 65vh; }
+  .s8-title{ font-size: clamp(22px, 3vw, 36px); }
 }
 
-/* keep header compact */
-.s8-top{
-  margin-bottom: 0; /* gap handled by flex */
-}
-.s8-title{
-  font-size: clamp(22px, 2.6vw, 34px);
-}
-.s8-sub{
-  font-size: 13px;
-  line-height: 1.35;
+@media (max-height: 700px){
+  .s8-stage{ max-height: 35vh; min-height: 200px; }
+  .s8-visual{ max-height: 60vh; }
+  .s8-content{ max-height: 60vh; }
+  .thumb img{ height: 70px; }
+  .thumb{ min-width: 140px; max-width: 140px; }
 }
 
-/* let main grid consume remaining height */
-.s8-grid{
-  flex: 1;
-  min-height: 0; /* CRITICAL for flex child */
+@media (max-width: 768px){
+  .s8-top{ flex-direction: column; }
+  .s8-audioLeft{ min-width: auto; }
+  .s8-audio{ flex-direction: column; align-items: stretch; }
+  .s8-audioRight{ justify-content: flex-start; }
+  #s8_vol{ width: 100%; max-width: 250px; }
 }
 
-/* remove min-heights that force overflow */
-.s8-visual,
-.s8-content{
-  min-height: 0;
-}
-
-/* visual panel should stretch nicely */
-.s8-visual{
-  /* already flex column; allow inner to shrink */
-  min-height: 0;
-}
-
-/* stage: stop hard height, let it flex */
-.s8-stage{
-  height: auto;
-  flex: 1;
-  min-height: 180px;
-  max-height: 30%;
-}
-
-/* right panel: scroll ONLY inside accordion */
-.s8-content{
-  overflow: hidden;
-  min-height: 0;
-}
-.s8-accordion{
-  height: 100%;
-  min-height: 0;
-  overflow: auto;
-}
-
-/* bottom bars should not force extra height */
-.s8-audio{
-  margin-top: 0;
-  flex: 0 0 auto;
-}
-.s8-nav{
-  margin-top: 0;
-  flex: 0 0 auto;
-}
-
-/* optional: if thumbs row is too tall, cap it */
-.s8-thumbs{
-  max-height: 80px;
-}
-
-
-/* 7) ลดระยะห่างแถบล่าง */
-.s8-audio, .s8-nav{
-  margin-top: 8px;  /* ลดจาก 14px */
+@media (max-width: 480px){
+  .s8-root{ padding: 12px; }
+  .s8-title{ font-size: clamp(20px, 5vw, 28px); }
+  .thumb{ min-width: 120px; max-width: 120px; }
+  .thumb img{ height: 60px; }
+  .s8-stage{ min-height: 180px; }
 }
