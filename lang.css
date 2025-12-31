@@ -1,0 +1,37 @@
+/* =========================================
+   Global Language Control (TH | EN)
+   ========================================= */
+
+.langCtl{
+  position: fixed;
+  top: 22px;
+  right: 22px;
+  z-index: 100000; /* สูงกว่า zoomCtl */
+  display:flex;
+  gap:6px;
+  align-items:center;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
+}
+
+.langCtl button{
+  border:1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.35);
+  color:#fff;
+  padding:6px 12px;
+  border-radius:999px;
+  font-weight:900;
+  cursor:pointer;
+  backdrop-filter: blur(10px);
+  opacity:.65;
+}
+
+.langCtl button.active{
+  opacity:1;
+  outline:2px solid rgba(255,255,255,.35);
+}
+
+.langCtl button:hover{ opacity:1; }
+
+@media (max-width: 900px){
+  .langCtl{ top:18px; right:18px; }
+}
