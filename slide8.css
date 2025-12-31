@@ -99,7 +99,7 @@
 }
 .s8-title{
   margin: 0;
-  font-size: clamp(24px, 3.6vw, 42px);
+  font-size: 15px;
   line-height: 1.05;
   letter-spacing: -0.02em;
 }
@@ -544,4 +544,56 @@
   .thumb{ min-width: 120px; max-width: 120px; }
   .thumb img{ height: 60px; }
   .s8-stage{ min-height: 180px; }
+}
+/* Language Toggle - เพิ่มส่วนนี้ */
+.langToggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 100;
+  display: flex;
+  gap: 6px;
+  background: rgba(0,0,0,.30);
+  padding: 6px;
+  border-radius: 14px;
+  border: 1px solid var(--s8-stroke);
+  backdrop-filter: blur(10px);
+}
+
+.langBtn {
+  padding: 8px 16px;
+  background: transparent;
+  border: none;
+  color: rgba(255,255,255,.6);
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.02em;
+}
+
+.langBtn:hover {
+  color: rgba(255,255,255,.9);
+  background: rgba(255,255,255,.08);
+}
+
+.langBtn.active {
+  background: var(--s8-accent);
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(244,162,58,.3);
+}
+
+/* Responsive - ย้ายปุ่มภาษาเมื่อหน้าจอเล็ก */
+@media (max-width: 768px) {
+  .langToggle {
+    top: 10px;
+    right: 10px;
+    padding: 4px;
+  }
+  
+  .langBtn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
 }
