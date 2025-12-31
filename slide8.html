@@ -5,8 +5,11 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Pocket Guardian Tail — Slide 8 (Safe Room)</title>
 
-  <!-- Global UI (language + zoom) -->
+  <!-- Global UI (Zoom) -->
   <link rel="stylesheet" href="ui.css" />
+
+  <!-- Global Language Module (TH | EN) -->
+  <link rel="stylesheet" href="lang.css" />
 
   <!-- Slide-specific -->
   <link rel="stylesheet" href="slide8.css" />
@@ -15,9 +18,11 @@
 <body>
   <!--
     IMPORTANT:
-    - Keep #pageRoot ONLY for slide content so global UI (from ui.js) won't be wrapped/scaled unexpectedly.
+    - Keep #pageRoot ONLY for slide content.
+    - Global UI (zoomCtl/langCtl) must be appended to <body> OUTSIDE #pageRoot.
   -->
   <div id="pageRoot" class="s8-root">
+
     <header class="s8-top">
       <div class="s8-pills">
         <span class="pill">Slide 8</span>
@@ -28,11 +33,12 @@
 
       <div class="s8-titleWrap">
         <div class="s8-kicker" data-th="SAFE ROOM / POCKET HOME" data-en="SAFE ROOM / POCKET HOME"></div>
-        <h1 class="s8-title" data-th="ศูนย์กลางการตัดสินใจระหว่างการต่อสู้" data-en="A Strategic Hub Between Battles"></h1>
+        <h1 class="s8-title"
+            data-th="ศูนย์กลางการตัดสินใจระหว่างการต่อสู้"
+            data-en="A Strategic Hub Between Battles"></h1>
         <p class="s8-sub"
-          data-th="Safe Room: ศูนย์กลางกลยุทธ์ เชื่อมการเล่น-เศรษฐกิจ-การเติบโต ส่งผลตรงต่อการรบ"
-          data-en="Safe Room: Your strategic hub connecting gameplay, economy, and growth. Every upgrade impacts battle.">
-        </p>
+           data-th="Safe Room: ศูนย์กลางกลยุทธ์ เชื่อมการเล่น-เศรษฐกิจ-การเติบโต ส่งผลตรงต่อการรบ"
+           data-en="Safe Room: Your strategic hub connecting gameplay, economy, and growth. Every upgrade impacts battle."></p>
       </div>
     </header>
 
@@ -66,6 +72,7 @@
       <!-- RIGHT: Content -->
       <section class="card s8-content" aria-label="Safe Room Content">
         <div class="s8-accordion" id="s8_acc">
+
           <article class="acc open">
             <button class="acc-h" type="button">
               <span class="chip c1"></span>
@@ -89,9 +96,12 @@
             </button>
             <div class="acc-b">
               <ul>
-                <li data-th="ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support" data-en="Uses resources earned through play. Items: Equipment / Materials / Support."></li>
-                <li data-th="ราคา/ของหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World" data-en="Prices and rare stock shift with progress and pocket-world events."></li>
-                <li data-th="เป้าหมาย: ให้ผู้เล่นต้อง “เลือกใช้” ไม่ใช่ซื้อได้หมด" data-en="Goal: meaningful trade-offs — not buying everything immediately."></li>
+                <li data-th="ใช้ทรัพยากรจากการเล่นจริง ไอเทมเป็น Equipment / Materials / Support"
+                    data-en="Uses resources earned through play. Items: Equipment / Materials / Support."></li>
+                <li data-th="ราคา/ของหายากเปลี่ยนตาม Progress และเหตุการณ์ใน Pocket World"
+                    data-en="Prices and rare stock shift with progress and pocket-world events."></li>
+                <li data-th="เป้าหมาย: ให้ผู้เล่นต้อง “เลือกใช้” ไม่ใช่ซื้อได้หมด"
+                    data-en="Goal: meaningful trade-offs — not buying everything immediately."></li>
               </ul>
             </div>
           </article>
@@ -104,9 +114,12 @@
             </button>
             <div class="acc-b">
               <ul>
-                <li data-th="Skill Tree เฉพาะตัว เลือกสาย Damage / Support / Control" data-en="Unique skill trees per character: Damage / Support / Control paths."></li>
-                <li data-th="อัปเกรด “เปลี่ยนพฤติกรรมสกิล” ไม่ใช่แค่เพิ่มตัวเลข" data-en="Upgrades change skill behavior — not just numbers."></li>
-                <li data-th="สร้าง Synergy ใหม่กับทีม เพิ่มความลึกและ Replayability" data-en="Enables new team synergies, depth, and replayability."></li>
+                <li data-th="Skill Tree เฉพาะตัว เลือกสาย Damage / Support / Control"
+                    data-en="Unique skill trees per character: Damage / Support / Control paths."></li>
+                <li data-th="อัปเกรด “เปลี่ยนพฤติกรรมสกิล” ไม่ใช่แค่เพิ่มตัวเลข"
+                    data-en="Upgrades change skill behavior — not just numbers."></li>
+                <li data-th="สร้าง Synergy ใหม่กับทีม เพิ่มความลึกและ Replayability"
+                    data-en="Enables new team synergies, depth, and replayability."></li>
               </ul>
             </div>
           </article>
@@ -119,9 +132,12 @@
             </button>
             <div class="acc-b">
               <ul>
-                <li data-th="แต่งตัวมีผลต่อ Stat / Passive / รูปแบบการเล่น" data-en="Gear affects stats, passives, and playstyle."></li>
-                <li data-th="คราฟต์อุปกรณ์จากวัตถุดิบ + ปรับลุคให้เข้ากับสไตล์" data-en="Craft gear from materials + customize looks to match style."></li>
-                <li data-th="เป้าหมาย: ผสาน Visual Customization + Gameplay Impact" data-en="Goal: visual customization with real gameplay impact."></li>
+                <li data-th="แต่งตัวมีผลต่อ Stat / Passive / รูปแบบการเล่น"
+                    data-en="Gear affects stats, passives, and playstyle."></li>
+                <li data-th="คราฟต์อุปกรณ์จากวัตถุดิบ + ปรับลุคให้เข้ากับสไตล์"
+                    data-en="Craft gear from materials + customize looks to match style."></li>
+                <li data-th="เป้าหมาย: ผสาน Visual Customization + Gameplay Impact"
+                    data-en="Goal: visual customization with real gameplay impact."></li>
               </ul>
             </div>
           </article>
@@ -136,7 +152,8 @@
               <ul>
                 <li data-th="เตรียมตัวก่อนออกสำรวจ (Exploration Mode)" data-en="Preparation before exploration."></li>
                 <li data-th="ผลลัพธ์ของการอัปเกรดสะท้อนใน Tactical Battle" data-en="Upgrades directly impact tactical battles."></li>
-                <li data-th="ผู้เล่นต้องวางแผนล่วงหน้า แก้เกมกลางการต่อสู้ได้ยาก" data-en="Encourages planning — harder to fix mistakes mid-battle."></li>
+                <li data-th="ผู้เล่นต้องวางแผนล่วงหน้า แก้เกมกลางการต่อสู้ได้ยาก"
+                    data-en="Encourages planning — harder to fix mistakes mid-battle."></li>
               </ul>
             </div>
           </article>
@@ -149,75 +166,84 @@
             </button>
             <div class="acc-b">
               <ul>
-                <li data-th="แกนสำหรับขยายคอนเทนต์ในอนาคต (เพิ่ม Rooms/Systems ได้เรื่อย ๆ)" data-en="A scalable core for future content (more rooms/systems)."></li>
-                <li data-th="รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content" data-en="Supports items/skins/collectibles and event-based content."></li>
-                <li data-th="ในอนาคต: รองรับ Live Update และ Monetization บนแพลตฟอร์มอื่น" data-en="Future-ready for live updates and monetization on other platforms."></li>
+                <li data-th="แกนสำหรับขยายคอนเทนต์ในอนาคต (เพิ่ม Rooms/Systems ได้เรื่อย ๆ)"
+                    data-en="A scalable core for future content (more rooms/systems)."></li>
+                <li data-th="รองรับระบบไอเทม/สกิน/ของสะสม และ Event-based Content"
+                    data-en="Supports items/skins/collectibles and event-based content."></li>
+                <li data-th="ในอนาคต: รองรับ Live Update และ Monetization บนแพลตฟอร์มอื่น"
+                    data-en="Future-ready for live updates and monetization on other platforms."></li>
               </ul>
             </div>
           </article>
+
         </div>
       </section>
     </main>
 
-<!-- Bottom Bar: Music + Navigation -->
-<div class="s8-bottomBar">
-  <!-- Music (Slide 8 only) -->
-  <section class="card s8-audio" aria-label="Slide 8 music controls">
-      <div class="s8-audioLeft">
-        <span class="pill strong">BGM</span>
-        <button class="btn" id="s8_playBtn" type="button" aria-label="Play/Pause">▶</button>
-        <button class="btn" id="s8_muteBtn" type="button" aria-label="Mute">🔊</button>
-        <div class="s8-track">
-          <div class="s8-trackName" data-th="Safe Room (Loft Style)" data-en="Safe Room (Loft Style)"></div>
-          <div class="s8-trackHint" data-th="เล่นอัตโนมัติ" data-en="Auto-plays on Slide 8 (if browser allows)"></div>
+    <!-- Bottom Bar: Music + Navigation -->
+    <div class="s8-bottomBar">
+      <!-- Music (Slide 8 only) -->
+      <section class="card s8-audio" aria-label="Slide 8 music controls">
+        <div class="s8-audioLeft">
+          <span class="pill strong">BGM</span>
+          <button class="btn" id="s8_playBtn" type="button" aria-label="Play/Pause">▶</button>
+          <button class="btn" id="s8_muteBtn" type="button" aria-label="Mute">🔊</button>
+          <div class="s8-track">
+            <div class="s8-trackName" data-th="Safe Room (Loft Style)" data-en="Safe Room (Loft Style)"></div>
+            <div class="s8-trackHint" data-th="เล่นอัตโนมัติ" data-en="Auto-plays on Slide 8 (if browser allows)"></div>
+          </div>
         </div>
-      </div>
 
-      <div class="s8-audioRight">
-        <label class="s8-volLabel" data-th="เสียง" data-en="Vol"></label>
-        <input id="s8_vol" type="range" min="0" max="1" step="0.01" value="0.55" />
-        <button class="btn" id="s8_volDown" type="button" aria-label="Volume down">−</button>
-        <button class="btn" id="s8_volUp" type="button" aria-label="Volume up">+</button>
+        <div class="s8-audioRight">
+          <label class="s8-volLabel" data-th="เสียง" data-en="Vol"></label>
+          <input id="s8_vol" type="range" min="0" max="1" step="0.01" value="0.55" />
+          <button class="btn" id="s8_volDown" type="button" aria-label="Volume down">−</button>
+          <button class="btn" id="s8_volUp" type="button" aria-label="Volume up">+</button>
 
-        <!-- Optional: fade config -->
-        <div class="s8-delay">
-          <span class="pill ghost" data-th="Fade" data-en="Fade"></span>
-          <input id="s8_fadeMs" type="number" min="200" step="100" value="2000" title="Fade duration (ms)" />
-          <span class="pill ghost">ms</span>
+          <div class="s8-delay">
+            <span class="pill ghost" data-th="Fade" data-en="Fade"></span>
+            <input id="s8_fadeMs" type="number" min="200" step="100" value="2000" title="Fade duration (ms)" />
+            <span class="pill ghost">ms</span>
+          </div>
         </div>
-      </div>
 
-      <audio id="s8_bgm" preload="auto" crossorigin="anonymous"></audio>
-    </section>
+        <audio id="s8_bgm" preload="auto" crossorigin="anonymous"></audio>
+      </section>
 
-  <!-- Navigation -->
-  <footer class="card s8-nav">
-      <div class="s8-navHint" data-th="Back → Slide 7 • Next → Slide 9" data-en="Back → Slide 7 • Next → Slide 9"></div>
-      <div class="s8-navBtns">
-        <a class="navBtn" href="slide7.html" aria-label="Back to Slide 7">
-          <span class="navIcon">⬅</span><span data-th="Back" data-en="Back"></span>
-        </a>
-        <a class="navBtn primary" href="slide9.html" aria-label="Next to Slide 9">
-          <span data-th="Next" data-en="Next"></span><span class="navIcon">➡</span>
-        </a>
-      </div>
-    </footer>
-  </div>
-
-  <!-- Image Popup Modal -->
-  <div id="imgModal" class="imgModal" aria-hidden="true">
-    <div class="imgModal__backdrop" id="imgModalBackdrop"></div>
-    <div class="imgModal__panel" role="dialog" aria-modal="true" aria-label="Image popup">
-      <button id="imgModalClose" class="imgModal__close" type="button" aria-label="Close">✕</button>
-      <img id="imgModalImg" class="imgModal__img" alt="Popup image" />
-      <div id="imgModalCap" class="imgModal__cap"></div>
+      <!-- Navigation -->
+      <footer class="card s8-nav">
+        <div class="s8-navHint" data-th="Back → Slide 7 • Next → Slide 9" data-en="Back → Slide 7 • Next → Slide 9"></div>
+        <div class="s8-navBtns">
+          <a class="navBtn" href="slide7.html" aria-label="Back to Slide 7">
+            <span class="navIcon">⬅</span><span data-th="Back" data-en="Back"></span>
+          </a>
+          <a class="navBtn primary" href="slide9.html" aria-label="Next to Slide 9">
+            <span data-th="Next" data-en="Next"></span><span class="navIcon">➡</span>
+          </a>
+        </div>
+      </footer>
     </div>
-  </div>
 
-  <!-- Slide-specific logic -->
-  <script src="slide8.js"></script>
+    <!-- Image Popup Modal -->
+    <div id="imgModal" class="imgModal" aria-hidden="true">
+      <div class="imgModal__backdrop" id="imgModalBackdrop"></div>
+      <div class="imgModal__panel" role="dialog" aria-modal="true" aria-label="Image popup">
+        <button id="imgModalClose" class="imgModal__close" type="button" aria-label="Close">✕</button>
+        <img id="imgModalImg" class="imgModal__img" alt="Popup image" />
+        <div id="imgModalCap" class="imgModal__cap"></div>
+      </div>
+    </div>
 
-  <!-- Global UI (language toggle + zoom controls + keyboard navigation) -->
+  </div><!-- /#pageRoot -->
+
+  <!--
+    Scripts order (IMPORTANT):
+    - ui.js: creates zoom UI and ensures #pageRoot behavior
+    - lang.js: mounts TH|EN UI (outside #pageRoot) and emits langchange
+    - slide8.js: slide logic (listens to langchange)
+  -->
   <script src="ui.js"></script>
+  <script src="lang.js"></script>
+  <script src="slide8.js"></script>
 </body>
 </html>
