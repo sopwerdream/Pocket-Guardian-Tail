@@ -675,3 +675,36 @@
     font-size: 12px;
   }
 }
+/* =================================================
+   Slide 8 Header: center + single-line
+   - Move the right-top text block to center
+   - Force 1 line (ellipsis if too long)
+   ================================================= */
+
+.s8-titleWrap{
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.s8-kicker,
+.s8-title,
+.s8-sub{
+  white-space: nowrap;      /* บังคับ 1 บรรทัด */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* ถ้ายาวเกินให้ ... */
+}
+
+/* จำกัดความกว้างให้ดูพอดีและไม่ชนขอบ */
+.s8-kicker{ max-width: min(960px, 92vw); }
+.s8-title { max-width: min(960px, 92vw); }
+.s8-sub   { max-width: min(960px, 92vw); }
+
+/* (เสริม) ลดขนาด subtitle นิดให้ไม่แตกบรรทัดง่าย */
+.s8-sub{
+  line-height: 1.25;
+  font-size: 13px;
+}
