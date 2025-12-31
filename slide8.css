@@ -591,12 +591,6 @@
   height: clamp(220px, 34vh, 340px); /* ลดจาก 380px + กันล้นจอ */
 }
 
-/* 5) แถวการ์ด 5 ห้อง จำกัดความสูงไม่ให้กินพื้นที่ */
-.s8-thumbs{
-  max-height: 120px;     /* ลดพื้นที่รวม */
-  overflow-x: auto;
-  overflow-y: hidden;
-}
 
 /* 6) ให้เลื่อนเฉพาะฝั่งขวา */
 .s8-accordion{
