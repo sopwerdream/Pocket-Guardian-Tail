@@ -371,4 +371,37 @@ AudioModule.init({
     autoplayWithFade();
     updAudioUI();
   });
+   const PLAYLIST = [
+  { titleTH:"Safe Room (Loft Style)", titleEN:"Safe Room (Loft Style)", src: ASSETS.bgm },
+  { titleTH:"Track 2", titleEN:"Track 2", src:"https://raw.githubusercontent.com/.../assets/song/Track2.mp3" },
+];
+
+AudioModule.init({
+  playlist: PLAYLIST,
+  audio: document.getElementById("s8_bgm"),
+  ui: {
+    playBtn: document.getElementById("s8_playBtn"),
+    muteBtn: document.getElementById("s8_muteBtn"),
+    vol: document.getElementById("s8_vol"),
+    volDown: document.getElementById("s8_volDown"),
+    volUp: document.getElementById("s8_volUp"),
+
+    // playlist UI
+    trackName: document.getElementById("s8_trackName"),
+    prevTrackBtn: document.getElementById("s8_prevTrack"),
+    nextTrackBtn: document.getElementById("s8_nextTrack"),
+    loopBtn: document.getElementById("s8_loopBtn"),
+
+    // EQ (ถ้าจะทำค่อยเพิ่ม UI แล้วค่อยเปิด)
+    // eqRoot: document.getElementById("s8_eq"),
+  },
+  options: {
+    loopMode: "all",   // all | one | off
+    targetVol: 0.55,
+    fadeMs: 2000,
+    persist: false,
+    showGate: true,
+  }
+});
+
 })();
