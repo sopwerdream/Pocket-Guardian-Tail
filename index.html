@@ -226,235 +226,192 @@
     @media (max-width: 900px){
       .content{ left:24px; bottom:100px; }
     }
-  </style>
-</head>
+<script>
+  /* ===== CONFIG ===== */
+  const OWNER  = "sopwerdream";
+  const REPO   = "Pocket-Guardian-Tail";
+  const BRANCH = "main";
+  const FOLDER = "assets/cover 01_First page cover image";
+  const NEXT_PAGE = "slide2.html";
+  const INTERVAL = 3500;
 
-<body>
-  <div id="bg" class="bg"></div>
-  <div class="overlay"></div>
-
-  <!-- Language -->
-  <div class="lang">
-    <button id="btnEN" class="active" type="button">ENGLISH</button>
-    <button id="btnTH" type="button">ไทย</button>
-  </div>
-
-  <!-- Left text -->
-  <div class="content fade" id="textBlock">
-    <h1 id="title">Pocket Guardian Tail</h1>
-    <p id="desc">Where cute heroes fight real battles.</p>
-    <div class="meta" id="meta">PC • TACTICAL RPG • SKYKICK STUDIO</div>
-  </div>
-
-  <!-- Info toggle button (bottom-left) -->
-  <div class="infoBtnWrap">
-    <button class="btn" id="infoBtn" type="button">ℹ️ INFO</button>
-  </div>
-
-  <!-- Next -->
-  <div class="next">
-    <button id="nextBtn" type="button">NEXT →</button>
-  </div>
-
-  <!-- Info Panel -->
-  <div class="scrim" id="scrim" aria-hidden="true"></div>
-  <aside class="panel" id="panel" aria-hidden="true">
-    <div class="panelHeader">
-      <div>
-        <b id="panelTitle">Pocket Guardian Tail — Info</b>
-        <span id="panelSub">Slide 1 • Cover</span>
-      </div>
-      <button class="btn" id="closeBtn" type="button" aria-label="Close">✕</button>
-    </div>
-
-    <div class="panelBody">
-      <div class="chips">
-        <span class="chip" id="chipGenre">Genre: Action / Adventure</span>
-        <span class="chip" id="chipPlatform">Platform: PC / Console (Demo)</span>
-        <span class="chip" id="chipCount">Cover Set: …</span>
-      </div>
-
-      <h3 id="hConcept">Concept</h3>
-      <p id="pConcept">
-Survive the Pocket World, build power & allies, and fight your way back home.
-      </p>
-
-      <h3 id="hLoop">Core Loop</h3>
-      <p id="pLoop">Explore → Engage → Battle → Recover → Grow</p>
-
-      <h3 id="hGoal">Pitch Goal</h3>
-      <p id="pGoal">Show feasibility of Demo + key systems + visual mood</p>
-    </div>
-  </aside>
-
-  <script>
-    /* ===== CONFIG ===== */
-    const OWNER  = "sopwerdream";
-    const REPO   = "Pocket-Guardian-Tail";
-    const BRANCH = "main";
-    const FOLDER = "assets/cover 01_First page cover image";
-    const NEXT_PAGE = "slide2.html";
-    const INTERVAL = 3500;
-
-    /* ===== COPY ===== */
-    const COPY = {
-      en:{
-        title:"Pocket Guardian Tail",
-        desc:"Where cute heroes fight real battles.",
-        meta:"PC • TACTICAL RPG • SKYKICK STUDIO",
-        panelTitle:"Pocket Guardian Tail — Info",
-        panelConcept:`Survive the Pocket World, build power & allies, and fight your way back home.`,
-        hConcept:"Concept",
-        hLoop:"Core Loop",
-        hGoal:"Pitch Goal",
-        loop:"Explore → Engage → Battle → Recover → Grow",
-        goal:"Show feasibility of Demo + key systems + visual mood",
-        chipGenre:"Genre: Action / Adventure",
-        chipPlatform:"Platform: PC / Console (Demo)"
-      },
-      th:{
-        title:"Pocket Guardian Tail",
-        desc:"โลกเล็กแสนอบอุ่น ที่การต่อสู้มีความหมาย",
-        meta:"PC • เกมวางแผนเชิงกลยุทธ์ • SKYKICK STUDIO",
-        panelTitle:"Pocket Guardian Tail — ข้อมูล",
-        panelConcept:`เมื่อเอเลี่ยนบุกโลกและจับผู้คนไป ตัวละครถูกดึงเข้าสู่ “Pocket World” — มิติทางผ่านที่เชื่อมโลกมนุษย์กับเทคโนโลยีของเอเลี่ยน เป้าหมายคือเอาตัวรอด สร้างพลัง และหาทางกลับโลกให้ได้`,
-        hConcept:"แนวคิด",
-        hLoop:"วงจรการเล่นหลัก",
-        hGoal:"เป้าหมายการนำเสนอ",
-        loop:"สำรวจ → เผชิญหน้า → ต่อสู้ → ฟื้นฟู → เติบโต",
-        goal:"โชว์ความเป็นไปได้ของ Demo + ระบบหลัก + อารมณ์ภาพรวม",
-        chipGenre:"แนวเกม: แอคชัน / ผจญภัย",
-        chipPlatform:"แพลตฟอร์ม: PC / Console (Demo)"
-      }
-    };
-
-    /* ===== ELEMENTS ===== */
-    const bg = document.getElementById("bg");
-    const btnEN = document.getElementById("btnEN");
-    const btnTH = document.getElementById("btnTH");
-
-    const textBlock = document.getElementById("textBlock");
-    const title = document.getElementById("title");
-    const desc = document.getElementById("desc");
-    const meta = document.getElementById("meta");
-
-    const nextBtn = document.getElementById("nextBtn");
-
-    // panel elements
-    const infoBtn = document.getElementById("infoBtn");
-    const closeBtn = document.getElementById("closeBtn");
-    const scrim = document.getElementById("scrim");
-    const panelSub = document.getElementById("panelSub");
-    const chipCount = document.getElementById("chipCount");
-
-    const panelTitle = document.getElementById("panelTitle");
-    const hConcept = document.getElementById("hConcept");
-    const pConcept = document.getElementById("pConcept");
-    const hLoop = document.getElementById("hLoop");
-    const pLoop = document.getElementById("pLoop");
-    const hGoal = document.getElementById("hGoal");
-    const pGoal = document.getElementById("pGoal");
-    const chipGenre = document.getElementById("chipGenre");
-    const chipPlatform = document.getElementById("chipPlatform");
-
-    function isImage(n){ return /\.(png|jpg|jpeg|webp|gif)$/i.test(n); }
-
-    async function fetchImages(){
-      const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${encodeURIComponent(FOLDER)}?ref=${BRANCH}`;
-      const res = await fetch(api);
-      if(!res.ok) throw new Error(`Folder load failed (${res.status})`);
-      const data = await res.json();
-      return data.filter(i=>i.type==="file" && isImage(i.name))
-                 .sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}))
-                 .map(i=>({name:i.name,url:i.download_url}));
+  /* ===== COPY ===== */
+  const COPY = {
+    en:{
+      title:"Pocket Guardian Tail",
+      desc:"Where cute heroes fight real battles.",
+      meta:"PC • TACTICAL RPG • SKYKICK STUDIO",
+      panelTitle:"Pocket Guardian Tail — Info",
+      panelConcept:`Survive the Pocket World, build power & allies, and fight your way back home.`,
+      hConcept:"Concept",
+      hLoop:"Core Loop",
+      hGoal:"Pitch Goal",
+      loop:"Explore → Engage → Battle → Recover → Grow",
+      goal:"Show feasibility of Demo + key systems + visual mood",
+      chipGenre:"Genre: Action / Adventure",
+      chipPlatform:"Platform: PC / Console (Demo)"
+    },
+    th:{
+      title:"Pocket Guardian Tail",
+      desc:"โลกเล็กแสนอบอุ่น ที่การต่อสู้มีความหมาย",
+      meta:"PC • เกมวางแผนเชิงกลยุทธ์ • SKYKICK STUDIO",
+      panelTitle:"Pocket Guardian Tail — ข้อมูล",
+      panelConcept:`เมื่อเอเลี่ยนบุกโลกและจับผู้คนไป ตัวละครถูกดึงเข้าสู่ “Pocket World” — มิติทางผ่านที่เชื่อมโลกมนุษย์กับเทคโนโลยีของเอเลี่ยน เป้าหมายคือเอาตัวรอด สร้างพลัง และหาทางกลับโลกให้ได้`,
+      hConcept:"แนวคิด",
+      hLoop:"วงจรการเล่นหลัก",
+      hGoal:"เป้าหมายการนำเสนอ",
+      loop:"สำรวจ → เผชิญหน้า → ต่อสู้ → ฟื้นฟู → เติบโต",
+      goal:"โชว์ความเป็นไปได้ของ Demo + ระบบหลัก + อารมณ์ภาพรวม",
+      chipGenre:"แนวเกม: แอคชัน / ผจญภัย",
+      chipPlatform:"แพลตฟอร์ม: PC / Console (Demo)"
     }
+  };
 
-    function setBg(url, label){
-      bg.classList.remove("show");
-      setTimeout(()=>{
-        bg.style.backgroundImage = `url('${url}')`;
-        bg.classList.add("show");
-        panelSub.textContent = `Slide 1 • ${label}`;
-      },40);
-    }
+  /* ===== ELEMENTS ===== */
+  const bg = document.getElementById("bg");
+  const btnEN = document.getElementById("btnEN");
+  const btnTH = document.getElementById("btnTH");
 
-    function goNext(){
-      location.href = NEXT_PAGE; // ✅ Next = เปลี่ยนหน้าเท่านั้น
-    }
+  const textBlock = document.getElementById("textBlock");
+  const title = document.getElementById("title");
+  const desc = document.getElementById("desc");
+  const meta = document.getElementById("meta");
 
-    function openPanel(){ document.body.classList.add("panelOpen"); }
-    function closePanel(){ document.body.classList.remove("panelOpen"); }
-    function togglePanel(){
-      document.body.classList.contains("panelOpen") ? closePanel() : openPanel();
-    }
+  const nextBtn = document.getElementById("nextBtn");
 
-    function setLang(lang){
-      // fade text only
-      textBlock.classList.add("out");
-      setTimeout(()=>{
-        title.textContent = COPY[lang].title;
-        desc.textContent  = COPY[lang].desc;
-        meta.textContent  = COPY[lang].meta;
+  // panel elements
+  const infoBtn = document.getElementById("infoBtn");
+  const closeBtn = document.getElementById("closeBtn");
+  const scrim = document.getElementById("scrim");
+  const panelSub = document.getElementById("panelSub");
+  const chipCount = document.getElementById("chipCount");
 
-        panelTitle.textContent = COPY[lang].panelTitle;
-        hConcept.textContent = COPY[lang].hConcept;
-        pConcept.textContent = COPY[lang].panelConcept;
-        hLoop.textContent = COPY[lang].hLoop;
-        pLoop.textContent = COPY[lang].loop;
-        hGoal.textContent = COPY[lang].hGoal;
-        pGoal.textContent = COPY[lang].goal;
-        chipGenre.textContent = COPY[lang].chipGenre;
-        chipPlatform.textContent = COPY[lang].chipPlatform;
+  const panelTitle = document.getElementById("panelTitle");
+  const hConcept = document.getElementById("hConcept");
+  const pConcept = document.getElementById("pConcept");
+  const hLoop = document.getElementById("hLoop");
+  const pLoop = document.getElementById("pLoop");
+  const hGoal = document.getElementById("hGoal");
+  const pGoal = document.getElementById("pGoal");
+  const chipGenre = document.getElementById("chipGenre");
+  const chipPlatform = document.getElementById("chipPlatform");
 
-        btnEN.classList.toggle("active", lang==="en");
-        btnTH.classList.toggle("active", lang==="th");
-        textBlock.classList.remove("out");
-      },150);
-    }
+  /* =========================================================
+     ✅ Stable image list (NO GitHub API → no 403)
+     ========================================================= */
+  const FILES = [
+    "First page cover image01.png",
+    "First page cover image02.png",
+    "First page cover image03.png",
+    "Key visual for action scenes..png",
+  ];
 
-    // events
-    nextBtn.onclick = goNext;
-    btnEN.onclick = ()=>setLang("en");
-    btnTH.onclick = ()=>setLang("th");
-
-    infoBtn.onclick = togglePanel;
-    closeBtn.onclick = closePanel;
-    scrim.onclick = closePanel;
-
-    window.addEventListener("keydown", (e)=>{
-      if(e.key==="ArrowRight") goNext();
-      if(e.key==="i" || e.key==="I") togglePanel();
-      if(e.key==="Escape") closePanel();
-    });
-
-    // init
-async function fetchImages(){
-  // ✅ encode แบบไม่ทำลาย "/" (อย่าใช้ encodeURIComponent ทั้งก้อน)
-  const safePath = encodeURI(FOLDER).replace(/#/g, "%23");
-  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${safePath}?ref=${BRANCH}`;
-
-  const res = await fetch(api);
-
-  // ✅ กัน 403 (rate limit) → fallback เป็น raw list แบบไม่เรียก API
-  if (res.status === 403) {
-    const base = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${encodeURI(FOLDER)}/`;
-    return [
-      { name: "First page cover image01.png", url: base + encodeURIComponent("First page cover image01.png").replace(/%2F/g,"/") },
-      { name: "First page cover image02.png", url: base + encodeURIComponent("First page cover image02.png").replace(/%2F/g,"/") },
-      { name: "First page cover image03.png", url: base + encodeURIComponent("First page cover image03.png").replace(/%2F/g,"/") },
-      { name: "Key visual for action scenes..png", url: base + encodeURIComponent("Key visual for action scenes..png").replace(/%2F/g,"/") },
-    ];
+  function rawUrl(folder, file){
+    // ทำ path ให้ปลอดภัย (space -> %20)
+    const folderSafe = folder.split("/").map(encodeURIComponent).join("/");
+    const fileSafe = encodeURIComponent(file);
+    return `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${folderSafe}/${fileSafe}`;
   }
 
-  if(!res.ok) throw new Error(`Folder load failed (${res.status})`);
+  function getImagesManifest(){
+    return FILES.map(name => ({ name, url: rawUrl(FOLDER, name) }));
+  }
 
-  const data = await res.json();
-  return data
-    .filter(i => i.type === "file" && isImage(i.name))
-    .sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}))
-    .map(i => ({ name:i.name, url:i.download_url }));
-}
+  /* ===== UI helpers ===== */
+  function setBg(url, label){
+    // cache bust กันอัปชื่อเดิมแล้วไม่อัป
+    const bust = (url.includes("?") ? "&" : "?") + "v=" + Date.now();
 
-  </script>
+    bg.classList.remove("show");
+    setTimeout(()=>{
+      bg.style.backgroundImage = `url('${url + bust}')`;
+      bg.classList.add("show");
+      panelSub.textContent = `Slide 1 • ${label}`;
+    },40);
+  }
+
+  function goNext(){
+    location.href = NEXT_PAGE;
+  }
+
+  function openPanel(){ document.body.classList.add("panelOpen"); }
+  function closePanel(){ document.body.classList.remove("panelOpen"); }
+  function togglePanel(){
+    document.body.classList.contains("panelOpen") ? closePanel() : openPanel();
+  }
+
+  function setLang(lang){
+    textBlock.classList.add("out");
+    setTimeout(()=>{
+      title.textContent = COPY[lang].title;
+      desc.textContent  = COPY[lang].desc;
+      meta.textContent  = COPY[lang].meta;
+
+      panelTitle.textContent = COPY[lang].panelTitle;
+      hConcept.textContent = COPY[lang].hConcept;
+      pConcept.textContent = COPY[lang].panelConcept;
+      hLoop.textContent = COPY[lang].hLoop;
+      pLoop.textContent = COPY[lang].loop;
+      hGoal.textContent = COPY[lang].hGoal;
+      pGoal.textContent = COPY[lang].goal;
+      chipGenre.textContent = COPY[lang].chipGenre;
+      chipPlatform.textContent = COPY[lang].chipPlatform;
+
+      btnEN.classList.toggle("active", lang==="en");
+      btnTH.classList.toggle("active", lang==="th");
+      textBlock.classList.remove("out");
+    },150);
+  }
+
+  /* ===== Events ===== */
+  nextBtn.onclick = goNext;
+  btnEN.onclick = ()=>setLang("en");
+  btnTH.onclick = ()=>setLang("th");
+
+  infoBtn.onclick = togglePanel;
+  closeBtn.onclick = closePanel;
+  scrim.onclick = closePanel;
+
+  window.addEventListener("keydown", (e)=>{
+    if(e.key==="ArrowRight") goNext();
+    if(e.key==="i" || e.key==="I") togglePanel();
+    if(e.key==="Escape") closePanel();
+  });
+
+  /* =========================================================
+     ✅ INIT slideshow
+     ========================================================= */
+  let images = [];
+  let idx = 0;
+  let timer = null;
+
+  function startSlideshow(){
+    if (!images.length) return;
+
+    chipCount.textContent = `Cover Set: ${images.length} images`;
+
+    // preload
+    images.forEach(it=>{
+      const im = new Image();
+      im.src = it.url;
+    });
+
+    // show first
+    idx = 0;
+    setBg(images[idx].url, images[idx].name);
+
+    // loop
+    clearInterval(timer);
+    timer = setInterval(()=>{
+      idx = (idx + 1) % images.length;
+      setBg(images[idx].url, images[idx].name);
+    }, INTERVAL);
+  }
+
+  // boot
+  setLang("en");
+  images = getImagesManifest();
+  startSlideshow();
+</script>
 </body>
 </html>
