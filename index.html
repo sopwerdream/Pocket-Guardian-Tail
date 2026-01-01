@@ -428,23 +428,30 @@ Survive the Pocket World, build power & allies, and fight your way back home.
     });
 
     // init
-    (async ()=>{
-      setLang("en"); // default EN
+async function initCover01(){
+  try{
+    setLang("en"); // default EN
 
-      const imgs = await fetchImages();
-      chipCount.textContent = `Cover Set: ${imgs.length} images`;
+    const imgs = await fetchImages();
+    chipCount.textContent = `Cover Set: ${imgs.length} images`;
 
-      let i=0;
+    if(!imgs.length){
+      throw new Error("No images found");
+    }
+
+    let i = 0;
+    setBg(imgs[i].url, `cover 01 • ${imgs[i].name}`);
+
+    setInterval(()=>{
+      i = (i + 1) % imgs.length;
       setBg(imgs[i].url, `cover 01 • ${imgs[i].name}`);
+    }, INTERVAL);
 
-      setInterval(()=>{
-        i=(i+1)%imgs.length;
-        setBg(imgs[i].url, `cover 01 • ${imgs[i].name}`);
-      }, INTERVAL);
-    })().catch(err=>{
-      console.error(err);
-      chipCount.textContent = "Cover Set: Error";
-    });
+  }catch(err){
+    console.error(err);
+    chipCount.textContent = "Cover Set: Error";
+  }
+}
   </script>
 </body>
 </html>
