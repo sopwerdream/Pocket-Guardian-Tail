@@ -428,30 +428,33 @@ Survive the Pocket World, build power & allies, and fight your way back home.
     });
 
     // init
-async function initCover01(){
-  try{
-    setLang("en"); // default EN
+async function fetchImages(){
+  // ✅ encode แบบไม่ทำลาย "/" (อย่าใช้ encodeURIComponent ทั้งก้อน)
+  const safePath = encodeURI(FOLDER).replace(/#/g, "%23");
+  const api = `https://api.github.com/repos/${OWNER}/${REPO}/contents/${safePath}?ref=${BRANCH}`;
 
-    const imgs = await fetchImages();
-    chipCount.textContent = `Cover Set: ${imgs.length} images`;
+  const res = await fetch(api);
 
-    if(!imgs.length){
-      throw new Error("No images found");
-    }
-
-    let i = 0;
-    setBg(imgs[i].url, `cover 01 • ${imgs[i].name}`);
-
-    setInterval(()=>{
-      i = (i + 1) % imgs.length;
-      setBg(imgs[i].url, `cover 01 • ${imgs[i].name}`);
-    }, INTERVAL);
-
-  }catch(err){
-    console.error(err);
-    chipCount.textContent = "Cover Set: Error";
+  // ✅ กัน 403 (rate limit) → fallback เป็น raw list แบบไม่เรียก API
+  if (res.status === 403) {
+    const base = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${BRANCH}/${encodeURI(FOLDER)}/`;
+    return [
+      { name: "First page cover image01.png", url: base + encodeURIComponent("First page cover image01.png").replace(/%2F/g,"/") },
+      { name: "First page cover image02.png", url: base + encodeURIComponent("First page cover image02.png").replace(/%2F/g,"/") },
+      { name: "First page cover image03.png", url: base + encodeURIComponent("First page cover image03.png").replace(/%2F/g,"/") },
+      { name: "Key visual for action scenes..png", url: base + encodeURIComponent("Key visual for action scenes..png").replace(/%2F/g,"/") },
+    ];
   }
+
+  if(!res.ok) throw new Error(`Folder load failed (${res.status})`);
+
+  const data = await res.json();
+  return data
+    .filter(i => i.type === "file" && isImage(i.name))
+    .sort((a,b)=>a.name.localeCompare(b.name, undefined, {numeric:true}))
+    .map(i => ({ name:i.name, url:i.download_url }));
 }
+
   </script>
 </body>
 </html>
