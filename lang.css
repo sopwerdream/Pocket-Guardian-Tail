@@ -18,7 +18,7 @@
   background: rgba(0,0,0,.35);
   color:#fff;
   padding:6px 12px;
-  border-radius:999px;
+  border-radius:8px;
   font-weight:900;
   cursor:pointer;
   backdrop-filter: blur(10px);
