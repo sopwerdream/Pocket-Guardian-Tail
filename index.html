@@ -226,7 +226,68 @@
     @media (max-width: 900px){
       .content{ left:24px; bottom:100px; }
     }
-<script>
+  </style>
+</head>
+
+<body>
+  <div id="bg" class="bg"></div>
+  <div class="overlay"></div>
+
+  <!-- Language -->
+  <div class="lang">
+    <button id="btnEN" class="active" type="button">ENGLISH</button>
+    <button id="btnTH" type="button">ไทย</button>
+  </div>
+
+  <!-- Left text -->
+  <div class="content fade" id="textBlock">
+    <h1 id="title">Pocket Guardian Tail</h1>
+    <p id="desc">Where cute heroes fight real battles.</p>
+    <div class="meta" id="meta">PC • TACTICAL RPG • SKYKICK STUDIO</div>
+  </div>
+
+  <!-- Info toggle button (bottom-left) -->
+  <div class="infoBtnWrap">
+    <button class="btn" id="infoBtn" type="button">ℹ️ INFO</button>
+  </div>
+
+  <!-- Next -->
+  <div class="next">
+    <button id="nextBtn" type="button">NEXT →</button>
+  </div>
+
+  <!-- Info Panel -->
+  <div class="scrim" id="scrim" aria-hidden="true"></div>
+  <aside class="panel" id="panel" aria-hidden="true">
+    <div class="panelHeader">
+      <div>
+        <b id="panelTitle">Pocket Guardian Tail — Info</b>
+        <span id="panelSub">Slide 1 • Cover</span>
+      </div>
+      <button class="btn" id="closeBtn" type="button" aria-label="Close">✕</button>
+    </div>
+
+    <div class="panelBody">
+      <div class="chips">
+        <span class="chip" id="chipGenre">Genre: Action / Adventure</span>
+        <span class="chip" id="chipPlatform">Platform: PC / Console (Demo)</span>
+        <span class="chip" id="chipCount">Cover Set: …</span>
+      </div>
+
+      <h3 id="hConcept">Concept</h3>
+      <p id="pConcept">
+Survive the Pocket World, build power & allies, and fight your way back home.
+      </p>
+
+      <h3 id="hLoop">Core Loop</h3>
+      <p id="pLoop">Explore → Engage → Battle → Recover → Grow</p>
+
+      <h3 id="hGoal">Pitch Goal</h3>
+      <p id="pGoal">Show feasibility of Demo + key systems + visual mood</p>
+    </div>
+  </aside>
+
+  <script>
   /* ===== CONFIG ===== */
   const OWNER  = "sopwerdream";
   const REPO   = "Pocket-Guardian-Tail";
@@ -413,5 +474,6 @@
   images = getImagesManifest();
   startSlideshow();
 </script>
+
 </body>
 </html>
