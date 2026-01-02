@@ -1,6 +1,8 @@
 /* Slide 9 — Monster Ecosystem (standalone CSS)
    - No global ui.css dependency
    - Fits within viewport (no page overflow); internal scrolling where needed
+   - Header: left pills stay left, title block is centered and can move independently
+   - Reduced: left image frame + bottom boxes (per request)
 */
 
 /* ----- Page fit / reset ----- */
@@ -85,9 +87,12 @@ body{
   /* layout */
   --s9-pad: clamp(12px, 1.6vw, 18px);
   --s9-gap: clamp(10px, 1.2vw, 14px);
+
+  /* header space reserve (prevents overlap) */
+  --s9-header-h: 86px;
 }
 
-/* ----- Pills (was previously in global styles in other slides) ----- */
+/* ----- Pills (standalone) ----- */
 .pill{
   display:inline-flex;
   align-items:center;
@@ -121,17 +126,31 @@ body{
   overflow: hidden; /* key: prevent page overflow */
 }
 
+/* ===== Slide 9: Darker Background ===== */
 .s9-root::before{
   content:"";
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(900px 700px at 18% 18%, rgba(61,180,255,.18), transparent 60%),
-    radial-gradient(900px 700px at 85% 25%, rgba(255,92,138,.16), transparent 60%),
-    radial-gradient(1200px 900px at 50% 85%, rgba(244,162,58,.14), transparent 65%),
-    linear-gradient(180deg, rgba(0,0,0,.76), rgba(0,0,0,.86));
+    /* ลดความสว่างของ glow ลง */
+    radial-gradient(900px 700px at 18% 18%, rgba(61,180,255,.12), transparent 62%),
+    radial-gradient(900px 700px at 85% 25%, rgba(255,92,138,.10), transparent 62%),
+    radial-gradient(1200px 900px at 50% 85%, rgba(244,162,58,.09), transparent 68%),
+    /* เพิ่มความดำโดยรวม */
+    linear-gradient(180deg, rgba(0,0,0,.88), rgba(0,0,0,.94));
   z-index: -3;
 }
+
+/* (ตัวเลือก) ถ้ายังอยากให้เข้มขึ้นอีก ให้ปลดคอมเมนต์บล็อกนี้ */
+ /*
+.s9-root::after{
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.18);
+  z-index: -2;
+}
+ */
 
 .card{
   border-radius: var(--s9-radius);
@@ -142,35 +161,58 @@ body{
   min-height: 0; /* allow children to shrink */
 }
 
-/* Header */
+/* =========================
+   Header (LEFT pills + CENTER title)
+   ========================= */
 .s9-top{
   display:flex;
-  gap: var(--s9-gap);
+  gap: 12px;
   align-items:flex-start;
   justify-content:space-between;
-  margin-bottom: var(--s9-gap);
-  flex: 0 0 auto;
+
+  position: relative;          /* ✅ สำคัญ: ให้ absolute child ยึดกับ header */
+  min-height: var(--s9-header-h); /* ✅ กัน title ซ้อนการ์ด */
+  margin-bottom: 10px;
 }
-.s9-pills{ display:flex; flex-wrap:wrap; gap:8px; }
-.s9-titleWrap{ flex:1; max-width: 860px; text-align:right; }
+
+.s9-pills{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-self:flex-start;
+}
+
+.s9-titleWrap{
+  position: absolute;          /* ✅ ขยับเฉพาะฝั่งขวาได้ */
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(980px, calc(100% - 260px));
+  text-align: center;
+  pointer-events: none;        /* ✅ กันชนกับปุ่ม/การ์ด */
+}
+
 .s9-kicker{
   font-size: 12px;
   letter-spacing: .12em;
   text-transform: uppercase;
   color: rgba(255,255,255,.72);
-  margin-bottom: 6px;
+  margin: 0 0 2px;
+  text-align: center;
 }
 .s9-title{
-  margin:0;
+  margin: 0;
   font-size: clamp(26px, 3.2vw, 46px);
   line-height: 1.05;
   letter-spacing: -0.02em;
+  text-align: center;
 }
 .s9-sub{
-  margin: 8px 0 0;
+  margin: 4px 0 0;
   color: rgba(255,255,255,.78);
-  font-size: 14px;
-  line-height: 1.45;
+  font-size: 13px;
+  line-height: 1.35;
+  text-align: center;
 }
 
 /* Main: takes remaining viewport */
@@ -185,18 +227,24 @@ body{
 }
 @media (max-width: 980px){
   .s9-grid{ grid-template-columns: 1fr; }
-  .s9-titleWrap{ text-align:left; }
+  /* บนมือถือให้ title ยังอยู่กลาง */
+  .s9-titleWrap{
+    width: min(980px, calc(100% - 24px));
+  }
 }
 
-/* Visual */
+/* =========================
+   Visual (LEFT) — reduced frame size
+   ========================= */
 .s9-visual{
-  padding: 14px;
+  padding: 12px;          /* ลด padding */
   display:flex;
   flex-direction: column;
-  gap: 12px;
-  min-height: 0;      /* IMPORTANT */
-  overflow: hidden;   /* keep inside card */
+  gap: 10px;              /* ลด gap */
+  min-height: 0;          /* IMPORTANT */
+  overflow: hidden;       /* keep inside card */
 }
+
 .s9-visualHeader{
   display:flex;
   align-items:center;
@@ -224,30 +272,34 @@ body{
   background: rgba(0,0,0,.30);
   color: rgba(255,255,255,.9);
   border-radius: 12px;
-  padding: 8px 12px;
+  padding: 7px 10px;      /* ลด */
   cursor:pointer;
 }
 .iconBtn:hover{ border-color: rgba(255,255,255,.22); }
 
-/* Stage now flexes to fit viewport */
 .s9-stage{
   position: relative;
   border-radius: 16px;
   overflow: hidden;
   border: 1px solid var(--s9-stroke2);
   background: rgba(0,0,0,.35);
-  flex: 1 1 auto;  /* IMPORTANT */
-  min-height: 220px;
+
+  /* ✅ ทำกรอบแนวตั้ง */
+  aspect-ratio: 3 / 4;           /* แนวตั้งสวยแบบโปสเตอร์ */
+  height: auto;                   /* ยกเลิกการ fix height */
+  width: 100%;
+  max-height: 70vh;               /* กันล้นจอ */
   cursor: zoom-in;
 }
+
+/* ✅ จัดภาพให้เต็มกรอบแนวตั้ง */
 .s9-stage img{
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;            /* ไม่ตัดภาพ */
+  background: rgba(0,0,0,.25);
+  object-position: center;        /* จัดกลาง */
   display:block;
-  transform: scale(1.02);
-  transition: transform .5s ease, filter .5s ease;
-  filter: saturate(1.02);
 }
 .s9-stage:hover img{
   transform: scale(1.05);
@@ -256,7 +308,7 @@ body{
 
 .s9-stageOverlay{
   position:absolute;
-  inset: 12px 12px auto 12px;
+  inset: 10px 10px auto 10px; /* ลด inset */
   display:flex;
   justify-content:flex-start;
 }
@@ -264,43 +316,44 @@ body{
 .badge{
   display:inline-flex;
   align-items:center;
-  padding: 7px 10px;
+  padding: 6px 9px;        /* ลด */
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.16);
   background: rgba(0,0,0,.35);
   color: rgba(255,255,255,.92);
-  font-size: 12px;
+  font-size: 11px;         /* ลด */
   backdrop-filter: blur(8px);
 }
 .badge.ghost{ opacity:.82; }
 
+/* ✅ ลดกรอบข้อความใต้รูป */
 .s9-stageFooter{
   position:absolute;
-  left: 12px;
-  bottom: 12px;
-  padding: 8px 10px;
+  left: 10px;
+  bottom: 10px;
+  padding: 6px 8px;       /* ✅ ลด */
   border-radius: 12px;
   border: 1px solid var(--s9-stroke);
   background: rgba(0,0,0,.35);
   color: rgba(255,255,255,.82);
-  font-size: 12px;
-  max-width: calc(100% - 24px);
+  font-size: 11px;        /* ✅ ลด */
+  max-width: calc(100% - 20px);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   backdrop-filter: blur(8px);
 }
 
-/* Dots/footer in visual: fixed height blocks */
+/* Dots/footer in visual */
 .s9-dots{
   display:flex;
   gap:8px;
   justify-content:center;
-  padding: 4px 0 0;
+  padding: 2px 0 0;       /* ลด */
   flex: 0 0 auto;
 }
 .s9Dot{
-  width: 10px; height: 10px;
+  width: 9px; height: 9px; /* ลด */
   border-radius: 999px;
   background: rgba(255,255,255,.25);
   border: 1px solid rgba(255,255,255,.16);
@@ -308,18 +361,32 @@ body{
 }
 .s9Dot.isActive{ background: rgba(255,255,255,.90); }
 
-/* Content */
+/* =========================
+   Content (RIGHT) — internal scroll
+   ========================= */
 .s9-content{
-  padding: 14px;
-  min-height: 0;         /* IMPORTANT */
-  overflow: auto;        /* scroll inside, not page */
+  padding: 12px;          /* ลด */
+  min-height: 0;          /* IMPORTANT */
+  overflow: auto;         /* scroll inside, not page */
 }
+
+/* ทำให้การ scroll ลื่นขึ้น */
+.s9-content::-webkit-scrollbar{ width: 10px; }
+.s9-content::-webkit-scrollbar-thumb{
+  background: rgba(255,255,255,.18);
+  border-radius: 999px;
+}
+.s9-content::-webkit-scrollbar-track{
+  background: rgba(0,0,0,.18);
+  border-radius: 999px;
+}
+
 .s9-section{
   border: 1px solid rgba(255,255,255,.10);
   border-radius: 16px;
   background: rgba(0,0,0,.22);
-  padding: 12px;
-  margin-bottom: 12px;
+  padding: 11px;          /* ลด */
+  margin-bottom: 10px;    /* ลด */
   transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
 .s9-secHead{
@@ -330,12 +397,12 @@ body{
 }
 .s9-secHead h2{
   margin:0;
-  font-size: 16px;
+  font-size: 15px;        /* ลด */
   letter-spacing: .01em;
 }
 .s9-block h3{
-  margin: 10px 0 6px;
-  font-size: 13px;
+  margin: 8px 0 6px;      /* ลด */
+  font-size: 12px;        /* ลด */
   color: rgba(255,255,255,.86);
   letter-spacing: .01em;
 }
@@ -343,19 +410,19 @@ body{
   margin: 0;
   padding-left: 18px;
   color: rgba(255,255,255,.78);
-  line-height: 1.6;
+  line-height: 1.55;      /* ลด */
 }
-.s9-block li{ margin: 6px 0; }
+.s9-block li{ margin: 5px 0; } /* ลด */
 
 .s9-callout{
-  margin-top: 10px;
-  padding: 10px 12px;
+  margin-top: 8px;
+  padding: 8px 10px;      /* ลด */
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,.12);
   background: rgba(255,255,255,.06);
   color: rgba(255,255,255,.90);
   font-weight: 900;
-  font-size: 13px;
+  font-size: 12px;        /* ลด */
 }
 
 /* chips */
@@ -383,12 +450,14 @@ body{
   box-shadow: 0 0 0 3px rgba(255,92,138,.12);
 }
 
-/* Bottom area */
+/* =========================
+   Bottom area (RIGHT) — reduced boxes
+   ========================= */
 .s9-bottom{
   display:grid;
   grid-template-columns: 1.2fr .8fr;
-  gap: 12px;
-  margin-top: 8px;
+  gap: 10px;            /* ลด */
+  margin-top: 6px;      /* ลด */
 }
 @media (max-width: 980px){
   .s9-bottom{ grid-template-columns: 1fr; }
@@ -399,41 +468,44 @@ body{
   border: 1px solid rgba(255,255,255,.10);
   border-radius: 16px;
   background: rgba(0,0,0,.22);
-  padding: 12px;
+  padding: 10px;        /* ✅ ลดกรอบข้อความล่าง */
 }
+
 .s9-flow{
   display:flex;
   align-items:center;
   justify-content:flex-start;
-  gap: 10px;
-  margin: 8px 0 6px;
+  gap: 8px;            /* ลด */
+  margin: 6px 0 6px;   /* ลด */
   flex-wrap: wrap;
 }
 .node{
-  padding: 8px 10px;
+  padding: 6px 9px;    /* ✅ ลด */
   border-radius: 999px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.25);
   font-weight: 900;
-  font-size: 12px;
+  font-size: 11px;     /* ✅ ลด */
 }
 .arrow{ opacity:.7; }
 
 .s9-small{
   margin: 0;
   color: rgba(255,255,255,.70);
-  font-size: 12px;
-  line-height: 1.45;
+  font-size: 11px;     /* ✅ ลด */
+  line-height: 1.35;   /* ✅ ลด */
 }
 
 .s9-investText{
-  margin: 8px 0 0;
+  margin: 6px 0 0;     /* ลด */
   color: rgba(255,255,255,.82);
-  line-height: 1.55;
-  font-size: 13px;
+  line-height: 1.40;   /* ✅ ลด */
+  font-size: 12px;     /* ✅ ลด */
 }
 
-/* Footer/nav stays inside viewport */
+/* =========================
+   Footer/nav stays inside viewport
+   ========================= */
 .s9-nav{
   margin-top: var(--s9-gap);
   display:flex;
@@ -451,7 +523,7 @@ body{
   display:inline-flex;
   align-items:center;
   gap: 10px;
-  padding: 12px 14px;
+  padding: 11px 13px; /* ลดนิด */
   border-radius: 14px;
   border: 1px solid rgba(255,255,255,.14);
   background: rgba(0,0,0,.20);
@@ -466,7 +538,9 @@ body{
 .navBtn:hover{ border-color: rgba(255,255,255,.22); }
 .navIcon{ opacity: .9; }
 
-/* Lightbox */
+/* =========================
+   Lightbox
+   ========================= */
 .s9Lightbox{
   position:fixed;
   inset:0;
