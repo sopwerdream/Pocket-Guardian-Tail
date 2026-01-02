@@ -8,26 +8,33 @@
   right: 22px;
   z-index: 100000; /* สูงกว่า zoomCtl */
   display:flex;
-  gap:6px;
+  gap:8px;
   align-items:center;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, "Noto Sans Thai", sans-serif;
 }
 
 .langCtl button{
-  border:1px solid rgba(255,255,255,.25);
-  background: rgba(0,0,0,.35);
-  color:#fff;
-  padding:6px 12px;
-  border-radius:8px;
-  font-weight:900;
-  cursor:pointer;
+  min-width: 48px;
+  padding: 8px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.25);
+  background: rgba(0,0,0,.25);
+  color: rgba(255,255,255,.85);
+  font-weight: 800;
+  letter-spacing: .5px;
+  cursor: pointer;
+  transition: all .25s ease;
   backdrop-filter: blur(10px);
   opacity:.65;
 }
 
 .langCtl button.active{
-  opacity:1;
-  outline:2px solid rgba(255,255,255,.35);
+  background: linear-gradient(180deg, #f4a23a, #e38a18);
+  border-color: rgba(244,162,58,.95);
+  color: #111;
+  box-shadow:
+    0 6px 18px rgba(244,162,58,.45),
+    inset 0 1px 0 rgba(255,255,255,.35);
 }
 
 .langCtl button:hover{ opacity:1; }
