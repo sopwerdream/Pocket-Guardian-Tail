@@ -592,3 +592,16 @@ body{
   cursor:pointer;
   z-index: 2;
 }
+/* Force show language toggle (fix hidden/overlapped cases) */
+#langCtl{
+  position: fixed !important;
+  top: 22px !important;
+  right: 22px !important;
+  z-index: 1000000 !important;
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#langCtl button{
+  opacity: 1 !important;
+}
