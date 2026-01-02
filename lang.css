@@ -35,3 +35,13 @@
 @media (max-width: 900px){
   .langCtl{ top:18px; right:18px; }
 }
+/* ===== FORCE language toggle to float above Slide 9 ===== */
+.langCtl,
+#langCtl,
+.langToggle,
+#langToggle{
+  position: fixed !important;
+  top: 22px !important;
+  right: 22px !important;
+  z-index: 100000 !important;
+}
