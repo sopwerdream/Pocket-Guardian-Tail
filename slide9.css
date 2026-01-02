@@ -130,6 +130,7 @@ body{
 .s9-root::before{
   content:"";
   position: fixed;
+  pointer-events: none;
   inset: 0;
   background:
     /* ลดความสว่างของ glow ลง */
