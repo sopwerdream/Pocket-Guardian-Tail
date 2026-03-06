@@ -23,22 +23,22 @@ background:#000;
 .s10-bg{
 position:fixed;
 inset:0;
-background-image:url("thankyou-bg.jpg");
+background-image:url("https://raw.githubusercontent.com/sopwerdream/Pocket-Guardian-Tail/refs/heads/main/assets/page_10/Background%20page%2010.png");
 background-size:cover;
 background-position:center;
-filter:brightness(.9);
+background-repeat:no-repeat;
 }
 
-/* soft vignette */
+/* vignette */
 
 .s10-bg::after{
 content:"";
 position:absolute;
 inset:0;
-background:radial-gradient(circle at center,transparent 40%,rgba(0,0,0,.6));
+background:radial-gradient(circle at center,transparent 40%,rgba(0,0,0,.55));
 }
 
-/* container */
+/* center container */
 
 .s10-center{
 position:absolute;
@@ -49,9 +49,10 @@ text-align:center;
 pointer-events:none;
 }
 
-/* THANK YOU text */
+/* THANK YOU */
 
 .s10-title{
+
 font-size:120px;
 font-weight:800;
 letter-spacing:6px;
@@ -59,46 +60,54 @@ letter-spacing:6px;
 color:#ffe7a4;
 
 text-shadow:
-0 0 15px rgba(255,220,120,.7),
-0 0 40px rgba(255,200,80,.5);
+0 0 20px rgba(255,220,120,.7),
+0 0 40px rgba(255,200,80,.4);
 
 opacity:0;
-transform:translateY(80px);
+transform:translateY(120px);
 
 animation:
-fadeUp 1.8s ease forwards,
+fadeUp 1.6s ease forwards,
 float 6s ease-in-out infinite 2s;
+
 }
 
 /* subtitle */
 
 .s10-sub{
+
 margin-top:25px;
-font-size:26px;
+font-size:28px;
 color:#fff8e0;
-opacity:.9;
 
 opacity:0;
-transform:translateY(40px);
+transform:translateY(60px);
 
-animation:fadeUp 2s ease forwards .5s;
+animation:fadeUp 2s ease forwards .4s;
+
 }
 
 /* floating */
 
 @keyframes float{
+
 0%{transform:translateY(0)}
+
 50%{transform:translateY(-15px)}
+
 100%{transform:translateY(0)}
+
 }
 
-/* fade up */
+/* fade animation */
 
 @keyframes fadeUp{
+
 to{
 opacity:1;
 transform:translateY(0);
 }
+
 }
 
 /* particles */
@@ -111,61 +120,76 @@ overflow:hidden;
 }
 
 .p{
+
 position:absolute;
 width:4px;
 height:4px;
 background:#ffd978;
 border-radius:50%;
+
 opacity:.8;
 
 animation:particle 12s linear infinite;
+
 }
 
 @keyframes particle{
 
 0%{
-transform:translateY(100vh) scale(.4);
+transform:translateY(100vh) scale(.3);
 opacity:0;
 }
 
 20%{opacity:.9;}
 
 100%{
-transform:translateY(-20vh) scale(1);
+transform:translateY(-10vh) scale(1);
 opacity:0;
 }
 
 }
 
-/* nav */
+/* navigation */
 
 .s10-nav{
+
 position:absolute;
 bottom:40px;
 left:50%;
 transform:translateX(-50%);
+
 display:flex;
 gap:20px;
+
 }
 
 .navBtn{
-padding:12px 24px;
-background:rgba(255,255,255,.12);
+
+padding:12px 26px;
+background:rgba(255,255,255,.15);
 border:1px solid rgba(255,255,255,.25);
 border-radius:30px;
+
 color:white;
 text-decoration:none;
+
 backdrop-filter:blur(10px);
+
 transition:.3s;
+
 }
 
 .navBtn:hover{
-background:rgba(255,255,255,.25);
+
+background:rgba(255,255,255,.35);
+
 }
 
 .primary{
-background:#ffcc66;
+
+background:#ffd978;
 color:#000;
+
 }
 
 </style>
@@ -200,11 +224,11 @@ data-en="Thank you for playing Pocket Guardian Tail">
 
 <script>
 
-/* create particles */
+/* particle generator */
 
 const container=document.getElementById("particles")
 
-for(let i=0;i<60;i++){
+for(let i=0;i<70;i++){
 
 const p=document.createElement("div")
 
